@@ -1,47 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import date
 
 from src.parser.models import Task, TaskStatus
-
-
-@dataclass(slots=True)
-class BoardMetrics:
-    total_tasks: int = 0
-
-    active_tasks: int = 0
-    actionable_tasks: int = 0
-
-    open_tasks: int = 0
-    in_progress_tasks: int = 0
-
-    completed_tasks: int = 0
-    cancelled_tasks: int = 0
-
-    paused_tasks: int = 0
-    scheduled_tasks: int = 0
-    delegated_tasks: int = 0
-    info_tasks: int = 0
-
-    overdue_tasks: int = 0
-
-    scored_tasks: int = 0
-    unscored_tasks: int = 0
-
-    total_score: int = 0
-
-    score_distribution: dict[str, int] = field(
-        default_factory=lambda: {
-            "21-25": 0,
-            "16-20": 0,
-            "11-15": 0,
-            "6-10": 0,
-            "1-5": 0,
-            "0": 0,
-            "no_score": 0,
-        }
-    )
+from src.analytics.models import BoardMetrics
 
 
 def calculate_board_metrics(

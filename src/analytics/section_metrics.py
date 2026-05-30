@@ -1,44 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-
-from src.parser.models import Section, Task
-
-
-@dataclass(slots=True)
-class SectionMetrics:
-    section: Section
-
-    total_tasks: int = 0
-
-    active_tasks: int = 0
-    actionable_tasks: int = 0
-
-    completed_tasks: int = 0
-    cancelled_tasks: int = 0
-
-    scored_tasks: int = 0
-    total_score: int = 0
-
-    wip_limit: int | None = None
-
-    @property
-    def average_score(self) -> float:
-        if self.scored_tasks == 0:
-            return 0.0
-
-        return self.total_score / self.scored_tasks
-
-    @property
-    def wip_usage(self) -> float | None:
-        if self.wip_limit is None:
-            return None
-
-        if self.wip_limit == 0:
-            return 0.0
-
-        return self.active_tasks / self.wip_limit
-
+from src.parser.models import Task
+from src.analytics.models import SectionMetrics
 
 def calculate_section_metrics(
     tasks: list[Task],
