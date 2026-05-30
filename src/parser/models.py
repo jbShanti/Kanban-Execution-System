@@ -1,5 +1,5 @@
 from enum import Enum
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from dataclasses import dataclass, field
 
 class TaskStatus(str, Enum):
@@ -39,6 +39,14 @@ class Section:
     wip_limit: int | None = None
     priority_weight: int | None = None
 
+
+def empty_tags() -> list[str]:
+    return []
+
+def empty_metadata() -> dict[str, str]:
+    return {}
+
+
 @dataclass(slots=True)
 class Task:
     title: str
@@ -53,15 +61,11 @@ class Task:
 
     updated_at: datetime | None = None
 
-    time_estimate: str | None = None
+    time_estimate: timedelta | None = None
 
-    tags: list[str] = field(
-        default_factory=lambda: [],
-    )
+    tags: list[str] = field(default_factory=empty_tags)
 
-    metadata: dict[str, str] = field(
-       default_factory=lambda: {},
-    )
+    metadata: dict[str, str] = field(default_factory=empty_metadata)
 
     archived: bool = False
     ignored: bool = False
@@ -74,10 +78,99 @@ class Task:
         return self.status == TaskStatus.COMPLETED
 
     @property
-    def is_open(self) -> bool:
+    def is_active(self) -> bool:
+        return self.status in {
+            TaskStatus.OPEN,
+            TaskStatus.IN_PROGRESS,
+        }
+    
+    @property
+    def is_actionable(self) -> bool:
         return self.status in {
             TaskStatus.OPEN,
             TaskStatus.IN_PROGRESS,
             TaskStatus.SCHEDULED,
             TaskStatus.PAUSED,
+            TaskStatus.DELEGATED,
         }
+        
+    @property
+    def is_cancelled(self) -> bool:
+        return self.status == TaskStatus.CANCELLED
+
+    @property
+    def is_done(self) -> bool:
+        return self.status in {
+            TaskStatus.COMPLETED,
+            TaskStatus.CANCELLED,
+        }
+    
+    @property
+    def score_value(self) -> int:
+        return self.score or 0
+
+@dataclass(slots=True)
+class BoardMetrics:
+    total_tasks: int
+
+    open_tasks: int
+    in_progress_tasks: int
+
+    completed_tasks: int
+    cancelled_tasks: int
+
+    delegated_tasks: int
+    scheduled_tasks: int
+
+    active_tasks: int
+    actionable_tasks: int
+    
+@dataclass(slots=True)
+class WipMetrics:
+    wip_count: int
+    wip_limit_exceeded: bool
+    
+  
+ 
+@dataclass(slots=True)
+class StaleTask:
+    task: Task
+
+    stale_since: date
+    days_overdue: int
+    
+def empty_reasons() -> list[str]:
+    return []
+
+@dataclass(slots=True)
+class PriorityScore:
+    task: Task
+
+    base_score: int
+    overdue_bonus: int
+    final_score: int
+
+    reasons: list[str] = field(default_factory=empty_reasons)
+    
+@dataclass(slots=True)
+class Board:
+    tasks: list[Task]
+
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    
+    @property
+    def active_task_list(self) -> list[Task]:
+        return [t for t in self.tasks if t.is_active]
+
+    @property
+    def actionable_task_list(self) -> list[Task]:
+        return [t for t in self.tasks if t.is_actionable]
+    
+    @property
+    def completed_task_list(self) -> list[Task]:
+        return [
+            t
+            for t in self.tasks
+            if t.is_completed
+        ]   
