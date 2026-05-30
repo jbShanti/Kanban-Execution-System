@@ -84,3 +84,16 @@ class WipMetrics:
 class AnalyticsSnapshot:
     board: BoardMetrics
     sections: Mapping[str, SectionMetrics]
+    
+@dataclass(slots=True)
+class WipStatus:
+    section_name: str
+
+    active_tasks: int
+    wip_limit: int
+
+    remaining_capacity: int
+    utilization: float
+
+    is_near_limit: bool
+    is_over_limit: bool

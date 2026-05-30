@@ -109,27 +109,8 @@ class Task:
     def score_value(self) -> int:
         return self.score or 0
 
-@dataclass(slots=True)
-class BoardMetrics:
-    total_tasks: int
 
-    open_tasks: int
-    in_progress_tasks: int
-
-    completed_tasks: int
-    cancelled_tasks: int
-
-    delegated_tasks: int
-    scheduled_tasks: int
-
-    active_tasks: int
-    actionable_tasks: int
-    
-@dataclass(slots=True)
-class WipMetrics:
-    wip_count: int
-    wip_limit_exceeded: bool
-    
+   
   
  
 @dataclass(slots=True)
