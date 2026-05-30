@@ -130,3 +130,22 @@ class AttentionScore:
     due_score: int
 
     final_score: float
+    
+
+@dataclass(slots=True, frozen=True)
+class HealthWarning:
+    category: str
+    message: str
+
+
+@dataclass(slots=True, frozen=True)
+class BoardHealthReport:
+    board_health_score: float
+
+    wip_violations: int
+    stale_task_count: int
+
+    top_priority_tasks: list[PriorityScore]
+    top_attention_tasks: list[AttentionScore]
+
+    warnings: list[HealthWarning] 

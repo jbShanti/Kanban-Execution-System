@@ -26,6 +26,20 @@ DEFAULT_SECTION = build_section(
 )
 
 
+from datetime import timedelta
+
+def parse_time_estimate(
+    value: str | None,
+) -> timedelta | None:
+    if value is None:
+        return None
+
+    hours = int(value)
+
+    return timedelta(hours=hours)
+
+    
+
 def parse_task_line(
     text: str,
     section: Section,
@@ -56,7 +70,7 @@ def parse_task_line(
         except ValueError:
             score = None
 
-    time_estimate = metadata.get("time")
+    time_estimate = parse_time_estimate(metadata.get("time"))
 
 
     return Task(

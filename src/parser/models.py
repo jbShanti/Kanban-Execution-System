@@ -29,6 +29,8 @@ class SectionType(str, Enum):
     ARCHIVE = "archive"
 
     UNKNOWN = "unknown"
+    
+    INFO = "info"
 
 @dataclass(slots=True, frozen=True)
 class Section:
