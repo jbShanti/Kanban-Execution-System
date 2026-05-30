@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
-from src.parser.models import Section
+from src.parser.models import Section, Task
 from typing import Mapping
+from datetime import datetime
 
 @dataclass(slots=True)
 class BoardMetrics:
@@ -97,3 +98,14 @@ class WipStatus:
 
     is_near_limit: bool
     is_over_limit: bool
+    
+@dataclass(slots=True, frozen=True)
+class StaleTask:
+    task: Task
+
+    age_days: int
+
+    is_stale: bool
+    is_critical: bool
+
+    last_updated: datetime
