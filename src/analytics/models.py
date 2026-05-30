@@ -109,3 +109,24 @@ class StaleTask:
     is_critical: bool
 
     last_updated: datetime
+    
+    
+
+@dataclass(slots=True, frozen=True)
+class PriorityScore:
+    task: Task
+
+    base_score: int
+    section_bonus: int
+
+    final_score: int
+
+    
+@dataclass(slots=True, frozen=True)
+class AttentionScore:
+    task: Task
+
+    stale_score: int
+    due_score: int
+
+    final_score: float
