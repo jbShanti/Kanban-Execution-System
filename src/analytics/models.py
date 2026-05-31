@@ -149,3 +149,20 @@ class BoardHealthReport:
     top_attention_tasks: list[AttentionScore]
 
     warnings: list[HealthWarning] 
+    
+@dataclass(slots=True, frozen=True)
+class TaskMetrics:
+    active_tasks: int = 0
+    completed_tasks: int = 0
+    cancelled_tasks: int = 0
+    delegated_tasks: int = 0
+    scheduled_tasks: int = 0
+    archived_tasks: int = 0
+    overdue_tasks: int = 0
+    
+    due_today_tasks: int = 0   
+    due_next_3_days_tasks: int = 0
+    tasks_without_score: int = 0
+
+    total_score: int = 0
+    active_score: int = 0
