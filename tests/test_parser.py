@@ -24,3 +24,26 @@ def test_parse_markdown_file():
 
     assert tasks[3].section.raw_title == "Waiting"
     assert tasks[3].status.value == "delegated"
+    
+from datetime import timedelta
+
+import pytest
+
+from src.parser.parser import parse_duration
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("15m", timedelta(minutes=15)),
+        ("90m", timedelta(minutes=90)),
+        ("2h", timedelta(hours=2)),
+        ("1.5h", timedelta(minutes=90)),
+        ("1h30m", timedelta(minutes=90)),
+    ],
+)
+def test_parse_duration(
+    value: str,
+    expected: timedelta,
+) -> None:
+    assert parse_duration(value) == expected

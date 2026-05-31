@@ -20,24 +20,74 @@ from src.parser.sections import (
 
 from src.parser.section_parser import build_section
 
+from datetime import timedelta
+
+import re
+
+
 DEFAULT_SECTION = build_section(
     "Inbox",
     resolve_section_type("Inbox"),
 )
 
 
-from datetime import timedelta
 
-def parse_time_estimate(
+
+def parse_duration(
     value: str | None,
 ) -> timedelta | None:
+    """
+    Parse duration metadata into timedelta.
+
+    Supported formats:
+    - 5m
+    - 15m
+    - 90m
+    - 1h
+    - 2h
+    - 1.5h
+    - 1h30m
+    """
+
     if value is None:
         return None
 
-    hours = int(value)
+    value = value.strip().lower()
 
-    return timedelta(hours=hours)
+    # 1h30m
+    match = re.fullmatch(
+        r"(\d+)h(\d+)m",
+        value,
+    )
+    if match:
+        hours = int(match.group(1))
+        minutes = int(match.group(2))
+        return timedelta(
+            hours=hours,
+            minutes=minutes,
+        )
 
+    # 1.5h / 2h
+    match = re.fullmatch(
+        r"(\d+(?:\.\d+)?)h",
+        value,
+    )
+    if match:
+        hours = float(match.group(1))
+        return timedelta(hours=hours)
+
+    # 90m / 15m
+    match = re.fullmatch(
+        r"(\d+)m",
+        value,
+    )
+    if match:
+        minutes = int(match.group(1))
+        return timedelta(minutes=minutes)
+
+    raise ValueError(
+        f"Unsupported duration format: {value!r}"
+    )
     
 
 def parse_task_line(
@@ -70,7 +120,7 @@ def parse_task_line(
         except ValueError:
             score = None
 
-    time_estimate = parse_time_estimate(metadata.get("time"))
+    time_estimate = parse_duration(metadata.get("time"))
 
 
     return Task(
