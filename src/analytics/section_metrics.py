@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from src.parser.models import Task
+from src.parser.models import Board
 from src.analytics.models import SectionMetrics
 
 def calculate_section_metrics(
-    tasks: list[Task],
+    board: Board,
 ) -> dict[str, SectionMetrics]:
     """
     Calculate metrics grouped by section title.
@@ -12,7 +12,7 @@ def calculate_section_metrics(
 
     metrics_by_section: dict[str, SectionMetrics] = {}
 
-    for task in tasks:
+    for task in board.tasks:
         section_key = task.section.title
 
         if section_key not in metrics_by_section:

@@ -1,5 +1,6 @@
 from src.analytics.section_metrics import calculate_section_metrics
 from src.parser.models import (
+    Board,
     Section,
     SectionType,
     Task,
@@ -48,7 +49,7 @@ def test_calculates_section_metrics():
         ),
     ]
 
-    metrics = calculate_section_metrics(tasks)
+    metrics = calculate_section_metrics(Board(tasks=tasks))
 
     assert len(metrics) == 2
 

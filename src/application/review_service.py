@@ -26,7 +26,7 @@ from src.analytics.wip_analytics import (
 from src.reporting.markdown_report import (
     render_markdown_report,
 )
-from src.parser.models import Task
+from src.parser.models import Task, Board
 
 
 def run_review(
@@ -35,13 +35,15 @@ def run_review(
 ) -> str:
     now = now or datetime.now()
 
+    board=Board(tasks=tasks)
+    
     board_metrics = calculate_board_metrics(
-        tasks,
+        board,
         today=now.date(),
     )
 
     section_metrics = calculate_section_metrics(
-        tasks,
+        board,
     )
 
     wip_statuses = analyze_wip(

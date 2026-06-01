@@ -2,21 +2,21 @@ from __future__ import annotations
 
 from datetime import date
 
-from src.parser.models import Task, TaskStatus
+from src.parser.models import TaskStatus, Board
 from src.analytics.models import BoardMetrics
 
 
 def calculate_board_metrics(
-    tasks: list[Task],
+    board: Board,
     today: date | None = None,
 ) -> BoardMetrics:
     today = today or date.today()
 
     metrics = BoardMetrics(
-        total_tasks=len(tasks),
+        total_tasks=len(board.tasks),
     )
 
-    for task in tasks:
+    for task in board.tasks:
         if task.is_active:
             metrics.active_tasks += 1
 

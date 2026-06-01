@@ -21,11 +21,9 @@ def build_analytics_snapshot(
         summary=summary,
     )
  """
-    board_metrics = calculate_board_metrics(board.tasks)
+    board_metrics = calculate_board_metrics(board)
 
-    section_metrics = calculate_section_metrics(
-        board.tasks,
-    )
+    section_metrics = calculate_section_metrics(board)
 
     return AnalyticsSnapshot(
         summary=summary,

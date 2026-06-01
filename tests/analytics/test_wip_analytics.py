@@ -1,4 +1,4 @@
-from src.parser.models import Section, SectionType, Task, TaskStatus
+from src.parser.models import Board, Section, SectionType, Task, TaskStatus
 from src.analytics.section_metrics import calculate_section_metrics
 from src.analytics.wip_analytics import analyze_wip
 
@@ -20,7 +20,7 @@ def test_detects_wip_pressure():
         for i in range(3)
     ]
 
-    section_metrics = calculate_section_metrics(tasks)
+    section_metrics = calculate_section_metrics(Board(tasks=tasks))
 
     result = analyze_wip(section_metrics)
 
@@ -55,7 +55,7 @@ def test_detects_wip_violation():
         for i in range(3)
     ]
 
-    metrics = calculate_section_metrics(tasks)
+    metrics = calculate_section_metrics(Board(tasks=tasks))
 
     result = analyze_wip(metrics)
 
