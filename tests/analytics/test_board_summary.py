@@ -1,6 +1,11 @@
 from datetime import date
 
+from src.analytics.board_metrics import (
+    calculate_board_metrics,
+)
+
 from src.analytics.board_summary import build_board_summary
+
 from src.parser.models import (
     Board,
     Section,
@@ -215,3 +220,93 @@ def test_average_score():
 
     assert summary.total_score == 30
     assert summary.average_score == 15.0
+    
+def test_board_summary_matches_board_metrics():
+    section = Section(
+        title="Inbox",
+        raw_title="Inbox",
+        type=SectionType.INBOX,
+    )
+
+    board = Board(
+        tasks=[
+            Task(
+                title="Open",
+                status=TaskStatus.OPEN,
+                section=section,
+                score=15,
+                due=date(2026, 5, 29),
+            ),
+            Task(
+                title="In Progress",
+                status=TaskStatus.IN_PROGRESS,
+                section=section,
+                score=22,
+            ),
+            Task(
+                title="Completed",
+                status=TaskStatus.COMPLETED,
+                section=section,
+                score=8,
+            ),
+            Task(
+                title="Cancelled",
+                status=TaskStatus.CANCELLED,
+                section=section,
+                score=None,
+            ),
+            Task(
+                title="Paused",
+                status=TaskStatus.PAUSED,
+                section=section,
+                score=3,
+            ),
+            Task(
+                title="Scheduled",
+                status=TaskStatus.SCHEDULED,
+                section=section,
+                score=12,
+            ),
+            Task(
+                title="Delegated",
+                status=TaskStatus.DELEGATED,
+                section=section,
+                score=5,
+            ),
+            Task(
+                title="Info",
+                status=TaskStatus.INFO,
+                section=section,
+                score=0,
+            ),
+        ]
+    )
+
+    summary = build_board_summary(
+        board,
+        today=date(2026, 5, 30),
+    )
+
+    metrics = calculate_board_metrics(
+        board,
+        today=date(2026, 5, 30),
+    )
+
+    assert summary.total_tasks == metrics.total_tasks
+    assert summary.active_tasks == metrics.active_tasks
+    assert summary.actionable_tasks == metrics.actionable_tasks
+
+    assert summary.completed_tasks == metrics.completed_tasks
+    assert summary.cancelled_tasks == metrics.cancelled_tasks
+
+    assert summary.overdue_tasks == metrics.overdue_tasks
+
+    assert summary.scored_tasks == metrics.scored_tasks
+    assert summary.unscored_tasks == metrics.unscored_tasks
+
+    assert summary.total_score == metrics.total_score
+
+    assert (
+        summary.score_distribution
+        == metrics.score_distribution
+    )

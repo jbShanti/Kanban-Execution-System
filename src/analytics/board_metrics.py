@@ -3,7 +3,25 @@ from __future__ import annotations
 from datetime import date
 
 from src.parser.models import TaskStatus, Board
-from src.analytics.models import BoardMetrics
+from src.analytics.models import BoardMetrics, BoardSummary
+
+def build_board_metrics(
+    summary: BoardSummary,
+) -> BoardMetrics:
+    return BoardMetrics(
+        total_tasks=summary.total_tasks,
+        active_tasks=summary.active_tasks,
+        actionable_tasks=summary.actionable_tasks,
+        completed_tasks=summary.completed_tasks,
+        cancelled_tasks=summary.cancelled_tasks,
+        overdue_tasks=summary.overdue_tasks,
+        scored_tasks=summary.scored_tasks,
+        unscored_tasks=summary.unscored_tasks,
+        total_score=summary.total_score,
+        score_distribution=dict(
+            summary.score_distribution
+        ),
+    )
 
 
 def calculate_board_metrics(
