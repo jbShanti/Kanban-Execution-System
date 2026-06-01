@@ -4,6 +4,7 @@ from src.parser.models import (
     SectionType,
     Task,
     TaskStatus,
+    Board,
 )
 
 
@@ -42,7 +43,10 @@ def test_builds_analytics_snapshot():
         ),
     ]
 
-    snapshot = build_analytics_snapshot(tasks)
+
+    board = Board(tasks=tasks)
+    
+    snapshot = build_analytics_snapshot(board)
 
     assert snapshot.board.total_tasks == 3
     assert snapshot.board.active_tasks == 2

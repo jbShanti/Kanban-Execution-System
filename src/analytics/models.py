@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from src.parser.models import Section, Task
+from src.parser.models import Board, Section, Task
 from typing import Mapping
 from datetime import datetime
 
@@ -82,11 +82,6 @@ class WipMetrics:
     wip_limit_exceeded: bool
     
 @dataclass(slots=True)
-class AnalyticsSnapshot:
-    board: BoardMetrics
-    sections: Mapping[str, SectionMetrics]
-    
-@dataclass(slots=True)
 class WipStatus:
     section_name: str
 
@@ -166,3 +161,73 @@ class TaskMetrics:
 
     total_score: int = 0
     active_score: int = 0
+    
+# analytics/models.py
+
+def empty_distribution() -> dict[str, int]:
+    return {
+        "21-25": 0,
+        "16-20": 0,
+        "11-15": 0,
+        "6-10": 0,
+        "1-5": 0,
+        "0": 0,
+        "no_score": 0,
+    }
+
+
+def empty_statuses() -> dict[str, int]:
+    return {}
+
+
+def empty_sections() -> dict[str, int]:
+    return {}
+
+
+@dataclass(slots=True)
+class BoardSummary:
+    total_tasks: int = 0
+
+    active_tasks: int = 0
+    actionable_tasks: int = 0
+
+    completed_tasks: int = 0
+    cancelled_tasks: int = 0
+
+    overdue_tasks: int = 0
+
+    scored_tasks: int = 0
+    unscored_tasks: int = 0
+
+    total_score: int = 0
+
+    score_distribution: dict[str, int] = field(
+        default_factory=empty_distribution
+    )
+
+    by_status: dict[str, int] = field(
+        default_factory=empty_statuses
+    )
+
+    by_section: dict[str, int] = field(
+        default_factory=empty_sections
+    )
+
+    @property
+    def average_score(self) -> float:
+        if self.scored_tasks == 0:
+            return 0.0
+
+        return self.total_score / self.scored_tasks
+    
+@dataclass(slots=True)
+class AnalyticsSnapshot:
+    summary: BoardSummary
+    board: BoardMetrics
+    sections: Mapping[str, SectionMetrics]
+    
+    
+@dataclass(slots=True)
+class AnalyticsContext:
+    board: Board
+    summary: BoardSummary

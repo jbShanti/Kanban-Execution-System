@@ -2,6 +2,7 @@ from enum import Enum
 from datetime import date, datetime, timedelta
 from dataclasses import dataclass, field
 
+
 class TaskStatus(str, Enum):
     OPEN = "open"
     IN_PROGRESS = "in_progress"
@@ -11,6 +12,12 @@ class TaskStatus(str, Enum):
     INFO = "info"
     SCHEDULED = "scheduled"
     DELEGATED = "delegated"
+
+def empty_tags() -> list[str]:
+    return []
+
+def empty_metadata() -> dict[str, str]:
+    return {}
 
 
 class SectionType(str, Enum):
@@ -40,13 +47,6 @@ class Section:
 
     wip_limit: int | None = None
     priority_weight: int | None = None
-
-
-def empty_tags() -> list[str]:
-    return []
-
-def empty_metadata() -> dict[str, str]:
-    return {}
 
 
 @dataclass(slots=True)
@@ -112,7 +112,8 @@ class Task:
         return self.score or 0
 
 
-   
+
+ 
   
  
 @dataclass(slots=True)
