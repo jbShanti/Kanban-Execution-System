@@ -175,12 +175,32 @@ def empty_distribution() -> dict[str, int]:
         "no_score": 0,
     }
 
+@dataclass(slots=True)
+class SectionSummary:
+    total_tasks: int = 0
+
+    active_tasks: int = 0
+    actionable_tasks: int = 0
+
+    completed_tasks: int = 0
+    cancelled_tasks: int = 0
+
+    scored_tasks: int = 0
+    total_score: int = 0
+    
+    @property
+    def average_score(self) -> float:
+        if self.scored_tasks == 0:
+            return 0.0
+
+        return self.total_score / self.scored_tasks
+
 
 def empty_statuses() -> dict[str, int]:
     return {}
 
 
-def empty_sections() -> dict[str, int]:
+def empty_sections() -> dict[str, SectionSummary]:
     return {}
 
 
@@ -209,7 +229,7 @@ class BoardSummary:
         default_factory=empty_statuses
     )
 
-    by_section: dict[str, int] = field(
+    sections: dict[str, SectionSummary] = field(
         default_factory=empty_sections
     )
 
@@ -231,3 +251,4 @@ class AnalyticsSnapshot:
 class AnalyticsContext:
     board: Board
     summary: BoardSummary
+    

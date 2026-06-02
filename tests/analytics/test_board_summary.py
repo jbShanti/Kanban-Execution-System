@@ -5,6 +5,7 @@ from src.analytics.board_metrics import (
 )
 
 from src.analytics.board_summary import build_board_summary
+from src.analytics.section_metrics import calculate_section_metrics
 
 from src.parser.models import (
     Board,
@@ -190,11 +191,14 @@ def test_section_distribution():
 
     summary = build_board_summary(board)
 
-    assert summary.by_section == {
-        "Todo": 2,
-        "Health": 1,
+    assert set(summary.sections.keys()) == {
+    "Todo",
+    "Health",
     }
 
+    assert summary.sections["Todo"].total_tasks == 2
+    assert summary.sections["Health"].total_tasks == 1
+    assert summary.sections["Todo"].active_tasks == 2
 
 def test_average_score():
     section = make_section()
@@ -309,4 +313,189 @@ def test_board_summary_matches_board_metrics():
     assert (
         summary.score_distribution
         == metrics.score_distribution
+    )
+    
+    
+def test_section_summary_metrics():
+    todo = make_section("Todo")
+
+    board = Board(
+        tasks=[
+            Task(
+                title="Open",
+                status=TaskStatus.OPEN,
+                section=todo,
+                score=10,
+            ),
+            Task(
+                title="In Progress",
+                status=TaskStatus.IN_PROGRESS,
+                section=todo,
+                score=20,
+            ),
+            Task(
+                title="Completed",
+                status=TaskStatus.COMPLETED,
+                section=todo,
+                score=5,
+            ),
+            Task(
+                title="Cancelled",
+                status=TaskStatus.CANCELLED,
+                section=todo,
+            ),
+        ]
+    )
+
+    summary = build_board_summary(board)
+
+    section = summary.sections["Todo"]
+
+    assert section.total_tasks == 4
+    assert section.active_tasks == 2
+    assert section.actionable_tasks == 2
+    assert section.completed_tasks == 1
+    assert section.cancelled_tasks == 1
+    assert section.scored_tasks == 3
+    assert section.total_score == 35
+    
+    
+def test_section_average_score():
+    todo = make_section("Todo")
+
+    board = Board(
+        tasks=[
+            Task(
+                title="A",
+                status=TaskStatus.OPEN,
+                section=todo,
+                score=10,
+            ),
+            Task(
+                title="B",
+                status=TaskStatus.OPEN,
+                section=todo,
+                score=20,
+            ),
+            Task(
+                title="C",
+                status=TaskStatus.OPEN,
+                section=todo,
+            ),
+        ]
+    )
+
+    summary = build_board_summary(board)
+
+    section = summary.sections["Todo"]
+
+    assert section.total_tasks == 3
+    assert section.scored_tasks == 2
+    assert section.total_score == 30
+    assert section.average_score == 15.0
+    
+def test_section_average_score_without_scores():
+    todo = make_section("Todo")
+
+    board = Board(
+        tasks=[
+            Task(
+                title="A",
+                status=TaskStatus.OPEN,
+                section=todo,
+            ),
+            Task(
+                title="B",
+                status=TaskStatus.OPEN,
+                section=todo,
+            ),
+        ]
+    )
+
+    summary = build_board_summary(board)
+
+    section = summary.sections["Todo"]
+
+    assert section.scored_tasks == 0
+    assert section.total_score == 0
+    assert section.average_score == 0.0
+    
+    
+def test_section_summary_matches_section_metrics():
+    inbox = Section(
+        title="Inbox",
+        raw_title="Inbox",
+        type=SectionType.INBOX,
+    )
+
+    board = Board(
+        tasks=[
+            Task(
+                title="Task A",
+                status=TaskStatus.OPEN,
+                section=inbox,
+                score=10,
+            ),
+            Task(
+                title="Task B",
+                status=TaskStatus.IN_PROGRESS,
+                section=inbox,
+                score=20,
+            ),
+            Task(
+                title="Task C",
+                status=TaskStatus.COMPLETED,
+                section=inbox,
+                score=15,
+            ),
+            Task(
+                title="Task D",
+                status=TaskStatus.CANCELLED,
+                section=inbox,
+            ),
+        ]
+    )
+
+    summary = build_board_summary(board)
+
+    metrics = calculate_section_metrics(board)
+
+    section_summary = summary.sections["Inbox"]
+    section_metrics = metrics["Inbox"]
+
+    assert section_summary.total_tasks == section_metrics.total_tasks
+
+    assert (
+        section_summary.active_tasks
+        == section_metrics.active_tasks
+    )
+
+    assert (
+        section_summary.actionable_tasks
+        == section_metrics.actionable_tasks
+    )
+
+    assert (
+        section_summary.completed_tasks
+        == section_metrics.completed_tasks
+    )
+
+    assert (
+        section_summary.cancelled_tasks
+        == section_metrics.cancelled_tasks
+    )
+
+    assert (
+        section_summary.scored_tasks
+        == section_metrics.scored_tasks
+    )
+
+    assert (
+        section_summary.total_score
+        == section_metrics.total_score
+    )
+
+    assert (
+        section_summary.average_score
+        == section_metrics.average_score
     )

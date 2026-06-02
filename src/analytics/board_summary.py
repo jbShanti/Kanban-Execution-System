@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from datetime import date
 
-from src.analytics.models import BoardSummary
+from src.analytics.models import BoardSummary, SectionSummary, SectionMetrics
+from src.parser.models import Section
 from src.parser.models import Board
 
 
@@ -37,11 +38,30 @@ def build_board_summary(
         )
 
         section_name = task.section.title
+        
+        if section_name not in summary.sections:
+            summary.sections[section_name] = SectionSummary()
 
-        summary.by_section[section_name] = (
-            summary.by_section.get(section_name, 0) + 1
-        )
+        section_summary = summary.sections[section_name]
 
+        section_summary.total_tasks += 1
+
+        if task.is_active:
+            section_summary.active_tasks += 1
+
+        if task.is_actionable:
+            section_summary.actionable_tasks += 1
+
+        if task.is_completed:
+            section_summary.completed_tasks += 1
+
+        if task.is_cancelled:
+            section_summary.cancelled_tasks += 1
+
+        if task.score is not None:
+            section_summary.scored_tasks += 1
+            section_summary.total_score += task.score
+        
         if (
             task.is_active
             and task.due is not None
@@ -79,3 +99,19 @@ def build_board_summary(
 
     return summary
 
+def build_section_metrics(
+    section: Section,
+    summary: SectionSummary,
+) -> SectionMetrics:
+
+    return SectionMetrics(
+    section=section,
+    total_tasks=summary.total_tasks,
+    active_tasks=summary.active_tasks,
+    actionable_tasks=summary.actionable_tasks,
+    completed_tasks=summary.completed_tasks,
+    cancelled_tasks=summary.cancelled_tasks,
+    scored_tasks=summary.scored_tasks,
+    total_score=summary.total_score,
+    wip_limit=section.wip_limit,
+)
