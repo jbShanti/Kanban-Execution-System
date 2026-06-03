@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from src.analytics.board_summary import build_board_summary
 from src.analytics.board_metrics import build_board_metrics
-from src.analytics.models import AnalyticsSnapshot##, AnalyticsContext
+from src.analytics.models import AnalyticsSnapshot
 from src.analytics.section_metrics import build_section_metrics_map
 from src.parser.models import Board
 
@@ -16,11 +16,6 @@ def build_analytics_snapshot(
 
     summary = build_board_summary(board)
     
-    """ context = AnalyticsContext(
-        board=board,
-        summary=summary,
-    )
- """
     board_metrics = build_board_metrics(summary)
 
     section_metrics = build_section_metrics_map(
