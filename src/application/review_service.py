@@ -11,12 +11,13 @@ from src.analytics.board_health import (
 from src.analytics.board_metrics import (
     calculate_board_metrics,
 )
+from src.analytics.board_summary import build_board_summary
 from src.analytics.priority_scoring import (
     calculate_priority_scores,
 )
 from src.analytics.section_metrics import (
-    calculate_section_metrics,
-)
+    build_section_metrics_map,
+    )
 from src.analytics.stale_analytics import (
     calculate_stale_tasks,
 )
@@ -42,8 +43,11 @@ def run_review(
         today=now.date(),
     )
 
-    section_metrics = calculate_section_metrics(
+    summary = build_board_summary(board)
+
+    section_metrics = build_section_metrics_map(
         board,
+        summary.sections,
     )
 
     wip_statuses = analyze_wip(

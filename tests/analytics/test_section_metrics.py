@@ -1,4 +1,5 @@
-from src.analytics.section_metrics import calculate_section_metrics
+from src.analytics.board_summary import build_board_summary
+from src.analytics.section_metrics import build_section_metrics_map
 from src.parser.models import (
     Board,
     Section,
@@ -49,7 +50,12 @@ def test_calculates_section_metrics():
         ),
     ]
 
-    metrics = calculate_section_metrics(Board(tasks=tasks))
+    summary = build_board_summary(Board(tasks=tasks))
+
+    metrics = build_section_metrics_map(
+        Board(tasks=tasks),
+        summary.sections,
+    )
 
     assert len(metrics) == 2
 

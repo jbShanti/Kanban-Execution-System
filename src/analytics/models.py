@@ -4,25 +4,6 @@ from typing import Mapping
 from datetime import datetime
 
 
-@dataclass(slots=True)
-class SectionSummary:
-    total_tasks: int = 0
-
-    active_tasks: int = 0
-    actionable_tasks: int = 0
-
-    completed_tasks: int = 0
-    cancelled_tasks: int = 0
-
-    scored_tasks: int = 0
-    total_score: int = 0
-    
-    @property
-    def average_score(self) -> float:
-        if self.scored_tasks == 0:
-            return 0.0
-
-        return self.total_score / self.scored_tasks
 
 @dataclass(slots=True)
 class BoardMetrics:
@@ -61,10 +42,33 @@ class BoardMetrics:
         }
     )
 
+
+@dataclass(slots=True)
+class SectionSummary:
+    total_tasks: int = 0
+
+    active_tasks: int = 0
+    actionable_tasks: int = 0
+
+    completed_tasks: int = 0
+    cancelled_tasks: int = 0
+
+    scored_tasks: int = 0
+    total_score: int = 0
+
+    @property
+    def average_score(self) -> float:
+        if self.scored_tasks == 0:
+            return 0.0
+
+        return self.total_score / self.scored_tasks
+
+
 @dataclass(slots=True)
 class SectionMetrics:
     section: Section
     summary: SectionSummary
+
     wip_limit: int | None = None
 
     @property
@@ -108,7 +112,6 @@ class SectionMetrics:
             return 0.0
 
         return self.active_tasks / self.wip_limit
-
 
     
 @dataclass(slots=True)
