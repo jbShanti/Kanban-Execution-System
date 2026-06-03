@@ -42,3 +42,5 @@ def build_section_metrics_map(
         )
 
     return metrics_by_section
+
+
