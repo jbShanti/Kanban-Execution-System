@@ -1,44 +1,44 @@
 from __future__ import annotations
 
-from src.parser.models import Board
-from src.analytics.models import SectionMetrics
+from src.analytics.models import (
+    SectionMetrics,
+    SectionSummary,
+)
+from src.parser.models import (
+    Board,
+    Section,
+)
 
-def calculate_section_metrics(
+
+def build_section_metrics(
+    section: Section,
+    summary: SectionSummary,
+) -> SectionMetrics:
+    return SectionMetrics(
+        section=section,
+        summary=summary,
+        wip_limit=section.wip_limit,
+    )
+
+
+def build_section_metrics_map(
     board: Board,
+    summaries: dict[str, SectionSummary],
 ) -> dict[str, SectionMetrics]:
-    """
-    Calculate metrics grouped by section title.
-    """
-
     metrics_by_section: dict[str, SectionMetrics] = {}
 
     for task in board.tasks:
-        section_key = task.section.title
+        section = task.section
+        section_name = section.title
 
-        if section_key not in metrics_by_section:
-            metrics_by_section[section_key] = SectionMetrics(
-                section=task.section,
-                wip_limit=task.section.wip_limit,
+        if section_name in metrics_by_section:
+            continue
+
+        metrics_by_section[section_name] = (
+            build_section_metrics(
+                section=section,
+                summary=summaries[section_name],
             )
-
-        metrics = metrics_by_section[section_key]
-
-        metrics.total_tasks += 1
-
-        if task.is_active:
-            metrics.active_tasks += 1
-
-        if task.is_actionable:
-            metrics.actionable_tasks += 1
-
-        if task.is_completed:
-            metrics.completed_tasks += 1
-
-        if task.is_cancelled:
-            metrics.cancelled_tasks += 1
-
-        if task.score is not None:
-            metrics.scored_tasks += 1
-            metrics.total_score += task.score
+        )
 
     return metrics_by_section

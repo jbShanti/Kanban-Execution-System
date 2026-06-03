@@ -3,6 +3,27 @@ from src.parser.models import Board, Section, Task
 from typing import Mapping
 from datetime import datetime
 
+
+@dataclass(slots=True)
+class SectionSummary:
+    total_tasks: int = 0
+
+    active_tasks: int = 0
+    actionable_tasks: int = 0
+
+    completed_tasks: int = 0
+    cancelled_tasks: int = 0
+
+    scored_tasks: int = 0
+    total_score: int = 0
+    
+    @property
+    def average_score(self) -> float:
+        if self.scored_tasks == 0:
+            return 0.0
+
+        return self.total_score / self.scored_tasks
+
 @dataclass(slots=True)
 class BoardMetrics:
     total_tasks: int = 0
@@ -43,26 +64,40 @@ class BoardMetrics:
 @dataclass(slots=True)
 class SectionMetrics:
     section: Section
-
-    total_tasks: int = 0
-
-    active_tasks: int = 0
-    actionable_tasks: int = 0
-
-    completed_tasks: int = 0
-    cancelled_tasks: int = 0
-
-    scored_tasks: int = 0
-    total_score: int = 0
-
+    summary: SectionSummary
     wip_limit: int | None = None
 
     @property
-    def average_score(self) -> float:
-        if self.scored_tasks == 0:
-            return 0.0
+    def total_tasks(self) -> int:
+        return self.summary.total_tasks
 
-        return self.total_score / self.scored_tasks
+    @property
+    def active_tasks(self) -> int:
+        return self.summary.active_tasks
+
+    @property
+    def actionable_tasks(self) -> int:
+        return self.summary.actionable_tasks
+
+    @property
+    def completed_tasks(self) -> int:
+        return self.summary.completed_tasks
+
+    @property
+    def cancelled_tasks(self) -> int:
+        return self.summary.cancelled_tasks
+
+    @property
+    def scored_tasks(self) -> int:
+        return self.summary.scored_tasks
+
+    @property
+    def total_score(self) -> int:
+        return self.summary.total_score
+
+    @property
+    def average_score(self) -> float:
+        return self.summary.average_score
 
     @property
     def wip_usage(self) -> float | None:
@@ -175,25 +210,7 @@ def empty_distribution() -> dict[str, int]:
         "no_score": 0,
     }
 
-@dataclass(slots=True)
-class SectionSummary:
-    total_tasks: int = 0
 
-    active_tasks: int = 0
-    actionable_tasks: int = 0
-
-    completed_tasks: int = 0
-    cancelled_tasks: int = 0
-
-    scored_tasks: int = 0
-    total_score: int = 0
-    
-    @property
-    def average_score(self) -> float:
-        if self.scored_tasks == 0:
-            return 0.0
-
-        return self.total_score / self.scored_tasks
 
 
 def empty_statuses() -> dict[str, int]:

@@ -3,7 +3,7 @@ from __future__ import annotations
 from src.analytics.board_summary import build_board_summary
 from src.analytics.board_metrics import build_board_metrics
 from src.analytics.models import AnalyticsSnapshot##, AnalyticsContext
-from src.analytics.section_metrics import calculate_section_metrics
+from src.analytics.section_metrics import build_section_metrics_map
 from src.parser.models import Board
 
 
@@ -23,7 +23,10 @@ def build_analytics_snapshot(
  """
     board_metrics = build_board_metrics(summary)
 
-    section_metrics = calculate_section_metrics(board)
+    section_metrics = build_section_metrics_map(
+    board,
+    summary.sections,
+)
 
     return AnalyticsSnapshot(
         summary=summary,

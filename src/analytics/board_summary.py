@@ -103,15 +103,7 @@ def build_section_metrics(
     section: Section,
     summary: SectionSummary,
 ) -> SectionMetrics:
-
     return SectionMetrics(
-    section=section,
-    total_tasks=summary.total_tasks,
-    active_tasks=summary.active_tasks,
-    actionable_tasks=summary.actionable_tasks,
-    completed_tasks=summary.completed_tasks,
-    cancelled_tasks=summary.cancelled_tasks,
-    scored_tasks=summary.scored_tasks,
-    total_score=summary.total_score,
-    wip_limit=section.wip_limit,
-)
+        section=section,
+        summary=summary,
+    )

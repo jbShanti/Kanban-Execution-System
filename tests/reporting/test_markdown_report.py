@@ -3,6 +3,7 @@ from src.analytics.models import (
     BoardHealthReport,
     HealthWarning,
     PriorityScore,
+    SectionSummary,
 )
 from src.analytics.models import (
     BoardMetrics,
@@ -44,13 +45,15 @@ def test_render_markdown_report():
     section_metrics = [
         SectionMetrics(
             section=section,
-            total_tasks=5,
-            active_tasks=5,
-            actionable_tasks=5,
-            completed_tasks=0,
-            cancelled_tasks=0,
-            scored_tasks=5,
-            total_score=100,
+            summary=SectionSummary(
+                total_tasks=5,
+                active_tasks=5,
+                actionable_tasks=5,
+                completed_tasks=0,
+                cancelled_tasks=0,
+                scored_tasks=5,
+                total_score=100,
+            ),
             wip_limit=None,
         )
     ]

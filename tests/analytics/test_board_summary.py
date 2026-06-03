@@ -4,8 +4,7 @@ from src.analytics.board_metrics import (
     calculate_board_metrics,
 )
 
-from src.analytics.board_summary import build_board_summary
-from src.analytics.section_metrics import calculate_section_metrics
+from src.analytics.board_summary import build_board_summary, build_section_metrics
 
 from src.parser.models import (
     Board,
@@ -15,6 +14,11 @@ from src.parser.models import (
     TaskStatus,
 )
 
+from src.analytics.models import SectionSummary, SectionMetrics
+
+from src.analytics.section_metrics import (
+    build_section_metrics_map,
+)
 
 def make_section(
     title: str = "Todo",
@@ -458,7 +462,7 @@ def test_section_summary_matches_section_metrics():
 
     summary = build_board_summary(board)
 
-    metrics = calculate_section_metrics(board)
+    metrics = build_section_metrics_map(board, summary.sections)
 
     section_summary = summary.sections["Inbox"]
     section_metrics = metrics["Inbox"]
@@ -499,3 +503,43 @@ def test_section_summary_matches_section_metrics():
         section_summary.average_score
         == section_metrics.average_score
     )
+    
+    
+def test_section_metrics_uses_summary():
+    summary = SectionSummary(
+        total_tasks=5,
+        active_tasks=2,
+        scored_tasks=2,
+        total_score=30,
+    )
+
+    metrics = SectionMetrics(
+        section=make_section(),
+        summary=summary,
+        wip_limit=3,
+    )
+
+    assert metrics.summary.total_tasks == 5
+    assert metrics.summary.active_tasks == 2
+    assert metrics.summary.average_score == 15.0
+    
+def test_build_section_metrics_from_summary():
+    section = make_section()
+
+    summary = SectionSummary(
+        total_tasks=5,
+        active_tasks=2,
+        actionable_tasks=2,
+        completed_tasks=1,
+        scored_tasks=2,
+        total_score=30,
+    )
+
+    metrics = build_section_metrics(
+        section=section,
+        summary=summary,
+    )
+
+    assert metrics.section is section
+    assert metrics.summary is summary
+    assert metrics.wip_limit == section.wip_limit
