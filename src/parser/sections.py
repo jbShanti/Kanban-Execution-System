@@ -66,14 +66,11 @@ def resolve_section_type(
     )
 
     print(
-        f"section={section!r}, normalized={normalized!r}"
-    )
-
-    print(
-        f"normalized={normalized!r}, "
+        f"section={section!r}, normalized={normalized!r}",
         f"exists={normalized in SECTION_ALIASES}"
     )
-    
+
+     
     return SECTION_ALIASES.get(
         normalized,
         SectionType.UNKNOWN,

@@ -1,6 +1,7 @@
-from pathlib import Path
 from datetime import datetime
 from typing import Any, TypeAlias
+
+from tests.helper import load_test_board
 
 from src.parser.models import (
     Section,
@@ -8,13 +9,24 @@ from src.parser.models import (
     TaskStatus,
 )
 
-from src.parser.parser import (
-    parse_markdown_file,
-)
-
 SerializedTask: TypeAlias = dict[str, Any]
 
-def serialize_task(task: Task) -> SerializedTask:
+
+def load_complex_tasks() -> list[Task]:
+    return load_test_board(
+        "complex_board.md"
+    ).tasks
+
+
+def load_pathological_tasks() -> list[Task]:
+    return load_test_board(
+        "pathological_board.md"
+    ).tasks
+
+
+def serialize_task(
+    task: Task,
+) -> SerializedTask:
     """
     Convert Task into deterministic snapshot structure.
     """
@@ -22,7 +34,6 @@ def serialize_task(task: Task) -> SerializedTask:
     return {
         "title": task.title,
         "status": task.status.value,
-
         "section": {
             "title": task.section.title,
             "raw_title": task.section.raw_title,
@@ -30,67 +41,48 @@ def serialize_task(task: Task) -> SerializedTask:
             "priority_weight": task.section.priority_weight,
             "wip_limit": task.section.wip_limit,
         },
-
         "score": task.score,
-
         "due": (
             task.due.isoformat()
             if task.due is not None
             else None
         ),
-
         "scheduled": (
             task.scheduled.isoformat()
             if task.scheduled is not None
             else None
         ),
-
         "completed_at": (
             task.completed_at.isoformat()
             if task.completed_at is not None
             else None
         ),
-
         "updated_at": (
             task.updated_at.isoformat()
             if task.updated_at is not None
             else None
         ),
-
         "time_estimate": task.time_estimate,
-
         "tags": task.tags,
-
         "metadata": task.metadata,
-
         "archived": task.archived,
         "ignored": task.ignored,
-
         "raw_line": task.raw_line,
     }
 
 
 def test_parse_complex_board_golden_snapshot():
-    """
-    Golden snapshot test for realistic board parsing.
-    """
-
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
-
-    tasks = parse_markdown_file(path)
+    tasks = load_complex_tasks()
 
     result: list[SerializedTask] = [
-    serialize_task(task)
-    for task in tasks
-    ]   
+        serialize_task(task)
+        for task in tasks
+    ]
 
     expected: list[SerializedTask] = [
         {
             "title": "Review parser architecture",
             "status": "open",
-
             "section": {
                 "title": "Inbox",
                 "raw_title": "Inbox",
@@ -98,29 +90,25 @@ def test_parse_complex_board_golden_snapshot():
                 "priority_weight": None,
                 "wip_limit": None,
             },
-
             "score": 15,
-
             "due": None,
             "scheduled": None,
             "completed_at": None,
             "updated_at": None,
-
             "time_estimate": None,
-
             "tags": [
                 "Backend",
                 "Parser",
-        ],
-
+            ],
             "metadata": {
                 "score": "15",
             },
-
             "archived": False,
             "ignored": False,
-
-            "raw_line": "- [ ] Review parser architecture #Backend #Parser [score::15]",
+            "raw_line": (
+                "- [ ] Review parser architecture "
+                "#Backend #Parser [score::15]"
+            ),
         },
     ]
 
@@ -128,49 +116,21 @@ def test_parse_complex_board_golden_snapshot():
 
 
 def test_parse_pathological_board_does_not_crash():
-    """
-    Parser must tolerate malformed markdown
-    without crashing.
-    """
-
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
-
-    tasks = parse_markdown_file(path)
+    tasks = load_pathological_tasks()
 
     assert isinstance(tasks, list)
 
 
 def test_parse_pathological_board_extracts_valid_tasks():
-    """
-    Parser should still recover valid tasks
-    from pathological input.
-    """
-
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
-
-    tasks = parse_markdown_file(path)
+    tasks = load_pathological_tasks()
 
     assert len(tasks) >= 10
 
 
 def test_parsed_tasks_respect_domain_contracts():
-    """
-    All parsed tasks must satisfy
-    domain invariants.
-    """
-
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
-
-    tasks = parse_markdown_file(path)
+    tasks = load_pathological_tasks()
 
     for task in tasks:
-
         assert isinstance(task, Task)
 
         assert isinstance(
@@ -213,11 +173,7 @@ def test_parsed_tasks_respect_domain_contracts():
 
 
 def test_pathological_board_contains_known_tasks():
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
-
-    tasks = parse_markdown_file(path)
+    tasks = load_pathological_tasks()
 
     titles = {
         task.title
@@ -227,18 +183,14 @@ def test_pathological_board_contains_known_tasks():
     assert "Normal task" in titles
     assert "Completed task" in titles
     assert "Emoji task 🚀" in titles
-
     assert "Valid task after malformed ones" in titles
 
     # parser successfully reaches EOF
     assert "Last valid task" in titles
-    
-def test_pathological_board_rejects_unsupported_syntax():
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+def test_pathological_board_rejects_unsupported_syntax():
+    tasks = load_pathological_tasks()
 
     titles = {
         task.title
@@ -248,12 +200,9 @@ def test_pathological_board_rejects_unsupported_syntax():
     assert "Unsupported star marker" not in titles
     assert "Unsupported plus marker" not in titles
 
-def test_pathological_board_ignores_noise():
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+def test_pathological_board_ignores_noise():
+    tasks = load_pathological_tasks()
 
     titles = {
         task.title
@@ -263,14 +212,10 @@ def test_pathological_board_ignores_noise():
     assert "Bullet without checkbox" not in titles
     assert "Ordered list item" not in titles
     assert "Fake nested task" not in titles
-    
+
 
 def test_pathological_board_parses_unicode():
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
-
-    tasks = parse_markdown_file(path)
+    tasks = load_pathological_tasks()
 
     titles = {
         task.title
@@ -281,14 +226,10 @@ def test_pathological_board_parses_unicode():
     assert "日本語タスク" in titles
     assert "Emoji task 🚀" in titles
     assert "Mixed unicode задача 日本語 🚀" in titles
-    
-    
-def test_pathological_board_final_section():
-    path = Path(
-        "tests/fixtures/pathological_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+def test_pathological_board_final_section():
+    tasks = load_pathological_tasks()
 
     last_task = next(
         task

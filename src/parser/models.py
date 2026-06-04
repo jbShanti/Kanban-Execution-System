@@ -157,4 +157,13 @@ class Board:
             t
             for t in self.tasks
             if t.is_completed
-        ]   
+        ]
+    
+    @property
+    def sections(self) -> list[Section]:
+        unique: dict[str, Section] = {}
+
+        for task in self.tasks:
+            unique[task.section.title] = task.section
+
+        return list(unique.values())

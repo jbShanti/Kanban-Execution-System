@@ -12,6 +12,7 @@ from src.parser.models import (
     Section,
     Task,
     TaskStatus,
+    Board,
 )
 
 from src.parser.sections import (
@@ -41,6 +42,7 @@ def parse_duration(
 
     Supported formats:
     - 5m
+    - 10min
     - 15m
     - 90m
     - 1h
@@ -76,18 +78,30 @@ def parse_duration(
         hours = float(match.group(1))
         return timedelta(hours=hours)
 
-    # 90m / 15m
+    # 90m / 15m / 10min
     match = re.fullmatch(
-        r"(\d+)m",
+        r"(\d+)(?:m|min)",
+        value,
+    )
+    if match:
+        minutes = int(match.group(1))
+        return timedelta(minutes=minutes)
+    
+    # 120
+    match = re.fullmatch(
+        r"(\d+)",
         value,
     )
     if match:
         minutes = int(match.group(1))
         return timedelta(minutes=minutes)
 
-    raise ValueError(
+    '''raise ValueError(
         f"Unsupported duration format: {value!r}"
     )
+    '''
+    
+    return None
     
 
 def parse_task_line(
@@ -213,15 +227,20 @@ def parse_markdown_lines(
     return tasks
 
 
-def parse_markdown_file(path: Path) -> list[Task]:
+from src.parser.models import Board
+
+
+def parse_markdown_file(
+    path: Path,
+) -> Board:
     """
-    Parse a markdown file into Task objects.
+    Parse markdown file into Board.
     """
 
     text = path.read_text(
-        encoding="utf-8"
+        encoding="utf-8",
     )
 
-    lines = text.splitlines()
-
-    return parse_markdown_lines(lines)
+    return Board(parse_markdown_lines(
+        text.splitlines()),
+    )

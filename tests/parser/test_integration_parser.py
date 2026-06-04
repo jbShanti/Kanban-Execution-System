@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from src.parser.analytics import (
     calculate_completion_rate,
     calculate_total_score,
@@ -11,8 +9,8 @@ from src.parser.analytics import (
     group_tasks_by_section,
 )
 
-from src.parser.parser import (
-    parse_markdown_file,
+from tests.helper import (
+    load_test_board,
 )
 
 from src.parser.models import (
@@ -21,21 +19,17 @@ from src.parser.models import (
 
 
 def test_complex_board_parsing():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     assert len(tasks) > 10
 
 
 def test_completed_tasks_detected():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     result = count_completed_tasks(tasks)
 
@@ -43,11 +37,9 @@ def test_completed_tasks_detected():
 
 
 def test_open_tasks_detected():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     result = count_open_tasks(tasks)
 
@@ -55,11 +47,9 @@ def test_open_tasks_detected():
 
 
 def test_sections_detected():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     grouped = group_tasks_by_section(tasks)
 
@@ -70,11 +60,9 @@ def test_sections_detected():
 
 
 def test_high_score_tasks_detected():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     result = find_high_score_tasks(
         tasks,
@@ -85,11 +73,9 @@ def test_high_score_tasks_detected():
 
 
 def test_total_score_calculation():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     result = calculate_total_score(tasks)
 
@@ -97,11 +83,9 @@ def test_total_score_calculation():
 
 
 def test_overdue_detection():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     overdue = find_overdue_tasks(tasks)
 
@@ -109,11 +93,9 @@ def test_overdue_detection():
 
 
 def test_tasks_without_dates():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     result = find_tasks_without_dates(tasks)
 
@@ -121,11 +103,9 @@ def test_tasks_without_dates():
 
 
 def test_completion_rate():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     rate = calculate_completion_rate(tasks)
 
@@ -133,11 +113,9 @@ def test_completion_rate():
 
 
 def test_metadata_extraction():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     task = next(
         t
@@ -149,11 +127,9 @@ def test_metadata_extraction():
 
 
 def test_tags_extraction():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     task = next(
         t
@@ -166,11 +142,9 @@ def test_tags_extraction():
 
 
 def test_status_mapping():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     delegated_task = next(
         t
@@ -182,11 +156,9 @@ def test_status_mapping():
 
 
 def test_malformed_lines_ignored():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     titles = [
         task.title
@@ -204,11 +176,9 @@ def test_malformed_lines_ignored():
     )
     
 def test_unicode_tags():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     task = next(
         t
@@ -222,11 +192,9 @@ def test_unicode_tags():
 
 
 def test_malformed_dates():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     task = next(
         t
@@ -238,11 +206,9 @@ def test_malformed_dates():
 
 
 def test_nested_tasks():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     titles = [
         task.title
@@ -266,11 +232,9 @@ def test_nested_tasks():
 
 
 def test_duplicate_metadata():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     task = next(
         t
@@ -282,11 +246,9 @@ def test_duplicate_metadata():
 
 
 def test_empty_sections():
-    path = Path(
-        "tests/fixtures/complex_board.md"
-    )
 
-    tasks = parse_markdown_file(path)
+
+    tasks = load_test_board("complex_board.md").tasks
 
     grouped = group_tasks_by_section(tasks)
 

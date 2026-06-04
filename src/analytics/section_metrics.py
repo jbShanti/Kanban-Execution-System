@@ -27,17 +27,11 @@ def build_section_metrics_map(
 ) -> dict[str, SectionMetrics]:
     metrics_by_section: dict[str, SectionMetrics] = {}
 
-    for task in board.tasks:
-        section = task.section
-        section_name = section.title
-
-        if section_name in metrics_by_section:
-            continue
-
-        metrics_by_section[section_name] = (
+    for section in board.sections:
+        metrics_by_section[section.title] = (
             build_section_metrics(
                 section=section,
-                summary=summaries[section_name],
+                summary=summaries[section.title],
             )
         )
 

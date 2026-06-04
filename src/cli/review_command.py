@@ -17,6 +17,6 @@ def review_command(
 
     tasks = parse_markdown_file(
         board_path
-    )
+    ).tasks
 
     return run_review(tasks)
