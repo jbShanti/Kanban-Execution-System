@@ -2,6 +2,7 @@ from pathlib import Path
 
 from src.parser.parser import (
     parse_markdown_file,
+    is_section_header
 )
 
 from src.parser.models import (
@@ -114,3 +115,33 @@ def test_board_sections_returns_unique_sections():
         "Inbox",
         "Focus",
     }
+    
+    
+def test_detect_section_header():
+    assert is_section_header(
+        "## Inbox"
+    )
+
+
+def test_single_hash_is_not_section():
+    assert not is_section_header(
+        "# Inbox"
+    )
+
+
+def test_triple_hash_is_not_section():
+    assert not is_section_header(
+        "### Inbox"
+    )
+
+
+def test_hashtag_is_not_section():
+    assert not is_section_header(
+        "#Health/Physical"
+    )
+
+
+def test_indented_hashtag_is_not_section():
+    assert not is_section_header(
+        "    #Health/Physical"
+    )

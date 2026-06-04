@@ -1,4 +1,4 @@
-# Inbox
+## Inbox
 
 - [ ] Normal task #AI [score::15]
 - [x] Completed task [due::2026-06-01]
@@ -13,18 +13,18 @@ This is just random text and should be ignored.
 
 ---
 
-# Empty Section
+## Empty Section
 
 
 
-# Weird Spacing
+## Weird Spacing
 
  - [ ] Leading space task
 - [ ]    Multiple spaces before title
 - [ ] Task with trailing spaces    
 - [ ]    Mixed    spacing    inside
 
-# Broken Metadata
+## Broken Metadata
 
 - [ ] Missing closing bracket [score::15
 - [ ] Missing opening bracket score::15]
@@ -34,29 +34,29 @@ This is just random text and should be ignored.
 - [ ] Broken separator [score=15]
 - [ ] Double metadata [score::10] [due::2026-01-01]
 
-# Unicode
+## Unicode
 
 - [ ] Русская задача #Проект
 - [ ] 日本語タスク #仕事
 - [ ] Emoji task 🚀 #Launch
 - [ ] Mixed unicode задача 日本語 🚀
 
-# Duplicate Tags
+## Duplicate Tags
 
 - [ ] Duplicate tags #AI #AI #AI
 - [ ] Similar tags #ai #AI #Ai
 
-# Strange Headers
+## Strange Headers
 
 ###
 #####
-#     
+##     
 # [Broken Header]
-# TODO:::
-## Waiting???
-# ARCHIVE [WIP::10]
+## TODO:::
+### Waiting???
+## ARCHIVE [WIP::10]
 
-# Weird Task Syntax
+## Weird Task Syntax
 
 -[ ] Missing space after dash
 -[] Missing spaces in checkbox
@@ -66,14 +66,14 @@ This is just random text and should be ignored.
 - [/]Valid without space
 - [ ]Valid task after malformed ones
 
-# Date Edge Cases
+## Date Edge Cases
 
 - [ ] Leap year valid [due::2028-02-29]
 - [ ] Invalid leap year [due::2027-02-29]
 - [ ] Impossible month [due::2026-13-01]
 - [ ] Impossible day [due::2026-12-99]
 
-# Metadata Edge Cases
+## Metadata Edge Cases
 
 - [ ] Nested metadata [meta::[value]]
 - [ ] Colon explosion [a::b::c::d]
@@ -82,26 +82,26 @@ This is just random text and should be ignored.
 - [ ] Huge score [score::999999999]
 - [ ] Negative score [score::-15]
 
-# Multitag Chaos
+## Multitag Chaos
 
 - [ ] TagsEverywhere #AI#Python#ML
 - [ ] Tag punctuation #AI,#ML,#Ops
 - [ ] Tag with unicode #Проект #仕事
 
-# Weird Task Syntax
+## Weird Task Syntax
 
 * [ ] Unsupported star marker
 + [ ] Unsupported plus marker
 -[] Missing space
 - [ ]Valid without space
 
-# Archive
+## Archive
 
 - [x] Archived completed task
 - [-] Archived cancelled task
 
 
-# Noise
+## Noise
 
 ```python
 def broken():
@@ -122,6 +122,6 @@ def broken():
 alert("not today")
 </script>
 
-# Final
+## Final
 
 - [ ] Last valid task #Final [score::5]

@@ -1,4 +1,4 @@
-# Inbox
+## Inbox
 
 - [ ] Review parser architecture #Backend #Parser [score::15]
 - [ ] Design analytics dashboard [score::55] @{2026-06-10}
@@ -6,7 +6,7 @@
 - [>] Delegate Docker hardening #Infra [owner::Alex]
 - [i] Waiting for API credentials [source::OpenAI]
 
-# Today
+## Today
 
 - [ ] Finish analytics.py [score::35] @{2026-05-28}
 - [ ] Write integration tests #Testing [score::20]
@@ -14,26 +14,26 @@
 - [x] Configure pytest discovery
 - [ ] Deep work block: execution review engine [score::144]
 
-# Waiting
+## Waiting
 
 - [>] Await VPS access from provider #Infra
 - [>] Waiting for security review [reviewer::Michael]
 - [ ] Clarify canonical model naming
 
-# Someday
+## Someday
 
 - [ ] Build AI execution advisor #AI #LLM [score::233]
 - [ ] Add graph analytics
 - [ ] Experimental cognitive load tracking [score::377]
 - [ ] Build Obsidian plugin
 
-# Archive
+## Archive
 
 - [x] Initial parser prototype
 - [-] Deprecated regex experiment
 - [x] Old analytics implementation
 
-# Malformed
+## Malformed
 
 This line should be ignored completely
 
@@ -51,13 +51,13 @@ This line should be ignored completely
 
 - [ ] Complex task #AI #Execution [score::80] @{2026-07-01} [priority::high]
 
-# Deep Work
+## Deep Work
 
 - [ ] Build execution intelligence engine #AI #Execution [score::500]
 - [ ] Design workload entropy metrics [score::210]
 - [ ] Research adaptive prioritization systems
 
-# Resilience
+## Resilience
 
 - [ ] Parent task for execution system
     - [ ] Nested subtask level 1
@@ -76,9 +76,9 @@ This line should be ignored completely
 
 - [ ] Unicode tags task #ИИ #Разработка #Execution
 
-# Empty Section
+## Empty Section
 
-# Another Empty Section
+## Another Empty Section
 
 - [ ] Task with internal alias [[Execution System|Execution]]
 

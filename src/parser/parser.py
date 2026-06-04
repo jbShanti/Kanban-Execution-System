@@ -165,16 +165,14 @@ def parse_task_line(
 
 def is_section_header(line: str) -> bool:
     """
-    Detect markdown section headers.
+    Detect Kanban section headers.
 
     Example:
-        # Inbox
+        ## Inbox
         ## Today
     """
 
-    stripped = line.strip()
-
-    return stripped.startswith("#")
+    return line.startswith("## ")
 
 
 def extract_section_name(line: str) -> str:
