@@ -568,25 +568,229 @@ Semi-Autonomous Execution Infrastructure
 
 ---
 
-## Target Architecture
+# 13.1 Configuration Model
+
+## Purpose
+
+Configuration Model defines runtime analytics configuration.
+
+It is responsible for:
+
+- score corridor definitions
+- corridor target ranges
+- global workload targets
+- analytics configuration
+
+---
+
+## Canonical Source
+
+```text
+scoring.yaml
+```
+
+### Design Principle
+
+Configuration is data.
+
+Configuration must not contain:
+
+- business logic
+- calculations
+- rendering rules
+- analytics algorithms
+
+Configuration defines parameters.
+
+System components define behavior.
+
+### Current Configuration Scope
+
+Examples:
+
+- corridor definitions
+- corridor targets
+- global targets
+
+
+---
+
+## Canonical Architecture
 
 ```text
 Obsidian Vault
 ↓
 Parser Layer
 ↓
-Structured Task Model
+Task Objects
+
+Configuration Layer
 ↓
-Deterministic Analytics
+scoring.yaml
+
+──────────────
+
+Task Objects
++
+Configuration
 ↓
-AI Reasoning Layer
+Analytics Engine
 ↓
-Suggested Actions
+AnalyticsReport
+↓
+Recommendation Engine
+↓
+RecommendationCollection
+↓
+Report Renderer
+↓
+Markdown Report
+
+──────────────
+
+Human Review
 ↓
 Human Approval
+
+──────────────
+
+Automation Layer (Future)
 ↓
-Safe Automation
+Safe Mutations
 ```
+---
+## Layer Responsibilities
+
+### Obsidian Vault
+
+System source of truth.
+
+Contains:
+
+- tasks
+- projects
+- knowledge
+- metadata
+
+---
+
+### Parser Layer
+
+Transforms markdown into structured Task Objects.
+
+Uses:
+
+- Task_Model.md
+- Metadata_Standards.md
+
+Must be deterministic.
+
+Must not use LLM.
+
+---
+
+### Analytics Engine
+
+Transforms Task Objects into AnalyticsReport.
+
+Uses:
+
+- Analytics_Model.md
+- scoring.yaml
+
+Responsibilities:
+
+- corridor analysis
+- overdue analysis
+- workload analysis
+- delta calculations
+- status calculations
+
+Must be deterministic.
+
+Must not use LLM.
+
+---
+
+### Recommendation Engine
+
+Transforms AnalyticsReport into RecommendationCollection.
+
+Responsibilities:
+
+- rebalance recommendations
+- workload recommendations
+- overdue recommendations
+- focus recommendations
+
+May be deterministic or AI-assisted.
+
+---
+
+### Report Renderer
+
+Transforms:
+
+- AnalyticsReport
+- RecommendationCollection
+
+into:
+
+- Markdown reports
+
+Responsibilities:
+
+- formatting
+- ordering
+- presentation
+
+Must not recalculate analytics.
+
+---
+
+### Human Review
+
+Reviews analytics and recommendations.
+
+Responsible for:
+
+- prioritization decisions
+- strategic decisions
+- acceptance of recommendations
+
+---
+
+### Automation Layer (Future)
+
+Executes approved mutations.
+
+Examples:
+
+- archive completed tasks
+- create recurring tasks
+- update metadata
+
+All mutations require explicit safety controls.
+
+---
+
+### Configuration Layer
+
+Provides runtime configuration for analytics and recommendation systems.
+
+Contains:
+
+- scoring.yaml
+
+Responsibilities:
+
+- corridor definitions
+- target ranges
+- analytics configuration
+
+Must be deterministic.
+
+Must not contain business logic.
 
 ---
 
