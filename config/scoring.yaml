@@ -1,0 +1,23 @@
+corridors:
+  - score: [21,25]
+    name: critical
+    target: [3,5]
+
+  - score: [16,20]
+    name: high
+    target: [6,10]
+
+  - score: [11,15]
+    name: medium
+    target: [11,20]
+
+  - score: [6,10]
+    name: low
+    target: [21,30]
+
+  - score: [1,5]
+    name: optional
+    target: [0,5]
+
+global_active:
+  target: [60,70]
