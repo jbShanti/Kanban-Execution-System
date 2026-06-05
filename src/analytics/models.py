@@ -272,3 +272,14 @@ class AnalyticsContext:
     board: Board
     summary: BoardSummary
     
+    
+@dataclass(slots=True, frozen=True)
+class AnalyticsReport:
+    global_score: int
+
+    corridor_distribution: dict[str, int]
+
+    total_tasks: int
+    scored_tasks: int
+
+    generated_at: datetime
