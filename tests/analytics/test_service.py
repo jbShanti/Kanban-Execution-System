@@ -1,4 +1,4 @@
-from src.analytics.analytics_service import build_analytics_snapshot
+from src.analytics.service import build_analytics_snapshot
 from src.parser.models import (
     Section,
     SectionType,

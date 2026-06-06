@@ -1,15 +1,61 @@
+from __future__ import annotations
+
+from src.analytics.board_metrics import build_board_metrics
+from src.analytics.board_summary import build_board_summary
+from src.analytics.calculators.score_metrics import (
+    calculate_score_metrics,
+)
 from src.analytics.calculators.status_metrics import (
     calculate_status_metrics,
 )
 from src.analytics.calculators.time_metrics import (
     calculate_time_metrics,
 )
-from src.analytics.calculators.score_metrics import (
-    calculate_score_metrics,
+from src.analytics.models import (
+    AnalyticsReport,
+    AnalyticsSnapshot,
+    TaskMetrics,
 )
+from src.analytics.report_builder import (
+    build_analytics_report,
+)
+from src.analytics.section_metrics import (
+    build_section_metrics_map,
+)
+from src.parser.models import Board, Task
 
-from src.analytics.models import TaskMetrics
-from src.parser.models import Task
+
+def generate_analytics_report(
+    board: Board,
+) -> AnalyticsReport:
+    snapshot = build_analytics_snapshot(board)
+
+    return build_analytics_report(snapshot)
+
+
+def build_analytics_snapshot(
+    board: Board,
+) -> AnalyticsSnapshot:
+    """
+    Build complete analytics snapshot for the board.
+    """
+
+    summary = build_board_summary(board)
+
+    board_metrics = build_board_metrics(
+        summary,
+    )
+
+    section_metrics = build_section_metrics_map(
+        board,
+        summary.sections,
+    )
+
+    return AnalyticsSnapshot(
+        summary=summary,
+        board=board_metrics,
+        sections=section_metrics,
+    )
 
 
 def calculate_task_metrics(

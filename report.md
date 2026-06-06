@@ -3,7 +3,7 @@
 Total Tasks: 184
 Active Tasks: 70
 Completed Tasks: 111
-Overdue Tasks: 11
+Overdue Tasks: 23
 Total Score: 2150
 
 ## Sections
