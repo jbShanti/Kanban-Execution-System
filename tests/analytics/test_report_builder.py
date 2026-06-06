@@ -19,20 +19,42 @@ def test_build_analytics_report_returns_analytics_report() -> None:
     assert isinstance(report, AnalyticsReport)
     
     
+
+    
 def test_build_analytics_report_populates_fields() -> None:
+    from src.analytics.models import ScoreCorridorSummary
+
     snapshot = AnalyticsSnapshot(
         summary=BoardSummary(
             total_tasks=10,
             scored_tasks=8,
             total_score=120,
-            score_distribution={
-                "21-25": 2,
-                "16-20": 3,
-                "11-15": 2,
-                "6-10": 1,
-                "1-5": 0,
-                "0": 0,
-                "no_score": 2,
+            score_corridors={
+                "21-25": ScoreCorridorSummary(
+                    task_count=2,
+                    scored_tasks=2,
+                    total_score=47,
+                ),
+                "16-20": ScoreCorridorSummary(
+                    task_count=3,
+                    scored_tasks=3,
+                    total_score=54,
+                ),
+                "11-15": ScoreCorridorSummary(
+                    task_count=2,
+                    scored_tasks=2,
+                    total_score=24,
+                ),
+                "6-10": ScoreCorridorSummary(
+                    task_count=1,
+                    scored_tasks=1,
+                    total_score=7,
+                ),
+                "1-5": ScoreCorridorSummary(),
+                "0": ScoreCorridorSummary(),
+                "no_score": ScoreCorridorSummary(
+                    task_count=2,
+                ),
             },
         ),
         board=BoardMetrics(),
@@ -52,3 +74,6 @@ def test_build_analytics_report_populates_fields() -> None:
     )
 
     assert corridor.task_count == 2
+    assert corridor.total_score == 47
+    assert corridor.average_score == 23.5
+    assert corridor.percentage == 20.0

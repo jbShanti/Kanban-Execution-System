@@ -13,16 +13,39 @@ def build_analytics_report(
 
     summary = snapshot.summary
 
-    corridors = [
-        ScoreCorridor(
-            name=name,
-            task_count=count,
-            total_score=0,
-            average_score=0.0,
-            percentage=0.0,
+    corridors: list[ScoreCorridor] = []
+
+    for (
+        corridor_name,
+        corridor_summary,
+    ) in summary.score_corridors.items():
+
+        average_score = 0.0
+
+        if corridor_summary.scored_tasks > 0:
+            average_score = (
+                corridor_summary.total_score
+                / corridor_summary.scored_tasks
+            )
+
+        percentage = 0.0
+
+        if summary.total_tasks > 0:
+            percentage = (
+                corridor_summary.task_count
+                / summary.total_tasks
+                * 100
+            )
+
+        corridors.append(
+            ScoreCorridor(
+                name=corridor_name,
+                task_count=corridor_summary.task_count,
+                total_score=corridor_summary.total_score,
+                average_score=average_score,
+                percentage=percentage,
+            )
         )
-        for name, count in summary.score_distribution.items()
-    ]
 
     return AnalyticsReport(
         global_score=summary.total_score,
