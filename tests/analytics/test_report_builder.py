@@ -77,3 +77,9 @@ def test_build_analytics_report_populates_fields() -> None:
     assert corridor.total_score == 47
     assert corridor.average_score == 23.5
     assert corridor.percentage == 20.0
+    
+    assert report.high_value_tasks == 5
+    assert report.high_value_percentage == 50.0
+    
+    assert report.focus_tasks == 2
+    assert report.focus_percentage == 20.0

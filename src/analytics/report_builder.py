@@ -35,11 +35,48 @@ def build_analytics_report(
                 percentage=percentage,
             )
         )
+        
+    high_value_tasks = sum(
+        corridor.task_count
+        for corridor in corridors
+        if corridor.name in {"21-25", "16-20"}
+    )
 
+    high_value_percentage = 0.0
+
+    if summary.total_tasks > 0:
+        high_value_percentage = (
+            high_value_tasks
+            / summary.total_tasks
+            * 100
+        )
+
+    focus_tasks = next(
+    (
+        corridor.task_count
+        for corridor in corridors
+        if corridor.name == "21-25"
+    ),
+    0,
+)
+
+    focus_percentage = 0.0
+
+    if summary.total_tasks > 0:
+        focus_percentage = (
+            focus_tasks
+            / summary.total_tasks
+            * 100
+        )
+    
     return AnalyticsReport(
         global_score=summary.total_score,
         corridors=corridors,
         total_tasks=summary.total_tasks,
         scored_tasks=summary.scored_tasks,
+        high_value_tasks=high_value_tasks,
+        high_value_percentage=high_value_percentage,
+        focus_tasks=focus_tasks,
+        focus_percentage=focus_percentage,
         generated_at=datetime.now(),
     )

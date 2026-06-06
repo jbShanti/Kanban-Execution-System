@@ -3,6 +3,15 @@ from src.parser.models import Board, Section, Task
 from typing import Mapping
 from datetime import datetime
 
+SCORE_CORRIDOR_ORDER = (
+    "21-25",
+    "16-20",
+    "11-15",
+    "6-10",
+    "1-5",
+    "0",
+    "no_score",
+)
 
 
 @dataclass(slots=True)
@@ -313,8 +322,14 @@ class AnalyticsReport:
     global_score: int
 
     corridors: list[ScoreCorridor]
-        
+
     total_tasks: int
     scored_tasks: int
+    
+    focus_tasks: int
+    focus_percentage: float
+
+    high_value_tasks: int
+    high_value_percentage: float
 
     generated_at: datetime
