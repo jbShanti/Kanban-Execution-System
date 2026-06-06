@@ -98,13 +98,3 @@ def test_calculates_basic_board_metrics():
     assert metrics.unscored_tasks == 1
 
     assert metrics.total_score == 65
-
-    assert metrics.score_distribution == {
-        "21-25": 1,
-        "16-20": 0,
-        "11-15": 2,
-        "6-10": 1,
-        "1-5": 2,
-        "0": 1,
-        "no_score": 1,
-    }

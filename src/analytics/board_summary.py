@@ -75,8 +75,6 @@ def build_board_summary(
         if task.score is None:
             summary.unscored_tasks += 1
 
-            summary.score_distribution["no_score"] += 1
-
             summary.score_corridors["no_score"].task_count += 1
 
             continue
@@ -105,8 +103,6 @@ def build_board_summary(
 
         else:
             corridor_name = "0"
-
-        summary.score_distribution[corridor_name] += 1
 
         corridor = summary.score_corridors[corridor_name]
 

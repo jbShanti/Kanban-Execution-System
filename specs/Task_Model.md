@@ -821,7 +821,6 @@ Analytics signals are deterministic values derived from parsed tasks.
 
 ## Score Metrics
 
-- score_distribution
 - tasks_without_score
 
 ## Execution Metrics

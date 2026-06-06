@@ -18,9 +18,7 @@ def build_board_metrics(
         scored_tasks=summary.scored_tasks,
         unscored_tasks=summary.unscored_tasks,
         total_score=summary.total_score,
-        score_distribution=dict(
-            summary.score_distribution
-        ),
+        
     )
 
 
@@ -68,26 +66,13 @@ def calculate_board_metrics(
 
         if task.score is None:
             metrics.unscored_tasks += 1
-            metrics.score_distribution["no_score"] += 1
-
+            
         else:
             score = task.score
 
             metrics.scored_tasks += 1
             metrics.total_score += score
 
-            if 21 <= score <= 25:
-                metrics.score_distribution["21-25"] += 1
-            elif 16 <= score <= 20:
-                metrics.score_distribution["16-20"] += 1
-            elif 11 <= score <= 15:
-                metrics.score_distribution["11-15"] += 1
-            elif 6 <= score <= 10:
-                metrics.score_distribution["6-10"] += 1
-            elif 1 <= score <= 5:
-                metrics.score_distribution["1-5"] += 1
-            else:
-                metrics.score_distribution["0"] += 1
 
         if (
             task.is_active

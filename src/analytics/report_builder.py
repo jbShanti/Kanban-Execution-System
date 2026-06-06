@@ -20,22 +20,11 @@ def build_analytics_report(
         corridor_summary,
     ) in summary.score_corridors.items():
 
-        average_score = 0.0
+        average_score=corridor_summary.average_score
 
-        if corridor_summary.scored_tasks > 0:
-            average_score = (
-                corridor_summary.total_score
-                / corridor_summary.scored_tasks
-            )
-
-        percentage = 0.0
-
-        if summary.total_tasks > 0:
-            percentage = (
-                corridor_summary.task_count
-                / summary.total_tasks
-                * 100
-            )
+        percentage = corridor_summary.percentage_of(
+            summary.total_tasks
+        )
 
         corridors.append(
             ScoreCorridor(

@@ -79,61 +79,6 @@ def test_counts_statuses():
     assert summary.cancelled_tasks == 1
 
 
-def test_score_distribution():
-    section = make_section()
-
-    board = Board(
-        tasks=[
-            Task(
-                title="Critical",
-                status=TaskStatus.OPEN,
-                section=section,
-                score=25,
-            ),
-            Task(
-                title="High",
-                status=TaskStatus.OPEN,
-                section=section,
-                score=18,
-            ),
-            Task(
-                title="Medium",
-                status=TaskStatus.OPEN,
-                section=section,
-                score=12,
-            ),
-            Task(
-                title="Low",
-                status=TaskStatus.OPEN,
-                section=section,
-                score=8,
-            ),
-            Task(
-                title="Tiny",
-                status=TaskStatus.OPEN,
-                section=section,
-                score=3,
-            ),
-            Task(
-                title="No Score",
-                status=TaskStatus.OPEN,
-                section=section,
-            ),
-        ]
-    )
-
-    summary = build_board_summary(board)
-
-    assert summary.scored_tasks == 5
-    assert summary.unscored_tasks == 1
-
-    assert summary.score_distribution["21-25"] == 1
-    assert summary.score_distribution["16-20"] == 1
-    assert summary.score_distribution["11-15"] == 1
-    assert summary.score_distribution["6-10"] == 1
-    assert summary.score_distribution["1-5"] == 1
-    assert summary.score_distribution["no_score"] == 1
-
 
 def test_overdue_detection():
     section = make_section()
@@ -314,11 +259,6 @@ def test_board_summary_matches_board_metrics():
 
     assert summary.total_score == metrics.total_score
 
-    assert (
-        summary.score_distribution
-        == metrics.score_distribution
-    )
-    
     
 def test_section_summary_metrics():
     todo = make_section("Todo")

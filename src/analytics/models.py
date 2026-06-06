@@ -30,17 +30,6 @@ class BoardMetrics:
 
     total_score: int = 0
 
-    score_distribution: dict[str, int] = field(
-        default_factory=lambda: {
-            "21-25": 0,
-            "16-20": 0,
-            "11-15": 0,
-            "6-10": 0,
-            "1-5": 0,
-            "0": 0,
-            "no_score": 0,
-        }
-    )
 
 
 @dataclass(slots=True)
@@ -229,6 +218,26 @@ class ScoreCorridorSummary:
 
     total_score: int = 0
     
+    @property
+    def average_score(self) -> float:
+        if self.scored_tasks == 0:
+            return 0.0
+
+        return self.total_score / self.scored_tasks
+    
+    def percentage_of(
+        self,
+        total_tasks: int,
+    ) -> float:
+        if total_tasks == 0:
+            return 0.0
+
+        return (
+            self.task_count
+            / total_tasks
+            * 100
+        )
+    
 def empty_score_corridors() -> dict[str, ScoreCorridorSummary]:
     return {
         "21-25": ScoreCorridorSummary(),
@@ -257,9 +266,7 @@ class BoardSummary:
 
     total_score: int = 0
 
-    score_distribution: dict[str, int] = field(
-        default_factory=empty_distribution
-    )
+
     score_corridors: dict[str, ScoreCorridorSummary] = field(
     default_factory=empty_score_corridors,
 )
