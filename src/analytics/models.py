@@ -202,6 +202,7 @@ class TaskMetrics:
     
 # analytics/models.py
 
+
 def empty_distribution() -> dict[str, int]:
     return {
         "21-25": 0,
@@ -213,9 +214,6 @@ def empty_distribution() -> dict[str, int]:
         "no_score": 0,
     }
 
-
-
-
 def empty_statuses() -> dict[str, int]:
     return {}
 
@@ -223,6 +221,24 @@ def empty_statuses() -> dict[str, int]:
 def empty_sections() -> dict[str, SectionSummary]:
     return {}
 
+@dataclass(slots=True)
+class ScoreCorridorSummary:
+    task_count: int = 0
+
+    scored_tasks: int = 0
+
+    total_score: int = 0
+    
+def empty_score_corridors() -> dict[str, ScoreCorridorSummary]:
+    return {
+        "21-25": ScoreCorridorSummary(),
+        "16-20": ScoreCorridorSummary(),
+        "11-15": ScoreCorridorSummary(),
+        "6-10": ScoreCorridorSummary(),
+        "1-5": ScoreCorridorSummary(),
+        "0": ScoreCorridorSummary(),
+        "no_score": ScoreCorridorSummary(),
+    }
 
 @dataclass(slots=True)
 class BoardSummary:
@@ -244,7 +260,9 @@ class BoardSummary:
     score_distribution: dict[str, int] = field(
         default_factory=empty_distribution
     )
-
+    score_corridors: dict[str, ScoreCorridorSummary] = field(
+    default_factory=empty_score_corridors,
+)
     by_status: dict[str, int] = field(
         default_factory=empty_statuses
     )
@@ -272,13 +290,23 @@ class AnalyticsContext:
     board: Board
     summary: BoardSummary
     
+@dataclass(slots=True, frozen=True)
+class ScoreCorridor:
+    name: str
+
+    task_count: int
+
+    total_score: int
+    average_score: float
+
+    percentage: float
     
 @dataclass(slots=True, frozen=True)
 class AnalyticsReport:
     global_score: int
 
-    corridor_distribution: dict[str, int]
-
+    corridors: list[ScoreCorridor]
+        
     total_tasks: int
     scored_tasks: int
 

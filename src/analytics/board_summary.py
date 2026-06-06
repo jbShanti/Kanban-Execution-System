@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from datetime import date
 
-from src.analytics.models import BoardSummary, SectionSummary, SectionMetrics
-from src.parser.models import Section
-from src.parser.models import Board
+from src.analytics.models import (
+    BoardSummary,
+    SectionMetrics,
+    SectionSummary,
+)
+from src.parser.models import Board, Section
 
 
 def build_board_summary(
@@ -38,7 +41,7 @@ def build_board_summary(
         )
 
         section_name = task.section.title
-        
+
         if section_name not in summary.sections:
             summary.sections[section_name] = SectionSummary()
 
@@ -61,7 +64,7 @@ def build_board_summary(
         if task.score is not None:
             section_summary.scored_tasks += 1
             section_summary.total_score += task.score
-        
+
         if (
             task.is_active
             and task.due is not None
@@ -71,7 +74,11 @@ def build_board_summary(
 
         if task.score is None:
             summary.unscored_tasks += 1
+
             summary.score_distribution["no_score"] += 1
+
+            summary.score_corridors["no_score"].task_count += 1
+
             continue
 
         score = task.score
@@ -79,25 +86,36 @@ def build_board_summary(
         summary.scored_tasks += 1
         summary.total_score += score
 
+        corridor_name: str
+
         if 21 <= score <= 25:
-            summary.score_distribution["21-25"] += 1
+            corridor_name = "21-25"
 
         elif 16 <= score <= 20:
-            summary.score_distribution["16-20"] += 1
+            corridor_name = "16-20"
 
         elif 11 <= score <= 15:
-            summary.score_distribution["11-15"] += 1
+            corridor_name = "11-15"
 
         elif 6 <= score <= 10:
-            summary.score_distribution["6-10"] += 1
+            corridor_name = "6-10"
 
         elif 1 <= score <= 5:
-            summary.score_distribution["1-5"] += 1
+            corridor_name = "1-5"
 
         else:
-            summary.score_distribution["0"] += 1
+            corridor_name = "0"
+
+        summary.score_distribution[corridor_name] += 1
+
+        corridor = summary.score_corridors[corridor_name]
+
+        corridor.task_count += 1
+        corridor.scored_tasks += 1
+        corridor.total_score += score
 
     return summary
+
 
 def build_section_metrics(
     section: Section,

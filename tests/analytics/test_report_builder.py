@@ -44,4 +44,11 @@ def test_build_analytics_report_populates_fields() -> None:
     assert report.total_tasks == 10
     assert report.scored_tasks == 8
     assert report.global_score == 120
-    assert report.corridor_distribution["21-25"] == 2
+    
+    corridor = next(
+    c
+    for c in report.corridors
+    if c.name == "21-25"
+    )
+
+    assert corridor.task_count == 2
