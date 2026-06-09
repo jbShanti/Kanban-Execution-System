@@ -294,6 +294,11 @@ active: 5
 completed: 3
 archived: 7
 
+total_score: 92
+average_score: 23.0
+score_share_percentage: 23.4
+
+
 target:
   min: 3
   max: 5
@@ -332,6 +337,70 @@ Number of overdue tasks within the corridor.
 ## active
 
 Number of active tasks within the corridor.
+
+---
+
+## total_score
+
+Sum of score values for all tasks within the corridor.
+
+Example:
+
+scores:
+21
+22
+24
+25
+
+total_score = 92
+
+---
+
+## average_score
+
+Average score of scored tasks within the corridor.
+
+Formula:
+
+average_score =
+total_score / scored_tasks
+
+---
+
+## score_share_percentage
+
+Percentage of total board score represented by the corridor.
+
+Formula:
+
+score_share_percentage =
+corridor.total_score
+/
+board.total_score
+× 100
+
+Range:
+
+0.0 .. 100.0
+
+Example:
+Board total score = 400
+
+Corridor total score = 92
+
+score_share_percentage =
+92 / 400 × 100
+
+= 23.0%
+
+Important: board.total_score =
+sum(total_score of all score corridors)
+
+that means
+
+Σ(score_share_percentage)
+≈ 100%
+
 
 ---
 

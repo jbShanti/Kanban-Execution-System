@@ -316,6 +316,7 @@ class ScoreCorridor:
     average_score: float
 
     percentage: float
+    score_share_percentage: float
     
 @dataclass(slots=True, frozen=True)
 class AnalyticsReport:

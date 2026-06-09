@@ -28,7 +28,7 @@ def test_build_analytics_report_populates_fields() -> None:
         summary=BoardSummary(
             total_tasks=10,
             scored_tasks=8,
-            total_score=120,
+            total_score=132,
             score_corridors={
                 "21-25": ScoreCorridorSummary(
                     task_count=2,
@@ -65,7 +65,7 @@ def test_build_analytics_report_populates_fields() -> None:
 
     assert report.total_tasks == 10
     assert report.scored_tasks == 8
-    assert report.global_score == 120
+    assert report.global_score == 132
     
     corridor = next(
     c
@@ -83,3 +83,31 @@ def test_build_analytics_report_populates_fields() -> None:
     
     assert report.focus_tasks == 2
     assert report.focus_percentage == 20.0
+    
+    focus_corridor = next(
+        corridor
+        for corridor in report.corridors
+        if corridor.name == "21-25"
+    )
+
+    expected_share = 47 / 132 * 100
+
+    assert (
+        abs(
+            focus_corridor.score_share_percentage
+            - expected_share
+        )
+        < 0.0001
+    )
+    
+    
+      
+     
+    total_share = sum(
+    corridor.score_share_percentage
+    for corridor in report.corridors
+)
+
+    assert abs(total_share - 100.0) < 0.01
+
+    

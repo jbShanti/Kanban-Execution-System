@@ -26,6 +26,15 @@ def build_analytics_report(
             summary.total_tasks
         )
 
+        score_share_percentage = 0.0
+
+        if summary.total_score > 0:
+            score_share_percentage = (
+                corridor_summary.total_score
+                / summary.total_score
+                * 100
+            )
+
         corridors.append(
             ScoreCorridor(
                 name=corridor_name,
@@ -33,6 +42,7 @@ def build_analytics_report(
                 total_score=corridor_summary.total_score,
                 average_score=average_score,
                 percentage=percentage,
+                score_share_percentage=score_share_percentage,
             )
         )
         
