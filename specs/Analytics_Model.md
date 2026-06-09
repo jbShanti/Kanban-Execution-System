@@ -62,6 +62,233 @@ All presentations must be generated from the same analytics model.
 
 ---
 
+# 1.2 Analytics Domains
+
+## Purpose
+
+AnalyticsReport exists to support management decisions.
+Analytics are organized into four decision domains.
+Each domain answers a different class of questions.
+Analytics should support decision-making rather than metric collection.
+
+## Domain 1 — Focus Decisions
+
+Purpose:
+What should be done today and within the next three days?
+
+Questions:
+Where is attention currently concentrated?
+Which tasks should be moved into focus?
+Which tasks may be safely deferred?
+Which tasks provide the highest strategic value right now?
+How many tasks are overdue, due today or due within the next three days?
+What is the total score value of overdue and urgent tasks?
+
+## Domain 2 — Tactical Decisions
+
+Purpose:
+How should the current workload be managed?
+
+Questions:
+Is the system overloaded?
+Is there a mismatch between importance and actual attention?
+How healthy is the score distribution?
+What is the current work-in-progress level?
+How many tasks are blocked, delegated or waiting?
+What is the current execution velocity?
+What is the ratio of completed, cancelled and archived tasks?
+
+## Domain 3 — Strategic Decisions
+
+Purpose:
+Is the current board structure leading toward meaningful results?
+
+Questions:
+Where is the largest concentration of potential value?
+How is the board structure changing over time?
+What is the total score value of active work and what percentage of total score does it represent?
+What is the overall board health status?
+Is value excessively concentrated in a small number of tasks?
+Is execution momentum increasing or decreasing?
+What strategic execution debt is accumulating?
+
+## Domain 4 — Data Quality
+
+Purpose:
+Can the analytics be trusted?
+
+Questions:
+What percentage of tasks have no score?
+What percentage of tasks have no estimate?
+How complete is score coverage across total board value?
+
+## Design Principle
+
+Analytics domains define:
+why analytics exist
+
+AnalyticsReport defines:
+what is calculated
+
+Report Renderer defines:
+how analytics are presented
+
+---
+
+# 1.3 Analytics Sections
+
+## Purpose
+
+AnalyticsReport is organized into analytical sections.
+
+Each section supports one decision domain.
+
+Sections define where analytics results are stored.
+
+Sections do not define calculations.
+
+Calculations are defined by the Analytics Engine.
+
+Presentation is defined by the Report Renderer.
+
+---
+
+## Canonical Structure
+
+```yaml
+AnalyticsReport:
+
+  focus:
+    ...
+
+  tactical:
+    ...
+
+  strategic:
+    ...
+
+  data_quality:
+    ...
+
+  corridors:
+    ...
+```
+
+---
+
+## Focus Analytics
+
+### Purpose
+
+Support daily and short-term execution decisions.
+
+### Questions
+
+* What should be done today?
+* What should be done within the next three days?
+* Which tasks should be prioritized?
+* Which tasks may be safely deferred?
+* What urgent risks require attention?
+
+---
+
+## Tactical Analytics
+
+### Purpose
+
+Support workload and execution flow management.
+
+### Questions
+
+* Is the system overloaded?
+* Is attention aligned with importance?
+* Is workload balanced?
+* Are there blocked tasks?
+* What is the current execution velocity?
+
+---
+
+## Strategic Analytics
+
+### Purpose
+
+Support long-term execution and value allocation decisions.
+
+### Questions
+
+* Where is value concentrated?
+* How is the board evolving?
+* Is execution momentum improving?
+* Is strategic debt accumulating?
+* Does the current structure support meaningful results?
+
+---
+
+## Data Quality Analytics
+
+### Purpose
+
+Measure analytics reliability.
+
+### Questions
+
+* How complete is scoring coverage?
+* How complete are task estimates?
+* Can analytics results be trusted?
+
+---
+
+## Corridor Analytics
+
+### Purpose
+
+Support score-based workload balancing.
+
+### Contains
+
+* corridor statistics
+* corridor targets
+* corridor status
+* corridor deltas
+* score distribution metrics
+
+Corridor Analytics are configuration-driven through:
+
+```text
+scoring.yaml
+```
+
+---
+
+## Design Principle
+
+Domains define:
+
+```text
+Why analytics exist.
+```
+
+Sections define:
+
+```text
+Where analytics are stored.
+```
+
+Analytics Engine defines:
+
+```text
+How analytics are calculated.
+```
+
+Report Renderer defines:
+
+```text
+How analytics are presented.
+```
+
+
+---
+
 # 2. AnalyticsReport
 
 ## Purpose
@@ -70,41 +297,383 @@ AnalyticsReport is the canonical output of the Analytics Engine.
 
 Every analytics calculation produces exactly one AnalyticsReport object.
 
+AnalyticsReport stores analytical results.
+
+AnalyticsReport does not contain:
+
+* recommendation logic
+* rendering rules
+* report formatting
+* business logic
+
+AnalyticsReport is presentation-independent.
+
 ---
 
 ## Canonical Structure
 
 ```yaml
-generated_at: 2026-06-06
+AnalyticsReport:
 
-summary:
-  overdue: 0
-  active: 63
-  completed: 22
-  archived: 80
+  generated_at: 2026-06-06
 
-global_target:
-  min: 60
-  max: 70
+  focus:
+    ...
 
-global_status:
-  delta: 0
-  state: ok
+  tactical:
+    ...
 
-corridors:
-  - interval: "21-25"
-    overdue: 0
-    active: 5
-    completed: 3
-    archived: 7
+  strategic:
+    ...
 
-    target:
-      min: 3
-      max: 5
+  data_quality:
+    ...
 
+  corridors:
+    ...
+
+  summary:
+    ...
+```
+
+---
+
+## Sections
+
+### focus
+
+Contains analytics supporting daily and short-term execution decisions.
+
+Examples:
+
+* attention allocation
+* focus candidates
+* urgent tasks
+* overdue risk
+* near-term priorities
+
+---
+
+### tactical
+
+Contains analytics supporting workload and execution flow management.
+
+Examples:
+
+* overload detection
+* WIP analysis
+* blocked work
+* delegated work
+* execution velocity
+* workload balance
+
+---
+#### Tactical Workload Status
+
+##### Purpose
+
+Represents current workload status relative to configured workload targets.
+
+Used to detect:
+
+* overload
+* underload
+* workload balance
+
+Supports Tactical Analytics decisions.
+
+---
+
+##### Structure
+
+```yaml
+tactical:
+
+  workload:
+    active: 63
+
+  target:
+    min: 60
+    max: 70
+
+  status:
     delta: 0
     state: ok
 ```
+
+---
+
+##### workload
+
+###### active
+
+Number of active tasks.
+
+Includes:
+
+```text
+[ ]
+[/]
+```
+
+Excludes:
+
+```text
+[x]
+[-]
+[<]
+[>]
+```
+
+Archived tasks are excluded.
+
+---
+
+##### target
+
+###### Purpose
+
+Defines the desired active workload range.
+
+Source:
+
+```text
+scoring.yaml
+```
+
+---
+
+###### Structure
+
+```yaml
+target:
+  min: 60
+  max: 70
+```
+
+---
+
+##### status
+
+###### Purpose
+
+Represents workload health relative to the configured target range.
+
+---
+
+###### Structure
+
+```yaml
+status:
+  delta: 0
+  state: ok
+```
+
+---
+
+###### State Values
+
+Supported values:
+
+```text
+ok
+underloaded
+overloaded
+```
+
+---
+
+###### Delta Calculation
+
+Within target:
+
+```text
+delta = 0
+state = ok
+```
+
+---
+
+Below target:
+
+```text
+delta = active - target.min
+state = underloaded
+```
+
+Example:
+
+```text
+active = 52
+target.min = 60
+
+delta = -8
+```
+
+---
+
+Above target:
+
+```text
+delta = active - target.max
+state = overloaded
+```
+
+Example:
+
+```text
+active = 81
+target.max = 70
+
+delta = +11
+```
+
+---
+
+##### Design Principle
+
+Workload targets are configuration-driven.
+
+Targets must be loaded from:
+
+```text
+scoring.yaml
+```
+
+Analytics engines must never use hardcoded workload targets.
+
+```
+```
+
+
+
+---
+
+### strategic
+
+Contains analytics supporting long-term execution and value allocation decisions.
+
+Examples:
+
+* value concentration
+* board evolution
+* active value share
+* execution momentum
+* execution debt
+* board health
+
+---
+
+### data_quality
+
+Contains analytics describing data completeness and reliability.
+
+Examples:
+
+* score coverage
+* estimate coverage
+* metadata completeness
+* analytics confidence indicators
+
+---
+
+### corridors
+
+Contains score corridor analytics.
+
+Defined by:
+
+```text
+scoring.yaml
+```
+
+Contains:
+
+* corridor statistics
+* corridor targets
+* corridor status
+* corridor deltas
+* score distribution metrics
+
+---
+
+### summary
+
+Contains a concise executive overview of the current board state.
+
+Purpose:
+
+Provide a human-readable summary of the most important analytical findings.
+
+The summary is intended for rapid review and should allow a user to understand the current situation without inspecting individual analytics sections.
+
+The summary may aggregate signals from:
+
+* focus analytics
+* tactical analytics
+* strategic analytics
+* data quality analytics
+* corridor analytics
+
+---
+
+#### Design Principles
+
+The summary is:
+
+* concise
+* human-oriented
+* decision-oriented
+
+The summary is not:
+
+* a complete analytics report
+* a source of truth
+* a replacement for detailed analytics sections
+
+Detailed analytics must remain within their respective sections.
+
+---
+
+#### Example
+
+```yaml
+summary:
+
+  board_health: yellow
+
+  primary_signal:
+    WIP overload detected
+
+  secondary_signal:
+    3 high-score overdue tasks
+
+  focus_recommendation:
+    Reduce active workload before starting new work
+```
+
+---
+
+#### Responsibility
+
+Analytics Engine:
+
+```text
+Produces summary signals.
+```
+
+Report Renderer:
+
+```text
+Determines how summary information is presented.
+```
+
+Recommendation Engine:
+
+```text
+May use summary signals as recommendation inputs.
+```
+
 
 ---
 
@@ -185,94 +754,460 @@ Includes:
 
 ---
 
-# 4. Global Target
+# 4. Focus Analytics
 
 ## Purpose
 
-Defines the desired total active task range.
+Focus Analytics supports daily and short-term execution decisions.
+
+Its purpose is to determine where attention should be directed today and within the next three days.
+
+Focus Analytics is action-oriented.
+
+Unlike Tactical Analytics and Strategic Analytics, Focus Analytics is concerned with immediate execution priorities.
+
+---
+
+## Supported Questions
+
+Focus Analytics should help answer the following questions:
+
+1. Where is attention currently concentrated?
+
+2. Which tasks should be moved into focus?
+
+3. Which tasks may be safely deferred?
+
+4. Which tasks provide the highest strategic value right now?
+
+5. Which tasks are overdue, due today or due within the next three days?
+
+6. What is the total score value of overdue and urgent tasks?
+
+7. Which tasks provide the highest value per unit of time?
+
+8. Which tasks have the highest score efficiency?
+
+Definition:
+score_efficiency = score / estimate
+Score efficiency represents expected value produced per unit of estimated effort.
+
+
+---
+
+## Canonical Structure
+
+```yaml
+focus:
+
+  urgency:
+    ...
+
+  attention:
+    ...
+
+  priority:
+    ...
+```
+
+---
+
+### urgency
+
+Purpose:
+
+Identify work requiring immediate attention.
+
+Focuses on time-sensitive execution risks.
+
+---
+
+### attention
+
+Purpose:
+
+Describe current attention allocation.
+
+Focuses on where effort is currently invested.
+
+---
+
+### priority
+
+Purpose:
+
+Identify where attention should be directed.
+
+Focuses on value and execution impact.
+
+Supports:
+
+- focus selection
+- task ranking
+- strategic value analysis
+- score efficiency analysis
+
+---
+
+### Score Efficiency
+
+Definition:
+
+```text
+score_efficiency = score / estimate
+```
+Purpose:
+
+Identify tasks that provide the highest value per unit of estimated effort.
+
+Used for:
+- daily planning
+- constrained time windows
+- focus selection
+- recommendation generation
+
+
+---
+
+# 4.1 FocusUrgencyAnalytics
+
+## Purpose
+
+FocusUrgencyAnalytics identifies tasks requiring immediate attention.
+
+It measures execution risk associated with approaching or missed deadlines.
+
+FocusUrgencyAnalytics is time-oriented.
+
+Unlike Priority Analytics, which evaluates value, Urgency Analytics evaluates temporal risk.
+
+---
+
+## Supported Questions
+
+FocusUrgencyAnalytics should help answer the following questions:
+
+1. Which tasks are overdue?
+
+2. Which tasks are due today?
+
+3. Which tasks are due within the next three days?
+
+4. What is the total score value associated with urgent work?
+
+5. What level of execution risk currently exists?
+
+---
+
+## Canonical Structure
+
+```yaml
+urgency:
+
+  overdue:
+    ...
+
+  due_today:
+    ...
+
+  due_next_3_days:
+    ...
+
+  risk:
+    ...
+```
+
+---
+
+## Components
+
+### overdue
+
+Purpose:
+
+Identify tasks whose due date has already passed.
+
+Structure:
+
+```yaml
+overdue:
+
+  task_count:
+    0
+
+  score_value:
+    0
+
+  tasks:
+    - AnalyticsTaskSnapshot
+    - AnalyticsTaskSnapshot
+```
+
+Answers:
+
+* Which tasks are overdue?
+* What score value is currently overdue?
+
+---
+
+### due_today
+
+Purpose:
+
+Identify tasks that should be completed today.
+
+Structure:
+
+```yaml
+due_today:
+
+  task_count:
+    0
+
+  score_value:
+    0
+
+  tasks:
+    - AnalyticsTaskSnapshot
+    - AnalyticsTaskSnapshot
+```
+
+Answers:
+
+* Which tasks are due today?
+* What score value is due today?
+
+---
+
+### due_next_3_days
+
+Purpose:
+
+Identify tasks that should be completed within the next three days.
+
+Structure:
+
+```yaml
+due_next_3_days:
+
+  task_count:
+    0
+
+  score_value:
+    0
+
+  tasks:
+    - AnalyticsTaskSnapshot
+    - AnalyticsTaskSnapshot
+```
+
+Answers:
+
+* Which tasks are due within the next three days?
+* What score value is due soon?
+
+---
+
+### risk
+
+Purpose:
+
+Provide an aggregated urgency signal.
+
+Structure:
+
+```yaml
+risk:
+
+  score_value:
+    0
+
+  status:
+    normal
+```
+
+---
+
+### Supported Status Values
+
+```text
+normal
+warning
+critical
+```
+
+Answers:
+
+* What is the current urgency level?
+* How much score value is at risk?
+
+---
+
+## Design Principle
+
+FocusUrgencyAnalytics should detect execution risk as early as possible.
+
+Urgency is determined by time constraints.
+
+Urgency Analytics does not determine task priority.
+
+Priority decisions belong to FocusPriorityAnalytics.
+
+---
+
+# 4.1.1 AnalyticsTaskSnapshot
+
+## Purpose
+
+AnalyticsTaskSnapshot is a lightweight task representation used by analytics models.
+
+It contains only fields required for analytics, recommendations and report rendering.
+
+AnalyticsTaskSnapshot is derived from Task.
+
+It is not a replacement for Task.
+
+---
+
+## Canonical Structure
+
+```yaml
+AnalyticsTaskSnapshot:
+
+  title:
+
+  score:
+
+  estimate:
+
+  status:
+
+  due:
+
+  area:
+```
+
+---
+
+## Fields
+
+### title
+
+Human-readable task name.
+
+---
+
+### score
+
+Task value score.
+
+Used by:
+
+* Focus Analytics
+* Tactical Analytics
+* Strategic Analytics
+* Corridor Analytics
+
+---
+
+### estimate
+
+Estimated effort required to complete the task.
+
+Used by:
+
+* Focus Analytics
+* Recommendation Engine
+* Daily Planning
+* Score Efficiency Analytics
+
+---
+
+### status
+
+Current task status.
+
+Examples:
+
+```text
+active
+scheduled
+delegated
+blocked
+```
+
+---
+
+### due
+
+Task due date.
+
+Used by Urgency Analytics.
+
+---
+
+### area
+
+Logical task grouping used for analytics.
 
 Source:
+Derived from Task categorization metadata.
+
+Examples:
 
 ```text
-scoring.yaml
+Health
+Infrastructure
+Product
+Business
 ```
 
 ---
 
-## Structure
+## Design Principle
 
-```yaml
-global_target:
-  min: 60
-  max: 70
-```
+AnalyticsTaskSnapshot should contain only fields required by analytics.
+
+Analytics models must not depend on the full Task object.
 
 ---
 
-# 5. Global Status
+# 4.2 FocusAttentionAnalytics
 
-## Structure
+## Purpose
 
-```yaml
-global_status:
-  delta: 0
-  state: ok
-```
+FocusAttentionAnalytics describes how attention is currently distributed across the system.
+
+It helps identify where attention is concentrated and whether current attention allocation is aligned with intended priorities.
 
 ---
 
-## State Values
+## Attention Definition
 
-Supported values:
+Attention represents the distribution of active score across analytical areas.
 
-```text
-ok
-underloaded
-overloaded
-```
+Attention is measured using score rather than task count.
+
+Score is treated as a unit of intended attention allocation.
+
+Higher score indicates a greater share of attention that should be directed toward a task.
+
+Task count may be used as a supplementary metric but is not the primary measure of attention.
 
 ---
 
-## Delta Calculation
+## Design Principle
 
-Inside target:
+FocusAttentionAnalytics does not measure effort spent.
 
-```text
-delta = 0
-state = ok
-```
+FocusAttentionAnalytics measures intended attention allocation as represented by score.
 
-Below target:
+The purpose of Attention Analytics is to answer:
 
-```text
-delta = negative value
-state = underloaded
-```
+* Where is attention currently concentrated?
+* How is attention distributed across areas?
+* Is attention aligned with priorities?
 
-Example:
-
-```text
-active = 52
-target minimum = 60
-
-delta = -8
-```
-
-Above target:
-
-```text
-delta = positive value
-state = overloaded
-```
-
-Example:
-
-```text
-active = 81
-target maximum = 70
-
-delta = +11
-```
 
 ---
 
@@ -1030,7 +1965,7 @@ Reduce excessive board size.
 ## Condition
 
 ```text
-global_status.state = overloaded
+tactical.status.state = overloaded
 ```
 
 ---
@@ -1056,7 +1991,7 @@ reason: active_overload
 Equal to:
 
 ```text
-active - global_target.max
+active - tactical.target.max
 ```
 
 ---
@@ -1692,7 +2627,7 @@ state = ok
 ## Below Target
 
 ```text
-delta = active - global_target.min
+delta = active - tactical.target.min
 state = underloaded
 ```
 
@@ -1701,7 +2636,7 @@ state = underloaded
 ## Above Target
 
 ```text
-delta = active - global_target.max
+delta = active - tactical.target.max
 state = overloaded
 ```
 
@@ -1734,10 +2669,13 @@ Analytics_Model.md
 AnalyticsReport must contain:
 
 ```text
-summary
-global_target
-global_status
-corridors
+  generated_at:
+  focus:
+  tactical:
+  strategic:
+  data_quality:
+  corridors:
+  summary:
 ```
 
 ---
@@ -2012,7 +2950,7 @@ Provide a concise overview of board health.
 
 ```text
 AnalyticsReport.summary
-AnalyticsReport.global_status
+AnalyticsReport.tactical.status
 ```
 
 ---
@@ -2253,8 +3191,8 @@ Display overall board statistics.
 
 ```text
 AnalyticsReport.summary
-AnalyticsReport.global_target
-AnalyticsReport.global_status
+AnalyticsReport.tactical.target
+AnalyticsReport.tactical.status
 ```
 
 ---
