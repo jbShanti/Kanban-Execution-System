@@ -723,60 +723,643 @@ Avoid:
 
 # 15. Score Semantics
 
-## General Interpretation
+## Purpose
 
-Higher score:
-- higher leverage
-- higher importance
-- higher urgency
-- stronger execution relevance
+Score represents the combined importance of a task.
+
+It is the primary prioritization mechanism used throughout the system.
+
+Score determines:
+
+- execution priority
+- analytical grouping
+- corridor assignment
+- portfolio distribution
 
 ---
 
-## Recommended Ranges
+## Scoring Model
+
+Score is calculated as:
+
+```text
+Score = Area Priority × Task Priority
+```
+
+Where:
+
+```text
+Area Priority ∈ [1..5]
+
+Task Priority ∈ [1..5]
+```
+
+Result:
+
+```text
+Score ∈ [1..25]
+```
+
+---
+
+## Area Priority
+
+Area Priority represents the relative importance of an Area.
+
+Examples:
+
+```text
+5 = Mission-Critical Area
+
+4 = Strategic Area
+
+3 = Important Area
+
+2 = Supporting Area
+
+1 = Optional Area
+```
+
+Area Priority is defined independently from individual tasks.
+
+---
+
+## Task Priority
+
+Task Priority represents the importance of a task within its Area.
+
+Examples:
+
+```text
+5 = Highest Priority
+
+4 = High Priority
+
+3 = Medium Priority
+
+2 = Low Priority
+
+1 = Minimal Priority
+```
+
+Task Priority is assigned at the task level.
+
+---
+
+## Examples
+
+Critical task in a critical area:
+
+```text
+Area Priority = 5
+Task Priority = 5
+
+Score = 25
+```
+
+High-priority task in a supporting area:
+
+```text
+Area Priority = 2
+Task Priority = 5
+
+Score = 10
+```
+
+Medium-priority task in an important area:
+
+```text
+Area Priority = 3
+Task Priority = 3
+
+Score = 9
+```
+
+---
+
+## General Interpretation
+
+Higher score indicates greater expected impact from task execution.
+
+Higher score implies:
+
+- higher strategic importance
+- higher execution relevance
+- higher portfolio value
+- higher attention priority
+
+---
+
+## Score Corridors
+
+Score values are grouped into canonical corridors.
 
 ### 21-25
-Critical execution layer
+
+Critical Layer
+
+Characteristics:
+
+- mission-critical work
+- highest expected impact
+- strongest execution priority
 
 Target:
+
+```text
 3-5 active tasks
+```
 
 ---
 
 ### 16-20
-High leverage tasks
+
+Strategic Layer
+
+Characteristics:
+
+- high-value work
+- significant strategic contribution
 
 Target:
+
+```text
 6-10 active tasks
+```
 
 ---
 
 ### 11-15
-Primary operational layer
+
+Core Operational Layer
+
+Characteristics:
+
+- important ongoing work
+- primary execution portfolio
 
 Target:
+
+```text
 11-20 active tasks
+```
 
 ---
 
 ### 6-10
-Secondary operational layer
+
+Supporting Layer
+
+Characteristics:
+
+- useful but non-critical work
+- secondary execution priority
 
 Target:
+
+```text
 21-30 active tasks
+```
 
 ---
 
 ### 1-5
-Low priority / optional
+
+Optional Layer
+
+Characteristics:
+
+- low-value work
+- optional initiatives
+- backlog candidates
 
 Target:
-≤5 active tasks
+
+```text
+≤ 5 active tasks
+```
 
 ---
 
 ### 0
-Non-prioritized / informational
+
+Unprioritized
+
+Characteristics:
+
+- informational items
+- reference materials
+- uncategorized tasks
+
+---
+
+## 15.1 Score Framework
+
+### Purpose
+
+Score Framework defines the canonical mechanism used to calculate task score.
+
+The framework combines Area importance and Task priority into a single execution score.
+
+Score serves as the primary prioritization signal throughout the system.
+
+---
+
+### Design Principle
+
+A task should receive a high score only when:
+
+```text
+Important Area
++
+Important Task
+```
+
+Both dimensions are required.
+
+A highly important task in an unimportant area should not receive the maximum score.
+
+Likewise, a task in a critical area should not automatically receive the maximum score if the task itself has low priority.
+
+---
+
+### Canonical Formula
+
+```text
+Score = Area Priority × Task Priority
+```
+
+Where:
+
+```text
+Area Priority ∈ [1..5]
+
+Task Priority ∈ [1..5]
+```
+
+Result:
+
+```text
+Score ∈ [1..25]
+```
+
+---
+
+### Area Priority
+
+Area Priority represents the relative importance of an Area within the user's portfolio.
+
+```text
+5 = Mission-Critical
+
+4 = Strategic
+
+3 = Important
+
+2 = Supporting
+
+1 = Optional
+```
+
+Area Priority is assigned at the Area level.
+
+All tasks within the same Area inherit the same Area Priority.
+
+---
+
+### Task Priority
+
+Task Priority represents the importance of a task within its Area.
+
+```text
+5 = Highest Priority
+
+4 = High Priority
+
+3 = Medium Priority
+
+2 = Low Priority
+
+1 = Minimal Priority
+```
+
+Task Priority is assigned individually for each task.
+
+---
+
+### Examples
+
+Mission-critical task:
+
+```text
+Area Priority = 5
+Task Priority = 5
+
+Score = 25
+```
+
+---
+
+Strategic task:
+
+```text
+Area Priority = 5
+Task Priority = 4
+
+Score = 20
+```
+
+---
+
+Important operational task:
+
+```text
+Area Priority = 3
+Task Priority = 4
+
+Score = 12
+```
+
+---
+
+Optional task:
+
+```text
+Area Priority = 1
+Task Priority = 2
+
+Score = 2
+```
+
+---
+
+### Interpretation
+
+The score represents expected execution value.
+
+Higher score indicates:
+
+* higher strategic impact
+* higher execution relevance
+* higher portfolio importance
+* higher attention priority
+
+---
+
+### Relationship to Score Corridors
+
+Score is mapped into a ScoreCorridor.
+
+```text
+Score
+↓
+ScoreCorridor
+↓
+Analytics
+```
+
+All corridor-based analytics depend on Score generated by this framework.
+
+---
+
+### Responsibility
+
+Score Framework defines:
+
+* score calculation
+* priority composition
+* score scale
+* score boundaries
+
+It does not define:
+
+* score corridors
+* analytics calculations
+* recommendations
+* report rendering
+
+Those responsibilities belong to other system components.
+
+---
+
+### 15.1.1 Area Priority Source
+
+#### Purpose
+
+Area Priority Source defines how Area Priority is assigned within the scoring framework.
+
+It describes both the current deterministic implementation and the planned semantic classification model.
+
+---
+
+#### Current Implementation
+
+In the current system, Area Priority is derived from the task section.
+
+A section serves two responsibilities:
+
+* defines the Area
+* defines the Area Priority
+
+Example:
+
+```text
+Health [P:5]
+```
+
+Produces:
+
+```text
+Area = Health
+
+Area Priority = 5
+```
+
+---
+
+Another example:
+
+```text
+Learning [P:4]
+```
+
+Produces:
+
+```text
+Area = Learning
+
+Area Priority = 4
+```
+
+---
+
+#### Section-Based Classification
+
+The current classification model is:
+
+```text
+Task
+↓
+Section
+↓
+Area
+↓
+Area Priority
+```
+
+Tasks within the same section inherit the same Area Priority.
+
+---
+
+#### Generic Sections
+
+Some sections may represent loosely defined areas.
+
+Example:
+
+```text
+Other Projects [P:3]
+```
+
+In such cases:
+
+```text
+Area = Other Projects
+
+Area Priority = 3
+```
+
+The system does not require Areas to be highly specific.
+
+Area classification remains valid as long as the section defines a meaningful execution context.
+
+---
+
+#### Inbox Tasks
+
+Inbox tasks do not belong to an Area.
+
+Example:
+
+```text
+Inbox
+```
+
+Produces:
+
+```text
+Area = null
+
+Area Priority = null
+```
+
+As a result:
+
+```text
+Score = null
+```
+
+Inbox tasks are considered unclassified.
+
+They must not participate in score-based analytics until classification is completed.
+
+---
+
+#### Future Semantic Classification
+
+The long-term model replaces section-based classification with semantic classification.
+
+The planned flow is:
+
+```text
+Task
+↓
+SemanticArea
+↓
+Area Priority
+↓
+Score
+```
+
+SemanticArea may be determined using:
+
+* task title
+* task description
+* task tags
+* historical task patterns
+
+---
+
+#### Area Priority Configuration
+
+Area priorities are not embedded in analytical models.
+
+They are defined through external configuration associated with a Kanban board.
+
+Example:
+
+```yaml
+AreaPriorities:
+
+  Health: 5
+
+  Family: 5
+
+  Projects: 4
+
+  Learning: 4
+
+  Administration: 2
+```
+
+The configuration serves as the authoritative source of Area Priority values.
+
+---
+
+#### Evolution Path
+
+Current implementation:
+
+```text
+Task
+↓
+Section
+↓
+Area Priority
+↓
+Score
+```
+
+Target implementation:
+
+```text
+Task
+↓
+SemanticArea
+↓
+Area Priority Configuration
+↓
+Score
+```
+
+This evolution preserves score semantics while allowing Area classification to become increasingly intelligent and independent from board structure.
+
+---
+
+#### Design Principle
+
+Area Priority must be externally configurable.
+
+Score calculation must remain independent from:
+
+* board layout
+* section naming
+* analytical models
+* report rendering
+
+Only the source of Area determination may evolve over time.
+
+The score calculation model remains unchanged.
 
 ---
 

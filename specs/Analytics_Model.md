@@ -1589,6 +1589,65 @@ All corridor-based analytics must use ScoreCorridor rather than custom score gro
 
 ---
 
+### 3.4 AreaPriorityConfiguration
+
+#### Purpose
+
+AreaPriorityConfiguration defines the priority assigned to each Area.
+
+It serves as the authoritative source of Area Priority used in score calculation.
+
+---
+
+#### Design Principle
+
+Area priorities are configured externally to the board.
+
+They are not derived from task metadata.
+
+They represent strategic importance rather than operational activity.
+
+---
+
+#### Canonical Structure
+
+```yaml
+AreaPriorityConfiguration:
+
+  Health: 5
+
+  Projects: 5
+
+  Learning: 4
+
+  Family: 4
+
+  Administration: 3
+
+  Other Projects: 3
+
+  Someday: 1
+```
+
+---
+
+#### Responsibility
+
+AreaPriorityConfiguration defines:
+
+- Area Priority values
+- score calculation inputs
+- expected attention distribution
+
+It does not define:
+
+- task priorities
+- task scores
+- corridor assignments
+
+
+---
+
 # 4. Board Metrics
 
 ## Summary Object
@@ -4815,6 +4874,2567 @@ Report Renderer is the canonical presentation layer of the analytics subsystem.
 
 ---
 
+# 16. Canonical Report Template
+
+## Purpose
+
+Canonical Report Template defines the standard structure of the report produced by Analytics Engine and rendered for Morning Review.
+
+The template is designed to support daily decision-making rather than expose internal analytical models.
+
+---
+
+## Design Principle
+
+The report should answer three fundamental questions:
+
+```text
+What is happening?
+
+What requires attention?
+
+What should be done next?
+```
+
+The report progresses from observation to decision.
+
+```text
+Board State
+↓
+Analysis
+↓
+Focus
+↓
+Actions
+↓
+Readiness
+```
+
+---
+
+## Canonical Structure
+
+```yaml
+AnalyticsReport:
+
+  generated_at:
+
+  executive_summary:
+
+  board_snapshot:
+
+  attention_analysis:
+
+  tactical_analysis:
+
+  strategic_analysis:
+
+  daily_focus:
+
+  maintenance_actions:
+
+  prepared_board:
+```
+
+---
+
+## 16.1 Executive Summary
+
+### Purpose
+
+Provides a concise overview of the most important findings.
+
+This section should allow the user to understand the current situation within seconds.
+
+---
+
+### Questions Answered
+
+```text
+What is important right now?
+
+What requires immediate attention?
+```
+
+---
+
+### Typical Content
+
+* major attention shifts
+* critical findings
+* workload warnings
+* strategic concerns
+* notable improvements
+
+---
+
+## 16.2 Board Snapshot
+
+### Purpose
+
+Provides an objective view of the current board state.
+
+This section focuses on measurable system indicators.
+
+---
+
+### Questions Answered
+
+```text
+What does the board currently look like?
+```
+
+---
+
+### Typical Content
+
+* task counts
+* area distribution
+* corridor distribution
+* active workload
+* due task statistics
+* health indicators
+
+---
+
+## 16.3 Attention Analysis
+
+### Purpose
+
+Evaluates how attention is currently distributed across Areas.
+
+---
+
+### Questions Answered
+
+```text
+Where is attention concentrated?
+
+Which Areas receive insufficient attention?
+
+Does attention align with priorities?
+```
+
+---
+
+### Source Analytics
+
+* Attention Snapshot
+* Alignment Assessment
+* Concentration Assessment
+
+---
+
+## 16.4 Tactical Analysis
+
+### Purpose
+
+Evaluates operational execution risks.
+
+---
+
+### Questions Answered
+
+```text
+What operational problems require attention?
+
+Are there signs of overload?
+
+Are important tasks stalled?
+```
+
+---
+
+### Source Analytics
+
+* Workload Assessment
+* Stagnation Assessment
+* Priority Assessment
+
+---
+
+## 16.5 Strategic Analysis
+
+### Purpose
+
+Evaluates long-term portfolio health and strategic balance.
+
+---
+
+### Questions Answered
+
+```text
+Are strategic priorities reflected in execution?
+
+Is value concentrated appropriately?
+
+Is the portfolio balanced?
+```
+
+---
+
+### Source Analytics
+
+* Value Concentration
+* Portfolio Balance
+
+---
+
+## 16.6 Daily Focus
+
+### Purpose
+
+Defines the primary object of attention for the current day.
+
+---
+
+### Questions Answered
+
+```text
+What is the most important focus today?
+```
+
+---
+
+### Source Analytics
+
+* Daily Focus
+
+---
+
+### Output
+
+```yaml
+DailyFocus:
+
+  focus_type:
+
+  target:
+
+  rationale:
+```
+
+---
+
+## 16.7 Maintenance Actions
+
+### Purpose
+
+Defines corrective actions required before or during execution.
+
+---
+
+### Questions Answered
+
+```text
+What should be fixed?
+
+What maintenance work is required?
+```
+
+---
+
+### Source Analytics
+
+* Maintenance Actions
+
+---
+
+### Typical Actions
+
+* Classify Tasks
+* Process Inbox
+* Reschedule Tasks
+* Reduce Workload
+* Balance Corridors
+
+---
+
+## 16.8 Prepared Board Status
+
+### Purpose
+
+Determines whether the board is ready for execution.
+
+---
+
+### Questions Answered
+
+```text
+Is the system ready for execution?
+
+Can work begin immediately?
+```
+
+---
+
+### Source Analytics
+
+* Prepared Board
+
+---
+
+### Output
+
+```yaml
+PreparedBoard:
+
+  readiness_status:
+
+  readiness_checks:
+
+  daily_focus:
+```
+
+---
+
+## Report Flow
+
+```text
+Executive Summary
+↓
+Board Snapshot
+↓
+Attention Analysis
+↓
+Tactical Analysis
+↓
+Strategic Analysis
+↓
+Daily Focus
+↓
+Maintenance Actions
+↓
+Prepared Board Status
+```
+
+---
+
+## Design Principle
+
+The report should guide decisions rather than present raw analytics.
+
+Each section should contribute to a transition from observation to action.
+
+```text
+Observe
+↓
+Understand
+↓
+Focus
+↓
+Act
+```
+
+
+---
+
+# 17. Morning Review
+
+### Purpose
+
+Morning Review is the primary daily management ritual of the Kanban Execution System.
+
+It transforms analytical information into execution awareness and helps establish intentional focus for the day.
+
+Morning Review consumes AnalyticsReport and presents the most relevant information required for daily decision-making.
+
+---
+
+### Objectives
+
+Morning Review should help answer:
+
+- What deserves attention today?
+- Where is execution risk increasing?
+- Which areas require intervention?
+- Is current attention aligned with priorities?
+- What should be actively advanced today?
+
+---
+
+### Position in System Architecture
+
+```text
+Kanban Board
+↓
+Analytics Engine
+↓
+AnalyticsReport
+↓
+Morning Review
+↓
+Daily Execution
+```
+
+Morning Review serves as the bridge between analytics and execution.
+
+---
+
+### Canonical Structure
+
+```yaml
+MorningReview:
+
+  summary:
+
+  focus:
+
+  execution:
+
+  strategic:
+
+  observations:
+```
+
+---
+
+## 17.1 Inputs
+
+### Purpose
+
+Defines the information sources used during Morning Review.
+
+---
+
+### Canonical Structure
+
+```yaml
+MorningReviewInputs:
+
+  analytics_report:
+
+  board_metrics:
+
+  generated_at:
+```
+
+---
+
+### Design Principle
+
+Morning Review should consume analytical outputs rather than raw task data.
+
+```text
+Tasks
+↓
+Analytics Engine
+↓
+AnalyticsReport
+↓
+Morning Review
+```
+
+---
+## 17.2 Review Questions
+
+### Purpose
+
+Review Questions define the canonical questions that Morning Review must answer.
+
+Morning Review exists to transform analytical data into execution awareness.
+
+All analytical components should contribute to answering one or more review questions.
+
+---
+
+### Focus Questions
+
+#### Q1. Where is my attention currently concentrated?
+
+```text
+На каких областях сейчас сосредоточено моё внимание?
+```
+
+Purpose:
+
+Determine the current distribution of attention across Areas.
+
+Primary Source:
+
+```text
+FocusAttentionAnalytics.Distribution
+```
+
+---
+
+#### Q2. Is my attention aligned with my priorities?
+
+```text
+Соответствует ли текущее распределение внимания моим приоритетам?
+```
+
+Purpose:
+
+Evaluate whether actual attention allocation matches intended priorities.
+
+Primary Source:
+
+```text
+FocusAttentionAnalytics.Alignment
+```
+
+---
+
+#### Q3. Is my attention fragmented across too many areas?
+
+```text
+Не распылено ли моё внимание между слишком большим количеством направлений?
+```
+
+Purpose:
+
+Evaluate focus concentration and context-switching risk.
+
+Primary Source:
+
+```text
+FocusAttentionAnalytics.Concentration
+```
+
+---
+
+### Execution Questions
+
+#### Q4. Are there signs of execution overload?
+
+```text
+Есть ли признаки перегруза в текущем объёме работы?
+```
+
+Purpose:
+
+Evaluate workload sustainability and execution health.
+
+Primary Source:
+
+```text
+TacticalAnalytics.WorkloadHealth
+```
+
+---
+
+#### Q5. Are any critical tasks stagnating?
+
+```text
+Есть ли критически важные задачи без движения?
+```
+
+Purpose:
+
+Detect high-value tasks that are not progressing.
+
+Primary Source:
+
+```text
+TacticalAnalytics.OverduePressure
+```
+
+---
+
+### Priority Questions
+
+#### Q6. Am I spending too much effort on low-priority work?
+
+```text
+Не трачу ли я слишком много ресурсов на низкоприоритетные задачи?
+```
+
+Purpose:
+
+Evaluate the quality of attention allocation across score corridors.
+
+Primary Source:
+
+```text
+CorridorAnalytics
+```
+
+---
+
+### Daily Focus Question
+
+#### Q7. What should be the primary object of attention today?
+
+```text
+Что является главным объектом внимания сегодня?
+```
+
+Purpose:
+
+Identify the most important area, corridor, or execution focus for the current day.
+
+Primary Source:
+
+```text
+AnalyticsReport
+```
+
+This question represents the final outcome of Morning Review.
+
+---
+
+### Design Principle
+
+Questions should be answered in the following order:
+
+```text
+Attention
+↓
+Alignment
+↓
+Concentration
+↓
+Workload
+↓
+Stagnation
+↓
+Priority Quality
+↓
+Today's Focus
+```
+
+The sequence moves from awareness toward execution focus.
+
+---
+
+### Responsibility
+
+Review Questions define:
+
+* what Morning Review must answer
+* why analytics are generated
+* how analytical outputs are interpreted
+
+They do not define:
+
+* recommendations
+* execution decisions
+* task selection
+
+Those responsibilities belong to future system components.
+
+---
+
+## 17.3 Review Structure
+
+### Purpose
+
+Review Structure defines the canonical sequence of Morning Review.
+
+The structure guides the user from situational awareness toward daily execution focus.
+
+---
+
+### Design Principle
+
+Morning Review should answer questions in a progressively narrowing sequence.
+
+```text
+Awareness
+↓
+Alignment
+↓
+Execution Health
+↓
+Priority Quality
+↓
+Today's Focus
+```
+
+The review begins with understanding the current state and ends with identifying the primary focus of the day.
+
+---
+
+### Canonical Structure
+
+```text
+1. Attention Review
+
+2. Alignment Review
+
+3. Concentration Review
+
+4. Execution Health Review
+
+5. Stagnation Review
+
+6. Priority Review
+
+7. Daily Focus
+```
+
+---
+
+### Phase 1. Attention Review
+
+Question:
+
+```text
+Where is my attention currently concentrated?
+```
+
+Purpose:
+
+Establish awareness of current attention allocation across Areas.
+
+Primary Source:
+
+```text
+FocusAttentionAnalytics.Distribution
+```
+
+---
+
+### Phase 2. Alignment Review
+
+Question:
+
+```text
+Is my attention aligned with my priorities?
+```
+
+Purpose:
+
+Determine whether actual effort matches intended priorities.
+
+Primary Source:
+
+```text
+FocusAttentionAnalytics.Alignment
+```
+
+---
+
+### Phase 3. Concentration Review
+
+Question:
+
+```text
+Is my attention fragmented across too many areas?
+```
+
+Purpose:
+
+Evaluate focus concentration and context-switching risk.
+
+Primary Source:
+
+```text
+FocusAttentionAnalytics.Concentration
+```
+
+---
+
+### Phase 4. Execution Health Review
+
+Question:
+
+```text
+Are there signs of execution overload?
+```
+
+Purpose:
+
+Evaluate sustainability of the current workload.
+
+Primary Source:
+
+```text
+TacticalAnalytics.WorkloadHealth
+```
+
+---
+
+### Phase 5. Stagnation Review
+
+Question:
+
+```text
+Are any critical tasks stagnating?
+```
+
+Purpose:
+
+Identify important tasks that are not progressing.
+
+Primary Source:
+
+```text
+TacticalAnalytics.OverduePressure
+```
+
+---
+
+### Phase 6. Priority Review
+
+Question:
+
+```text
+Am I spending too much effort on low-priority work?
+```
+
+Purpose:
+
+Evaluate the quality of attention allocation across score corridors.
+
+Primary Source:
+
+```text
+CorridorAnalytics
+```
+
+---
+
+### Phase 7. Daily Focus
+
+Question:
+
+```text
+What should be the primary object of attention today?
+```
+
+Purpose:
+
+Identify the most important focus for the current day.
+
+Primary Source:
+
+```text
+AnalyticsReport
+```
+
+This phase represents the final outcome of Morning Review.
+
+---
+
+### Review Outcome
+
+The expected outcome of Morning Review is:
+
+```text
+Awareness
++
+Alignment
++
+Execution Context
++
+Daily Focus
+```
+
+The review should conclude with a clear understanding of where attention should be directed during the day.
+
+---
+
+### Deterministic Structure
+
+The same AnalyticsReport should produce the same Morning Review structure.
+
+The sequence of review phases must remain stable regardless of report content.
+
+
+---
+
+## 17.4 Review Outputs
+
+### Purpose
+
+Review Outputs define the canonical outputs produced by Morning Review.
+
+Each output corresponds to a specific review phase and answers a specific review question.
+
+Together they form the MorningReviewOutput contract.
+
+---
+
+### Canonical Structure
+
+```yaml
+MorningReviewOutput:
+
+  attention_snapshot:
+
+  alignment_assessment:
+
+  concentration_assessment:
+
+  workload_assessment:
+
+  stagnation_assessment:
+
+  priority_assessment:
+
+  daily_focus:
+```
+
+---
+
+#### Attention Snapshot
+
+##### Purpose
+
+Provides a summary of current attention allocation across Areas.
+
+Answers:
+
+```text
+Where is my attention currently concentrated?
+```
+
+##### Primary Sources
+
+```text
+FocusAttentionAnalytics.Distribution
+```
+
+##### Output Format
+
+```yaml
+AttentionSnapshot:
+
+  top_areas:
+
+  attention_distribution:
+
+  dominant_area:
+```
+
+---
+
+#### Alignment Assessment
+
+##### Purpose
+
+Evaluates whether actual attention allocation matches intended priorities.
+
+Answers:
+
+```text
+Is my attention aligned with my priorities?
+```
+
+##### Primary Sources
+
+```text
+FocusAttentionAnalytics.Alignment
+```
+
+##### Output Format
+
+```yaml
+AlignmentAssessment:
+
+  alignment_score:
+
+  status:
+
+  observations:
+```
+
+---
+
+#### Concentration Assessment
+
+#### Purpose
+
+Evaluates focus concentration and context-switching pressure.
+
+Answers:
+
+```text
+Is my attention fragmented across too many areas?
+```
+
+##### Primary Sources
+
+```text
+FocusAttentionAnalytics.Concentration
+```
+
+##### Output Format
+
+```yaml
+ConcentrationAssessment:
+
+  active_areas:
+
+  concentration_score:
+
+  status:
+```
+
+---
+
+#### Workload Assessment
+
+##### Purpose
+
+Evaluates current workload sustainability.
+
+Answers:
+
+```text
+Are there signs of execution overload?
+```
+
+##### Primary Sources
+
+```text
+TacticalAnalytics.WorkloadHealth
+```
+
+##### Output Format
+
+```yaml
+WorkloadAssessment:
+
+  active_tasks:
+
+  workload_status:
+
+  workload_score:
+```
+
+---
+
+#### Stagnation Assessment
+
+##### Purpose
+
+Identifies critical tasks that are not progressing.
+
+Answers:
+
+```text
+Are any critical tasks stagnating?
+```
+
+##### Primary Sources
+
+```text
+TacticalAnalytics.OverduePressure
+```
+
+##### Output Format
+
+```yaml
+StagnationAssessment:
+
+  affected_tasks:
+
+  pressure_score:
+
+  status:
+```
+
+---
+
+#### Priority Assessment
+
+##### Purpose
+
+Evaluates whether attention is concentrated in the appropriate score corridors.
+
+Answers:
+
+```text
+Am I spending too much effort on low-priority work?
+```
+
+##### Primary Sources
+
+```text
+CorridorAnalytics
+```
+
+##### Output Format
+
+```yaml
+PriorityAssessment:
+
+  high_value_share:
+
+  low_value_share:
+
+  status:
+```
+
+---
+
+#### Daily Focus
+
+##### Purpose
+
+Identifies the primary object of attention for the current day.
+
+Answers:
+
+```text
+What should be the primary object of attention today?
+```
+
+##### Primary Sources
+
+```text
+AttentionSnapshot
+
+AlignmentAssessment
+
+ConcentrationAssessment
+
+WorkloadAssessment
+
+StagnationAssessment
+
+PriorityAssessment
+```
+
+##### Output Format
+
+```yaml
+DailyFocus:
+
+  area:
+
+  rationale:
+
+  supporting_observations:
+```
+
+---
+
+### Design Principle
+
+Each review phase produces a single assessment.
+
+The final Daily Focus is derived from the combined interpretation of all preceding assessments.
+
+```text
+Attention Snapshot
+↓
+Alignment Assessment
+↓
+Concentration Assessment
+↓
+Workload Assessment
+↓
+Stagnation Assessment
+↓
+Priority Assessment
+↓
+Daily Focus
+```
+
+---
+
+### Responsibility
+
+MorningReviewOutput defines:
+
+* review results
+* assessment outputs
+* daily focus determination
+
+It does not define:
+
+* recommendations
+* task selection
+* execution planning
+
+Those responsibilities belong to future system components.
+
+---
+
+## 17.4.1 Daily Focus
+
+### Purpose
+
+Daily Focus represents the primary object of attention for the current day.
+
+It is the final outcome of Morning Review and serves as the bridge between analysis and execution.
+
+All preceding review phases contribute to determining Daily Focus.
+
+---
+
+### Canonical Structure
+
+```yaml
+DailyFocus:
+
+  focus_type:
+
+  target:
+
+  rationale:
+
+  supporting_signals:
+```
+
+---
+
+### Design Principle
+
+Morning Review should reduce uncertainty and produce a clear focus for the day.
+
+```text
+Analytics
+↓
+Assessment
+↓
+Daily Focus
+↓
+Execution
+```
+
+---
+
+### Responsibility
+
+Daily Focus defines:
+
+- what deserves attention today
+- where execution effort should be concentrated
+- why this focus was selected
+
+It does not define:
+
+- specific recommendations
+- execution plans
+- maintenance actions
+
+---
+
+### 17.4.1.1 Focus Types
+
+#### Purpose
+
+Defines the canonical types of Daily Focus.
+
+Different situations may require attention at different levels of the system.
+
+---
+
+#### Area Focus
+
+```yaml
+focus_type: AREA
+```
+
+Examples:
+
+```text
+Health
+
+Learning
+
+Projects
+
+Family
+```
+
+Use when a specific Area requires concentrated attention.
+
+---
+
+#### Corridor Focus
+
+```yaml
+focus_type: CORRIDOR
+```
+
+Examples:
+
+```text
+21-25
+
+16-20
+```
+
+Use when attention should be directed toward a specific score corridor.
+
+---
+
+#### Task Focus
+
+```yaml
+focus_type: TASK
+```
+
+Example:
+
+```text
+Complete Quarterly Planning
+```
+
+Use when a single task dominates execution importance.
+
+---
+
+#### Maintenance Focus
+
+```yaml
+focus_type: MAINTENANCE
+```
+
+Examples:
+
+```text
+Inbox Processing
+
+Workload Reduction
+
+Board Cleanup
+```
+
+Use when board maintenance should take precedence over task execution.
+
+---
+
+#### Portfolio Focus
+
+```yaml
+focus_type: PORTFOLIO
+```
+
+Examples:
+
+```text
+Restore Balance
+
+Reduce Fragmentation
+
+Increase Strategic Focus
+```
+
+Use when attention should be directed toward portfolio-level improvements.
+
+---
+### 17.4.1.2 Focus Determination
+
+#### Purpose
+
+Defines how Daily Focus is determined.
+
+---
+
+#### Inputs
+
+Daily Focus may use signals from:
+
+```text
+Attention Snapshot
+
+Alignment Assessment
+
+Concentration Assessment
+
+Workload Assessment
+
+Stagnation Assessment
+
+Priority Assessment
+```
+
+---
+
+#### Determination Process
+
+```text
+Assessment Results
+↓
+Signal Aggregation
+↓
+Daily Focus
+```
+
+---
+
+#### Design Principle
+
+Daily Focus should be derived from analytical observations.
+
+The determination process should remain deterministic.
+
+The same analytical inputs should produce the same Daily Focus.
+
+---
+
+#### Future Evolution
+
+Future versions may incorporate:
+
+- Recommendation Engine
+- LLM-based reasoning
+- historical execution patterns
+
+Such enhancements may improve focus selection without changing the Daily Focus contract.
+
+---
+
+### 17.4.1.3 Focus Rationale
+
+#### Purpose
+
+Explains why Daily Focus was selected.
+
+---
+
+#### Design Principle
+
+Every Daily Focus should be explainable.
+
+The user should be able to understand which observations contributed to the selected focus.
+
+---
+
+#### Canonical Structure
+
+```yaml
+FocusRationale:
+
+  summary:
+
+  supporting_signals:
+```
+
+---
+
+#### Example
+
+```yaml
+DailyFocus:
+
+  focus_type: AREA
+
+  target: Projects
+
+  rationale:
+    High concentration of score 21-25 tasks.
+
+  supporting_signals:
+
+    - Alignment Gap
+
+    - Critical Task Stagnation
+
+    - Strategic Underinvestment
+```
+
+---
+
+#### Responsibility
+
+Focus Rationale defines:
+
+- why focus was selected
+- which signals influenced the decision
+- how analytical results are connected to execution focus
+
+It does not define:
+
+- recommendations
+- execution strategy
+- task sequencing
+
+---
+
+## 17.5 Design Principles
+
+### Purpose
+
+Defines the governing principles of Morning Review.
+
+---
+
+### Principles
+
+#### Action Orientation
+
+Morning Review exists to improve execution.
+
+---
+
+#### Focus First
+
+Focus-related information should be presented before operational details.
+
+---
+
+#### Strategic Awareness
+
+Daily execution should remain connected to long-term priorities.
+
+---
+
+#### Progressive Disclosure
+
+Present:
+
+```text
+Conclusions
+↓
+Observations
+↓
+Details
+```
+
+---
+
+#### Deterministic Review
+
+The same AnalyticsReport should produce the same Morning Review structure.
+
+---
+
+#### Analytics Before Recommendations
+
+Morning Review is based on analytical observations.
+
+Recommendations may be added by future system components but are not required for the review itself.
+
+---
+
+## 17.6 Review Lifecycle
+
+### Purpose
+
+Review Lifecycle defines the canonical execution flow of Morning Review.
+
+Morning Review is not limited to analytical assessment.
+
+It also includes board maintenance activities required to prepare the system for effective daily execution.
+
+---
+
+### Design Principle
+
+Morning Review consists of two sequential phases.
+
+```text
+Assessment
+↓
+Maintenance
+↓
+Daily Execution
+```
+
+The board should first be understood and only then modified.
+
+---
+
+### Canonical Lifecycle
+
+```text
+1. Assessment
+
+2. Maintenance
+
+3. Daily Execution
+```
+
+---
+
+#### Phase 1. Assessment
+
+##### Purpose
+
+Assessment establishes situational awareness.
+
+The goal is to understand the current state of execution before making any changes.
+
+---
+
+##### Inputs
+
+```text
+AnalyticsReport
+```
+
+---
+
+##### Activities
+
+```text
+Attention Review
+
+Alignment Review
+
+Concentration Review
+
+Execution Health Review
+
+Stagnation Review
+
+Priority Review
+
+Daily Focus Identification
+```
+
+---
+
+##### Outputs
+
+```text
+MorningReviewOutput
+```
+
+Including:
+
+```text
+Attention Snapshot
+
+Alignment Assessment
+
+Concentration Assessment
+
+Workload Assessment
+
+Stagnation Assessment
+
+Priority Assessment
+
+Daily Focus
+```
+
+---
+
+##### Design Principle
+
+Assessment should answer questions.
+
+Assessment should not modify the board.
+
+---
+
+#### Phase 2. Maintenance
+
+##### Purpose
+
+Maintenance prepares the board for effective execution.
+
+The goal is to reduce ambiguity, restore structure, and ensure that work is correctly organized before the day begins.
+
+---
+
+##### Typical Activities
+
+###### Inbox Processing
+
+Classify new tasks.
+
+```text
+Inbox
+↓
+Area Assignment
+↓
+Priority Assignment
+↓
+Score Assignment
+```
+
+---
+
+###### Task Classification
+
+Ensure tasks belong to appropriate Areas.
+
+Examples:
+
+```text
+Missing Tags
+
+Incorrect Area
+
+Unclassified Tasks
+```
+
+---
+
+###### Task Rescheduling
+
+Move tasks that are no longer relevant for the current day.
+
+Examples:
+
+```text
+Overloaded Day
+
+Expired Schedule
+
+Changed Priorities
+```
+
+---
+
+###### Corridor Balancing
+
+Review score corridor distribution.
+
+Examples:
+
+```text
+Too many low-value tasks
+
+Insufficient high-value tasks
+
+Excessive corridor concentration
+```
+
+---
+
+###### Workload Adjustment
+
+Reduce excessive active work.
+
+Examples:
+
+```text
+Pause Tasks
+
+Defer Tasks
+
+Reschedule Tasks
+```
+
+---
+
+###### Board Cleanup
+
+Remove structural inconsistencies.
+
+Examples:
+
+```text
+Duplicate Tasks
+
+Stale Tasks
+
+Incomplete Metadata
+```
+
+---
+
+##### Outputs
+
+```text
+Prepared Board
+```
+
+The board should be ready for focused daily execution.
+
+---
+
+#### Phase 3. Daily Execution
+
+##### Purpose
+
+Execute work using the understanding established during Assessment and the structure restored during Maintenance.
+
+---
+
+##### Inputs
+
+```text
+Prepared Board
+
+Daily Focus
+```
+
+---
+
+##### Outputs
+
+```text
+Task Progress
+
+Task Completion
+
+Board State Changes
+```
+
+---
+
+### Lifecycle Summary
+
+```text
+Kanban Board
+↓
+Analytics Engine
+↓
+AnalyticsReport
+↓
+
+Assessment
+↓
+MorningReviewOutput
+↓
+
+Maintenance
+↓
+Prepared Board
+↓
+
+Daily Execution
+```
+
+---
+
+### Future Evolution
+
+Future versions may introduce automated assistance during the Maintenance phase.
+
+Examples:
+
+```text
+Suggested Classification
+
+Suggested Rescheduling
+
+Suggested Corridor Balancing
+
+Suggested Workload Reduction
+```
+
+Such capabilities remain optional and do not alter the canonical Morning Review lifecycle.
+
+---
+
+### Responsibility
+
+Review Lifecycle defines:
+
+* review phases
+* review sequence
+* maintenance responsibilities
+* execution handoff
+
+It does not define:
+
+* recommendation generation
+* task execution
+* analytical calculations
+
+Those responsibilities belong to other system components.
+
+---
+
+## 17.7 Maintenance Actions
+
+### Purpose
+
+Maintenance Actions represent the canonical actions produced during the Maintenance phase of Morning Review.
+
+They provide a standardized mechanism for describing board modifications independently of how such modifications were identified.
+
+Maintenance Actions may originate from:
+
+- manual review
+- deterministic analytics
+- future recommendation engines
+- future LLM-based assistants
+
+---
+
+### Design Principle
+
+Maintenance Actions describe proposed changes to board state.
+
+They do not perform modifications directly.
+
+```text
+Observation
+↓
+Maintenance Action
+↓
+Board Modification
+```
+
+---
+
+### Canonical Structure
+
+```yaml
+MaintenanceAction:
+
+  type:
+
+  target:
+
+  rationale:
+```
+
+---
+
+### Fields
+
+#### type
+
+Defines the category of maintenance activity.
+
+Example:
+
+```text
+CLASSIFY_TASK
+
+RESCHEDULE_TASK
+
+MOVE_TASK
+
+UPDATE_PRIORITY
+```
+
+---
+
+#### target
+
+Identifies the object affected by the action.
+
+Examples:
+
+```text
+Task
+
+Area
+
+Section
+
+Score Corridor
+```
+
+---
+
+#### rationale
+
+Provides the reason for the action.
+
+The rationale should be traceable to observations produced during Morning Review.
+
+---
+
+### Responsibility
+
+MaintenanceAction defines:
+
+- what should be changed
+- where the change should occur
+- why the change is required
+
+It does not define:
+
+- how the change is executed
+- who executes the change
+- whether the change is accepted
+
+---
+
+### 17.7.1 Maintenance Action Types
+
+#### Purpose
+
+Defines the canonical categories of maintenance activities supported by the system.
+
+---
+
+#### Task Classification
+
+```text
+CLASSIFY_TASK
+```
+
+Assign a task to an Area or Section.
+
+Examples:
+
+```text
+Inbox
+↓
+Projects
+
+Inbox
+↓
+Health
+```
+
+---
+
+#### Task Relocation
+
+```text
+MOVE_TASK
+```
+
+Move a task between sections.
+
+Examples:
+
+```text
+Backlog
+↓
+Doing
+
+Doing
+↓
+Waiting
+```
+
+---
+
+#### Task Rescheduling
+
+```text
+RESCHEDULE_TASK
+```
+
+Adjust planned execution date.
+
+Examples:
+
+```text
+Today
+↓
+Tomorrow
+
+This Week
+↓
+Next Week
+```
+
+---
+
+#### Priority Adjustment
+
+```text
+UPDATE_PRIORITY
+```
+
+Modify task priority.
+
+Examples:
+
+```text
+Priority 3
+↓
+Priority 5
+```
+
+---
+
+#### Corridor Balancing
+
+```text
+BALANCE_CORRIDOR
+```
+
+Adjust portfolio composition across score corridors.
+
+Examples:
+
+```text
+Reduce low-value tasks
+
+Increase high-value tasks
+```
+
+---
+
+#### Workload Reduction
+
+```text
+REDUCE_WORKLOAD
+```
+
+Decrease active work volume.
+
+Examples:
+
+```text
+Pause Task
+
+Defer Task
+
+Archive Task
+```
+
+---
+
+#### Board Cleanup
+
+```text
+CLEANUP_BOARD
+```
+
+Remove structural inconsistencies.
+
+Examples:
+
+```text
+Duplicate Tasks
+
+Incomplete Metadata
+
+Obsolete Tasks
+```
+
+---
+
+### 17.7.2 Maintenance Action Collection
+
+#### Purpose
+
+Defines the collection of maintenance actions produced during Morning Review.
+
+---
+
+#### Canonical Structure
+
+```yaml
+MaintenanceActionCollection:
+
+  actions:
+```
+
+---
+
+#### Design Principle
+
+Multiple observations may generate multiple maintenance actions.
+
+```text
+Morning Review
+↓
+Observations
+↓
+Maintenance Actions
+↓
+Prepared Board
+```
+
+---
+
+#### Example
+
+```yaml
+MaintenanceActionCollection:
+
+  actions:
+
+    - type: CLASSIFY_TASK
+      target: "Implement API caching"
+      rationale: "Task remains in Inbox"
+
+    - type: RESCHEDULE_TASK
+      target: "Prepare presentation"
+      rationale: "Current day is overloaded"
+
+    - type: REDUCE_WORKLOAD
+      target: "Research alternatives"
+      rationale: "Active task count exceeds target range"
+```
+
+---
+
+#### Future Evolution
+
+Future system components may automatically generate Maintenance Actions.
+
+Examples:
+
+```text
+Recommendation Engine
+
+LLM Assistant
+
+Workflow Automation
+```
+
+All such components should produce actions using the same canonical contract.
+
+---
+
+#### Responsibility
+
+MaintenanceActionCollection defines:
+
+- maintenance outputs
+- action aggregation
+- action transport between system components
+
+It does not define:
+
+- action execution
+- action prioritization
+- action approval workflows
+
+---
+
+## 17.8 Prepared Board
+
+### Purpose
+
+Prepared Board represents the target board state produced by Morning Review.
+
+It serves as the readiness contract between Morning Review and Daily Execution.
+
+A board is considered prepared when the required readiness checks have been completed and the board is suitable for focused execution.
+
+---
+
+### Canonical Structure
+
+```yaml
+PreparedBoard:
+
+  readiness_status:
+
+  readiness_checks:
+
+  daily_focus:
+```
+
+---
+
+### Design Principle
+
+Morning Review should not end with analysis.
+
+Morning Review should end with a board that is ready for execution.
+
+```text
+Analytics
+↓
+Assessment
+↓
+Maintenance
+↓
+Prepared Board
+↓
+Daily Execution
+```
+
+---
+
+### Responsibility
+
+Prepared Board defines:
+
+* execution readiness
+* board quality
+* maintenance completion
+
+It does not define:
+
+* task execution
+* recommendations
+* execution outcomes
+
+### 17.8.1 Readiness Checks
+
+#### Purpose
+
+Readiness Checks define the validations used to determine whether a board is ready for daily execution.
+
+Each check evaluates a specific aspect of board quality.
+
+---
+
+#### Canonical Structure
+
+```yaml
+ReadinessChecks:
+
+  inbox:
+
+  classification:
+
+  workload:
+
+  corridors:
+
+  focus:
+```
+
+---
+
+#### Inbox Check
+
+Validates that incoming tasks have been reviewed.
+
+Examples:
+
+```text
+Inbox Empty
+
+Inbox Reviewed
+
+Inbox Within Acceptable Range
+```
+
+---
+
+#### Classification Check
+
+Validates that tasks are assigned to appropriate Areas.
+
+Examples:
+
+```text
+No Unclassified Tasks
+
+Tags Present
+
+Area Assigned
+```
+
+---
+
+#### Workload Check
+
+Validates that active workload remains within acceptable limits.
+
+Examples:
+
+```text
+Active Tasks Within Target Range
+
+No Excessive Overload
+```
+
+---
+
+#### Corridor Check
+
+Validates that score corridor distribution remains healthy.
+
+Examples:
+
+```text
+Sufficient High-Value Tasks
+
+No Excessive Low-Value Concentration
+```
+
+---
+
+#### Focus Check
+
+Validates that Daily Focus has been identified.
+
+Examples:
+
+```text
+Daily Focus Defined
+
+Focus Supported By Analytics
+```
+
+---
+
+#### Design Principle
+
+Readiness Checks evaluate board state.
+
+They do not prescribe corrective actions.
+
+### 17.8.2 Readiness Status
+
+#### Purpose
+
+Readiness Status represents the outcome of all readiness checks.
+
+It determines whether the board is ready for execution.
+
+---
+
+#### Canonical Structure
+
+```yaml
+ReadinessStatus:
+
+  overall_status:
+
+  check_results:
+```
+
+---
+
+#### Overall Status
+
+Possible values:
+
+```text
+READY
+
+WARNING
+
+NOT_READY
+```
+
+---
+
+#### READY
+
+All critical readiness checks pass.
+
+The board is suitable for daily execution.
+
+---
+
+#### WARNING
+
+Execution may proceed, but one or more non-critical issues require attention.
+
+Examples:
+
+```text
+Minor Inbox Backlog
+
+Slight Workload Excess
+
+Moderate Corridor Imbalance
+```
+
+---
+
+#### NOT_READY
+
+Critical readiness issues remain unresolved.
+
+Examples:
+
+```text
+Large Inbox
+
+Missing Classification
+
+Severe Workload Overload
+
+No Daily Focus
+```
+
+---
+
+#### Design Principle
+
+Readiness Status should provide a simple execution signal.
+
+```text
+READY
+↓
+Execute
+
+WARNING
+↓
+Execute Carefully
+
+NOT_READY
+↓
+Complete Maintenance First
+```
+
+### 17.8.3 Readiness Criteria
+
+#### Purpose
+
+Readiness Criteria define the rules used to evaluate each readiness check.
+
+Thresholds may evolve over time without changing the Prepared Board model.
+
+---
+
+#### Inbox Criteria
+
+```text
+READY
+Inbox Empty
+
+WARNING
+1-5 Tasks
+
+NOT_READY
+More Than 5 Tasks
+```
+
+---
+
+#### Classification Criteria
+
+```text
+READY
+All Tasks Classified
+
+WARNING
+Small Number Of Unclassified Tasks
+
+NOT_READY
+Significant Number Of Unclassified Tasks
+```
+
+---
+
+#### Workload Criteria
+
+```text
+READY
+Within Target Workload Range
+
+WARNING
+Moderate Overload
+
+NOT_READY
+Severe Overload
+```
+
+---
+
+#### Corridor Criteria
+
+```text
+READY
+Corridor Distribution Within Expected Ranges
+
+WARNING
+Moderate Corridor Imbalance
+
+NOT_READY
+Severe Corridor Imbalance
+```
+
+---
+
+#### Focus Criteria
+
+```text
+READY
+Daily Focus Identified
+
+NOT_READY
+Daily Focus Missing
+```
+
+---
+
+#### Future Evolution
+
+Future versions may introduce:
+
+* configurable thresholds
+* user-specific readiness profiles
+* adaptive workload limits
+* semantic readiness evaluation
+
+Such enhancements should not alter the Prepared Board contract.
+
+---
+
+#### Design Principle
+
+Criteria may evolve.
+
+The meaning of Prepared Board should remain stable.
+
+
+---
 # Recommendation Model
 
 ---
@@ -5970,61 +8590,6 @@ Recommendation Engine is not responsible for:
 ---
 
 
-# Report Renderer
-
----
-
-## Purpose
-
-Report Renderer converts analytics results into human-readable reports.
-
-Report Renderer is the presentation layer of the Kanban Execution System.
-
-Its responsibility is to transform:
-
-```text
-AnalyticsReport
-+
-RecommendationCollection
-```
-
-into:
-
-```text
-Markdown Report
-```
-
-Report Renderer does not perform analytics calculations.
-
-Report Renderer does not generate RecommendationCollection.
-
-Report Renderer does not modify analytics results.
-
----
-
-## Position in System Architecture
-
-```text
-Task Board
-↓
-Parser
-↓
-Task Objects
-↓
-Analytics Engine
-↓
-AnalyticsReport
-↓
-Recommendation Engine
-↓
-RecommendationCollection
-↓
-Report Renderer
-↓
-Markdown Report
-```
-
----
 
 # Inputs
 
