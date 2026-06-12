@@ -742,17 +742,17 @@ FocusAttentionAnalytics evaluates how attention is distributed across the system
 
 Its purpose is to identify concentration, fragmentation, and allocation of attention.
 
-### Domain Question
+#### Domain Question
 
 ```text
 Where is attention currently directed?
 ```
 
-### Purpose
+#### Purpose
 
 Evaluate the current distribution of attention across tasks and projects.
 
-### Inputs
+#### Inputs
 
 FocusAttentionAnalytics may use:
 
@@ -762,7 +762,7 @@ FocusAttentionAnalytics may use:
 - task priority
 - task due date
 
-### Calculation
+#### Calculation
 
 FocusAttentionAnalytics evaluates:
 
@@ -772,7 +772,7 @@ FocusAttentionAnalytics evaluates:
 
 Specific calculation methods are implementation-dependent.
 
-### Interpretation
+#### Interpretation
 
 High concentration indicates that attention is focused on a relatively small number of tasks or projects.
 
@@ -780,7 +780,7 @@ High fragmentation indicates that attention is spread across too many competing 
 
 Balanced distribution indicates sustainable attention allocation.
 
-### Possible Outputs
+#### Possible Outputs
 
 Examples:
 
@@ -804,17 +804,17 @@ FocusUrgencyAnalytics evaluates time-sensitive pressure within the system.
 
 Its purpose is to identify tasks and projects that require attention due to approaching deadlines, overdue status, or other urgency signals.
 
-### Domain Question
+#### Domain Question
 
 ```text
 What requires attention soon?
 ```
 
-### Purpose
+#### Purpose
 
 Evaluate urgency pressure across tasks and projects.
 
-### Inputs
+#### Inputs
 
 FocusUrgencyAnalytics may use:
 
@@ -823,7 +823,7 @@ FocusUrgencyAnalytics may use:
 - task priority
 - task score
 
-### Calculation
+#### Calculation
 
 FocusUrgencyAnalytics evaluates:
 
@@ -834,7 +834,7 @@ FocusUrgencyAnalytics evaluates:
 
 Specific calculation methods are implementation-dependent.
 
-### Interpretation
+#### Interpretation
 
 High urgency pressure indicates a growing concentration of time-sensitive work.
 
@@ -842,7 +842,7 @@ High overdue pressure indicates an accumulation of overdue tasks requiring atten
 
 Low urgency pressure indicates that deadlines and commitments remain manageable.
 
-### Possible Outputs
+#### Possible Outputs
 
 Examples:
 
@@ -857,6 +857,69 @@ FocusUrgencyAnalytics:
 ```
 
 Output structure is implementation-dependent.
+
+---
+
+### 6.2.3 FocusPriorityAnalytics
+
+FocusPriorityAnalytics evaluates the relative importance of tasks and projects.
+
+Its purpose is to identify where attention should be directed based on value, impact, and priority signals.
+
+#### Domain Question
+
+```text
+What deserves attention first?
+```
+
+#### Purpose
+
+Evaluate the relative importance of tasks and projects.
+
+#### Inputs
+
+FocusPriorityAnalytics may use:
+
+- task priority
+- task score
+- project membership
+- strategic alignment indicators
+
+#### Calculation
+
+FocusPriorityAnalytics evaluates:
+
+- priority concentration
+- priority distribution
+- concentration of high-value work
+- concentration of low-value work
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+High concentration of high-priority work indicates that a significant portion of the system's value is concentrated in a limited number of tasks or projects.
+
+High concentration of low-priority work may indicate misallocation of attention and execution capacity.
+
+Balanced priority distribution indicates that effort is aligned with expected value.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+FocusPriorityAnalytics:
+
+  high_priority_ratio: 0.42
+
+  priority_concentration_score: 0.68
+
+  high_value_projects: 4
+```
+
+Output structure is implementation-dependent.
+
 
 ---
 
