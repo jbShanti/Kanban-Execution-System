@@ -1040,6 +1040,134 @@ Output structure is implementation-dependent.
 
 ---
 
+### 6.3.2 OverduePressureAnalytics
+
+OverduePressureAnalytics evaluates the accumulation of overdue work and deadline-related execution pressure.
+
+Its purpose is to identify situations where commitments are being missed or where approaching deadlines create increasing execution risk.
+
+#### Domain Question
+
+```text
+Are commitments being missed?
+```
+
+#### Purpose
+
+Evaluate deadline pressure and the accumulation of overdue work within the system.
+
+#### Inputs
+
+OverduePressureAnalytics may use:
+
+- task state
+- due date
+- task score
+- project membership
+
+#### Calculation
+
+OverduePressureAnalytics evaluates:
+
+- overdue task accumulation
+- overdue work concentration
+- deadline pressure
+- overdue trend
+- commitment pressure
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+Low overdue pressure indicates that commitments are generally being fulfilled within expected timeframes.
+
+Elevated overdue pressure indicates growing execution risk and increasing difficulty in meeting commitments.
+
+Persistent overdue accumulation may indicate structural execution problems requiring attention.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+OverduePressureAnalytics:
+
+  overdue_pressure_score: 0.58
+
+  overdue_tasks: 12
+
+  overdue_ratio: 0.21
+```
+
+Output structure is implementation-dependent.
+
+---
+
+### 6.3.3 ExecutionFlowAnalytics
+
+ExecutionFlowAnalytics evaluates how effectively work progresses through the system.
+
+Its purpose is to identify flow efficiency, execution bottlenecks, and accumulation of work within operational states.
+
+#### Domain Question
+
+```text
+Is work moving through the system effectively?
+```
+
+#### Purpose
+
+Evaluate the movement of work through the system and identify constraints that may reduce execution effectiveness.
+
+#### Inputs
+
+ExecutionFlowAnalytics may use:
+
+- task state
+- state transitions
+- task age
+- task estimates
+- project membership
+
+#### Calculation
+
+ExecutionFlowAnalytics evaluates:
+
+- flow efficiency
+- work accumulation
+- state distribution
+- execution bottlenecks
+- flow stability
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+Healthy execution flow indicates that work progresses through operational states without significant accumulation or blockage.
+
+Work accumulation in specific states may indicate execution bottlenecks and reduced delivery effectiveness.
+
+Persistent flow instability may indicate structural process issues requiring attention.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+ExecutionFlowAnalytics:
+
+  flow_efficiency_score: 0.77
+
+  bottleneck_states: 2
+
+  flow_stability_score: 0.69
+```
+
+Output structure is implementation-dependent.
+```
+
+---
+
 ## 6.4 Strategic Analytics
 
 ## 6.5 Data Quality Analytics
