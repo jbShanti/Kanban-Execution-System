@@ -1124,7 +1124,6 @@ Evaluate the movement of work through the system and identify constraints that m
 ExecutionFlowAnalytics may use:
 
 - task state
-- state transitions
 - task age
 - task estimates
 - project membership
@@ -1164,11 +1163,247 @@ ExecutionFlowAnalytics:
 ```
 
 Output structure is implementation-dependent.
-```
 
 ---
 
 ## 6.4 Strategic Analytics
+
+Strategic Analytics evaluate the long-term allocation of effort and value creation within the system.
+
+Their purpose is to assess whether work is aligned with strategic objectives and whether resources are being invested in the most valuable areas.
+
+### Domain Question
+
+```text
+Are we investing effort in the right things?
+```
+
+### Scope
+
+Strategic Analytics evaluate strategic alignment, investment distribution, portfolio composition, and long-term value creation.
+
+They do not evaluate attention allocation, execution performance, data quality, or recommendation generation.
+
+### Analytics Objects
+
+Strategic Analytics consist of:
+
+- StrategicAlignmentAnalytics
+- ProjectInvestmentAnalytics
+- PortfolioBalanceAnalytics
+
+### Responsibilities
+
+Strategic Analytics may evaluate:
+
+- strategic alignment
+- investment distribution
+- portfolio composition
+- value concentration
+- value diversification
+- long-term sustainability
+
+### Design Principle
+
+Strategic Analytics determine whether effort and investment are aligned with intended outcomes and long-term objectives.
+
+They focus on value creation and strategic direction rather than operational execution.
+
+---
+
+### 6.4.1 StrategicAlignmentAnalytics
+
+StrategicAlignmentAnalytics evaluates how strongly current work is aligned with defined Goals.
+
+Its purpose is to identify whether effort is being invested in activities that contribute to strategic objectives.
+
+#### Domain Question
+
+```text
+Is current work aligned with strategic goals?
+```
+
+#### Purpose
+
+Evaluate the degree of alignment between work and the Goals defined within the system.
+
+#### Inputs
+
+StrategicAlignmentAnalytics may use:
+
+- goals
+- task descriptions
+- project descriptions
+- task score
+- project membership
+
+#### Calculation
+
+StrategicAlignmentAnalytics evaluates:
+
+- goal alignment
+- concentration of aligned work
+- concentration of unaligned work
+- goal coverage
+
+Alignment assessment may be supported by LLM-based semantic analysis.
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+High alignment indicates that a significant portion of effort contributes to defined Goals.
+
+Low alignment indicates that effort may be dispersed across activities with limited strategic relevance.
+
+Poor goal coverage may indicate that important Goals are insufficiently supported by active work.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+StrategicAlignmentAnalytics:
+
+  alignment_score: 0.81
+
+  aligned_tasks_ratio: 0.73
+
+  goal_coverage_score: 0.68
+```
+
+Output structure is implementation-dependent.
+
+
+---
+
+### 6.4.2 ProjectInvestmentAnalytics
+
+ProjectInvestmentAnalytics evaluates how effort is distributed across projects and strategic goals.
+
+Its purpose is to identify where the system is investing execution capacity and whether investment distribution reflects intended priorities.
+
+#### Domain Question
+
+```text
+Where are we investing effort?
+```
+
+#### Purpose
+
+Evaluate the distribution of effort across projects and goals.
+
+#### Inputs
+
+ProjectInvestmentAnalytics may use:
+
+- goals
+- project membership
+- task score
+- task state
+- task estimates
+
+#### Calculation
+
+ProjectInvestmentAnalytics evaluates:
+
+- effort distribution
+- project investment concentration
+- goal investment concentration
+- investment imbalance
+- concentration of active work
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+Balanced investment indicates that effort is distributed in accordance with intended priorities and strategic objectives.
+
+Excessive concentration may indicate overinvestment in a limited number of projects or goals.
+
+Insufficient investment may indicate that important projects or goals are receiving inadequate execution capacity.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+ProjectInvestmentAnalytics:
+
+  investment_concentration_score: 0.71
+
+  active_goals: 4
+
+  dominant_goal_ratio: 0.46
+```
+
+Output structure is implementation-dependent.
+
+---
+
+### 6.4.3 PortfolioBalanceAnalytics
+
+PortfolioBalanceAnalytics evaluates the overall balance and diversification of the strategic portfolio.
+
+Its purpose is to identify structural imbalances that may reduce long-term sustainability and strategic resilience.
+
+#### Domain Question
+
+```text
+Is the strategic portfolio balanced?
+```
+
+#### Purpose
+
+Evaluate the balance of effort and investment across the portfolio of goals and projects.
+
+#### Inputs
+
+PortfolioBalanceAnalytics may use:
+
+- goals
+- project membership
+- task score
+- task state
+- strategic alignment indicators
+
+#### Calculation
+
+PortfolioBalanceAnalytics evaluates:
+
+- portfolio balance
+- goal diversification
+- project diversification
+- concentration risk
+- portfolio sustainability
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+Balanced portfolios indicate that effort is distributed across strategic objectives in a sustainable manner.
+
+Excessive concentration may indicate strategic dependency on a limited number of goals or projects.
+
+Insufficient diversification may reduce adaptability and increase long-term strategic risk.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+PortfolioBalanceAnalytics:
+
+  portfolio_balance_score: 0.76
+
+  diversification_score: 0.69
+
+  concentration_risk_score: 0.24
+```
+
+Output structure is implementation-dependent.
+
+---
 
 ## 6.5 Data Quality Analytics
 
