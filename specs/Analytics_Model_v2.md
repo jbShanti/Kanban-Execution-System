@@ -1365,7 +1365,6 @@ PortfolioBalanceAnalytics may use:
 - project membership
 - task score
 - task state
-- strategic alignment indicators
 
 #### Calculation
 
@@ -1406,6 +1405,237 @@ Output structure is implementation-dependent.
 ---
 
 ## 6.5 Data Quality Analytics
+
+Data Quality Analytics evaluate the completeness, consistency, and reliability of system data.
+
+Their purpose is to identify data quality issues that may reduce the accuracy of analytics, summaries, recommendations, and decision-making.
+
+### Domain Question
+
+```text
+Can the system trust its own data?
+```
+
+### Scope
+
+Data Quality Analytics evaluate data completeness, consistency, freshness, and structural integrity.
+
+They do not evaluate attention allocation, execution performance, strategic alignment, or recommendation generation.
+
+### Analytics Objects
+
+Data Quality Analytics consist of:
+
+- DataCompletenessAnalytics
+- DataConsistencyAnalytics
+- DataFreshnessAnalytics
+
+### Responsibilities
+
+Data Quality Analytics may evaluate:
+
+- metadata completeness
+- structural consistency
+- data freshness
+- missing information
+- conflicting information
+- analytical reliability
+
+### Design Principle
+
+Data Quality Analytics determine whether system data is sufficiently reliable to support analytics, summaries, recommendations, and decisions.
+
+---
+
+### 6.5.1 DataCompletenessAnalytics
+
+DataCompletenessAnalytics evaluates whether required information is present within the system.
+
+Its purpose is to identify missing data that may reduce analytical reliability and decision quality.
+
+#### Domain Question
+
+```text
+Is required information present?
+```
+
+#### Purpose
+
+Evaluate the completeness of task, project, and goal data used by the Analytics Engine.
+
+#### Inputs
+
+DataCompletenessAnalytics may use:
+
+- tasks
+- projects
+- goals
+- metadata fields
+
+#### Calculation
+
+DataCompletenessAnalytics evaluates:
+
+- metadata completeness
+- missing required fields
+- completeness of task data
+- completeness of project data
+- completeness of goal data
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+High completeness indicates that required information is available for reliable analysis.
+
+Low completeness indicates that missing information may reduce analytical confidence and recommendation quality.
+
+Significant data gaps may limit the ability of the system to generate accurate insights.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+DataCompletenessAnalytics:
+
+  completeness_score: 0.87
+
+  missing_fields: 12
+
+  incomplete_tasks_ratio: 0.09
+```
+
+Output structure is implementation-dependent.
+
+---
+
+### 6.5.2 DataConsistencyAnalytics
+
+DataConsistencyAnalytics evaluates whether information within the system is internally consistent.
+
+Its purpose is to identify contradictions, structural conflicts, and data anomalies that may reduce analytical reliability.
+
+#### Domain Question
+
+```text
+Is information internally consistent?
+```
+
+#### Purpose
+
+Evaluate the consistency of task, project, goal, and metadata information used by the Analytics Engine.
+
+#### Inputs
+
+DataConsistencyAnalytics may use:
+
+- tasks
+- projects
+- goals
+- metadata fields
+
+#### Calculation
+
+DataConsistencyAnalytics evaluates:
+
+- metadata consistency
+- state consistency
+- structural consistency
+- cross-object consistency
+- data anomalies
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+High consistency indicates that system information is coherent and can be reliably interpreted by analytics and recommendation components.
+
+Low consistency indicates the presence of contradictions or structural conflicts that may reduce analytical confidence.
+
+Persistent inconsistencies may indicate process issues, modeling problems, or outdated information.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+DataConsistencyAnalytics:
+
+  consistency_score: 0.91
+
+  conflicting_items: 4
+
+  anomaly_ratio: 0.03
+```
+
+Output structure is implementation-dependent.
+
+---
+
+### 6.5.3 DataFreshnessAnalytics
+
+DataFreshnessAnalytics evaluates whether system information remains sufficiently current for reliable analysis and decision-making.
+
+Its purpose is to identify stale data that may reduce analytical relevance and recommendation quality.
+
+#### Domain Question
+
+```text
+Is information current enough to be trusted?
+```
+
+#### Purpose
+
+Evaluate the freshness of task, project, goal, and metadata information used by the Analytics Engine.
+
+#### Inputs
+
+DataFreshnessAnalytics may use:
+
+- tasks
+- projects
+- goals
+- metadata fields
+- update timestamps
+
+#### Calculation
+
+DataFreshnessAnalytics evaluates:
+
+- data freshness
+- stale information accumulation
+- update recency
+- freshness distribution
+- freshness risk
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+High freshness indicates that system information is regularly maintained and suitable for reliable analysis.
+
+Low freshness indicates that significant portions of the system may no longer accurately reflect current reality.
+
+Persistent freshness issues may reduce confidence in analytics, summaries, recommendations, and decisions.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+DataFreshnessAnalytics:
+
+  freshness_score: 0.84
+
+  stale_items: 18
+
+  stale_ratio: 0.11
+```
+
+Output structure is implementation-dependent.
+
+---
 
 ## 6.6 Corridor Analytics
 
