@@ -785,18 +785,78 @@ Balanced distribution indicates sustainable attention allocation.
 Examples:
 
 ```yaml
-AttentionConcentration:
-  value: 0.72
+result:
 
-AttentionFragmentation:
-  value: 0.18
+  concentration_score: 0.72
 
-AttentionDistribution:
+  fragmentation_score: 0.18
+
   dominant_projects: 3
 ```
 
 Output structure is implementation-dependent.
 
+---
+
+### 6.2.2 FocusUrgencyAnalytics
+
+FocusUrgencyAnalytics evaluates time-sensitive pressure within the system.
+
+Its purpose is to identify tasks and projects that require attention due to approaching deadlines, overdue status, or other urgency signals.
+
+### Domain Question
+
+```text
+What requires attention soon?
+```
+
+### Purpose
+
+Evaluate urgency pressure across tasks and projects.
+
+### Inputs
+
+FocusUrgencyAnalytics may use:
+
+- task state
+- due date
+- task priority
+- task score
+
+### Calculation
+
+FocusUrgencyAnalytics evaluates:
+
+- urgency pressure
+- overdue pressure
+- deadline proximity
+- concentration of urgent work
+
+Specific calculation methods are implementation-dependent.
+
+### Interpretation
+
+High urgency pressure indicates a growing concentration of time-sensitive work.
+
+High overdue pressure indicates an accumulation of overdue tasks requiring attention.
+
+Low urgency pressure indicates that deadlines and commitments remain manageable.
+
+### Possible Outputs
+
+Examples:
+
+```yaml
+FocusUrgencyAnalytics:
+
+  urgency_pressure_score: 0.81
+
+  overdue_pressure_score: 0.34
+
+  urgent_tasks: 7
+```
+
+Output structure is implementation-dependent.
 
 ---
 
