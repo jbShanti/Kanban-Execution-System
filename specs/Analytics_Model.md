@@ -152,7 +152,7 @@ AnalyticsReport:
     datetime
 
   summary:
-    SummaryAnalytics
+    ExecutiveSummary
 
   focus:
 
