@@ -135,544 +135,90 @@ how analytics are presented
 
 ---
 
-# 1.3 Analytics Sections
-
-## Purpose
-
-AnalyticsReport is organized into analytical sections.
-
-Each section supports one decision domain.
-
-Sections define where analytics results are stored.
-
-Sections do not define calculations.
-
-Calculations are defined by the Analytics Engine.
-
-Presentation is defined by the Report Renderer.
-
----
-
-## Canonical Structure
-
-```yaml
-AnalyticsReport:
-
-  focus:
-    ...
-
-  tactical:
-    ...
-
-  strategic:
-    ...
-
-  data_quality:
-    ...
-
-  corridors:
-    ...
-```
-
----
-
-## Focus Analytics
-
-### Purpose
-
-Support daily and short-term execution decisions.
-
-### Questions
-
-* What should be done today?
-* What should be done within the next three days?
-* Which tasks should be prioritized?
-* Which tasks may be safely deferred?
-* What urgent risks require attention?
-
----
-
-## Tactical Analytics
-
-### Purpose
-
-Support workload and execution flow management.
-
-### Questions
-
-* Is the system overloaded?
-* Is attention aligned with importance?
-* Is workload balanced?
-* Are there blocked tasks?
-* What is the current execution velocity?
-
----
-
-## Strategic Analytics
-
-### Purpose
-
-Support long-term execution and value allocation decisions.
-
-### Questions
-
-* Where is value concentrated?
-* How is the board evolving?
-* Is execution momentum improving?
-* Is strategic debt accumulating?
-* Does the current structure support meaningful results?
-
----
-
-## Data Quality Analytics
-
-### Purpose
-
-Measure analytics reliability.
-
-### Questions
-
-* How complete is scoring coverage?
-* How complete are task estimates?
-* Can analytics results be trusted?
-
----
-
-## Corridor Analytics
-
-### Purpose
-
-Support score-based workload balancing.
-
-### Contains
-
-* corridor statistics
-* corridor targets
-* corridor status
-* corridor deltas
-* score distribution metrics
-
-Corridor Analytics are configuration-driven through:
-
-```text
-scoring.yaml
-```
-
----
-
-## Design Principle
-
-Domains define:
-
-```text
-Why analytics exist.
-```
-
-Sections define:
-
-```text
-Where analytics are stored.
-```
-
-Analytics Engine defines:
-
-```text
-How analytics are calculated.
-```
-
-Report Renderer defines:
-
-```text
-How analytics are presented.
-```
-
-
----
-
 # 2. AnalyticsReport
 
-## Purpose
+AnalyticsReport is the canonical output artifact produced by the Analytics Engine.
 
-AnalyticsReport is the canonical output of the Analytics Engine.
+It aggregates all calculated analytics, synthesized conclusions, and generated recommendations into a single structured report.
 
-Every analytics calculation produces exactly one AnalyticsReport object.
+AnalyticsReport serves as the primary interface between the Analytics Engine and downstream consumers such as review protocols, dashboards, agents, and decision-support workflows.
 
-AnalyticsReport stores analytical results.
-
-AnalyticsReport does not contain:
-
-* recommendation logic
-* rendering rules
-* report formatting
-* business logic
-
-AnalyticsReport is presentation-independent.
-
----
-
-## Canonical Structure
+## Structure
 
 ```yaml
 AnalyticsReport:
 
-  generated_at: 2026-06-06
-
-  focus:
-    ...
-
-  tactical:
-    ...
-
-  strategic:
-    ...
-
-  data_quality:
-    ...
-
-  corridors:
-    ...
+  generated_at:
+    datetime
 
   summary:
-    ...
+    SummaryAnalytics
+
+  focus:
+
+    attention:
+      FocusAttentionAnalytics
+
+    urgency:
+      FocusUrgencyAnalytics
+
+    priority:
+      FocusPriorityAnalytics
+
+  tactical:
+    TacticalAnalytics
+
+  strategic:
+    StrategicAnalytics
+
+  data_quality:
+    DataQualityAnalytics
+
+  corridors:
+    CorridorsAnalytics
+
+  recommendations:
+    Recommendations
 ```
 
----
+## Design Principles
 
-## Sections
+### Single Source of Truth
 
-### focus
+AnalyticsReport is the only canonical representation of analytical results.
 
-Contains analytics supporting daily and short-term execution decisions.
+All downstream consumers should operate on AnalyticsReport rather than recalculating metrics independently.
 
-Examples:
+### Separation of Concerns
 
-* attention allocation
-* focus candidates
-* urgent tasks
-* overdue risk
-* near-term priorities
+AnalyticsReport stores analytical outputs only.
 
----
+Raw task data remains within the Kanban system and is not duplicated inside the report.
 
-### tactical
+### Hierarchical Organization
 
-Contains analytics supporting workload and execution flow management.
+Analytics are grouped by decision horizon:
 
-Examples:
+- Focus — immediate attention allocation decisions.
+- Tactical — execution management decisions.
+- Strategic — long-term system evolution decisions.
+- Data Quality — assessment of model reliability.
+- Corridors — acceptable operating ranges and deviations.
 
-* overload detection
-* WIP analysis
-* blocked work
-* delegated work
-* execution velocity
-* workload balance
+### Extensibility
 
----
-#### Tactical Workload Status
+New analytics objects may be added within existing sections without breaking the top-level report contract.
 
-##### Purpose
+New sections should be introduced only when they represent a fundamentally distinct decision domain.
 
-Represents current workload status relative to configured workload targets.
+### Recommendation Integration
 
-Used to detect:
+Recommendations are derived from analytics and stored separately from analytical observations.
 
-* overload
-* underload
-* workload balance
+Analytics describe the system state.
 
-Supports Tactical Analytics decisions.
+Recommendations describe proposed actions.
 
----
-
-##### Structure
-
-```yaml
-tactical:
-
-  workload:
-    active: 63
-
-  target:
-    min: 60
-    max: 70
-
-  status:
-    delta: 0
-    state: ok
-```
-
----
-
-##### workload
-
-###### active
-
-Number of active tasks.
-
-Includes:
-
-```text
-[ ]
-[/]
-```
-
-Excludes:
-
-```text
-[x]
-[-]
-[<]
-[>]
-```
-
-Archived tasks are excluded.
-
----
-
-##### target
-
-###### Purpose
-
-Defines the desired active workload range.
-
-Source:
-
-```text
-scoring.yaml
-```
-
----
-
-###### Structure
-
-```yaml
-target:
-  min: 60
-  max: 70
-```
-
----
-
-##### status
-
-###### Purpose
-
-Represents workload health relative to the configured target range.
-
----
-
-###### Structure
-
-```yaml
-status:
-  delta: 0
-  state: ok
-```
-
----
-
-###### State Values
-
-Supported values:
-
-```text
-ok
-underloaded
-overloaded
-```
-
----
-
-###### Delta Calculation
-
-Within target:
-
-```text
-delta = 0
-state = ok
-```
-
----
-
-Below target:
-
-```text
-delta = active - target.min
-state = underloaded
-```
-
-Example:
-
-```text
-active = 52
-target.min = 60
-
-delta = -8
-```
-
----
-
-Above target:
-
-```text
-delta = active - target.max
-state = overloaded
-```
-
-Example:
-
-```text
-active = 81
-target.max = 70
-
-delta = +11
-```
-
----
-
-##### Design Principle
-
-Workload targets are configuration-driven.
-
-Targets must be loaded from:
-
-```text
-scoring.yaml
-```
-
-Analytics engines must never use hardcoded workload targets.
-
-```
-```
-
-
-
----
-
-### strategic
-
-Contains analytics supporting long-term execution and value allocation decisions.
-
-Examples:
-
-* value concentration
-* board evolution
-* active value share
-* execution momentum
-* execution debt
-* board health
-
----
-
-### data_quality
-
-Contains analytics describing data completeness and reliability.
-
-Examples:
-
-* score coverage
-* estimate coverage
-* metadata completeness
-* analytics confidence indicators
-
----
-
-### corridors
-
-Contains score corridor analytics.
-
-Defined by:
-
-```text
-scoring.yaml
-```
-
-Contains:
-
-* corridor statistics
-* corridor targets
-* corridor status
-* corridor deltas
-* score distribution metrics
-
----
-
-### summary
-
-Contains a concise executive overview of the current board state.
-
-Purpose:
-
-Provide a human-readable summary of the most important analytical findings.
-
-The summary is intended for rapid review and should allow a user to understand the current situation without inspecting individual analytics sections.
-
-The summary may aggregate signals from:
-
-* focus analytics
-* tactical analytics
-* strategic analytics
-* data quality analytics
-* corridor analytics
-
----
-
-#### Design Principles
-
-The summary is:
-
-* concise
-* human-oriented
-* decision-oriented
-
-The summary is not:
-
-* a complete analytics report
-* a source of truth
-* a replacement for detailed analytics sections
-
-Detailed analytics must remain within their respective sections.
-
----
-
-#### Example
-
-```yaml
-summary:
-
-  board_health: yellow
-
-  primary_signal:
-    WIP overload detected
-
-  secondary_signal:
-    3 high-score overdue tasks
-
-  focus_recommendation:
-    Reduce active workload before starting new work
-```
-
----
-
-#### Responsibility
-
-Analytics Engine:
-
-```text
-Produces summary signals.
-```
-
-Report Renderer:
-
-```text
-Determines how summary information is presented.
-```
-
-Recommendation Engine:
-
-```text
-May use summary signals as recommendation inputs.
-```
 ---
 
 # 2.1 Analytics Design Principles
@@ -3518,7 +3064,7 @@ Health does not measure:
 
 ---
 
-# 8. Recommendation Model
+# 7. Recommendation Model
 
 ---
 
@@ -3789,7 +3335,7 @@ The following concerns are outside its scope:
 * user interface behaviour
 
 These responsibilities belong to other system components.
-  
+
 
 
 
