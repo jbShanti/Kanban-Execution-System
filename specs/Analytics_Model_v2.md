@@ -734,6 +734,12 @@ They do not evaluate execution performance, strategic alignment, or data quality
 
 Those responsibilities belong to Tactical, Strategic, and Data Quality Analytics respectively.
 
+### Scope
+
+Focus Analytics evaluate attention allocation, urgency, and priority.
+
+They do not evaluate execution performance, strategic alignment, data quality, or recommendation generation.
+
 ---
 
 ### 6.2.1 FocusAttentionAnalytics
@@ -924,6 +930,115 @@ Output structure is implementation-dependent.
 ---
 
 ## 6.3 Tactical Analytics
+
+Tactical Analytics evaluate execution performance and operational health.
+
+Their purpose is to assess how effectively work is progressing through the system and identify operational constraints that may impact execution.
+
+### Domain Question
+
+```text
+How is execution progressing?
+```
+
+### Scope
+
+Tactical Analytics evaluate execution performance, workload sustainability, operational bottlenecks, and delivery pressure.
+
+They do not evaluate attention allocation, strategic alignment, data quality, or recommendation generation.
+
+### Analytics Objects
+
+Tactical Analytics consist of:
+
+- WorkloadHealthAnalytics
+- OverduePressureAnalytics
+- ExecutionFlowAnalytics
+
+### Responsibilities
+
+Tactical Analytics may evaluate:
+
+- workload sustainability
+- execution capacity
+- overdue work
+- delivery pressure
+- execution flow
+- operational bottlenecks
+- work accumulation
+
+### Design Principle
+
+Tactical Analytics determine how effectively work is being executed.
+
+They focus on operational performance rather than attention allocation, strategic value, or data quality.
+
+---
+
+### 6.3.1 WorkloadHealthAnalytics
+
+WorkloadHealthAnalytics evaluates the sustainability of the current workload.
+
+Its purpose is to identify whether the volume and distribution of active work remain within healthy operational limits.
+
+#### Domain Question
+
+```text
+Is the current workload sustainable?
+```
+
+#### Purpose
+
+Evaluate the operational health of the workload and identify conditions that may lead to overload, inefficiency, or execution degradation.
+
+#### Inputs
+
+WorkloadHealthAnalytics may use:
+
+- task state
+- task score
+- project membership
+- active task count
+- task estimates
+
+#### Calculation
+
+WorkloadHealthAnalytics evaluates:
+
+- workload volume
+- workload distribution
+- concentration of active work
+- work-in-progress pressure
+- workload sustainability
+
+Specific calculation methods are implementation-dependent.
+
+#### Interpretation
+
+Healthy workload conditions indicate that active work remains manageable and execution capacity is not significantly exceeded.
+
+High workload pressure may indicate excessive work-in-progress, reduced focus, and increased execution risk.
+
+Persistent overload may lead to delivery delays and reduced execution quality.
+
+#### Possible Outputs
+
+Examples:
+
+```yaml
+WorkloadHealthAnalytics:
+
+  workload_health_score: 0.74
+
+  active_tasks: 18
+
+  work_in_progress_pressure: 0.63
+```
+
+Output structure is implementation-dependent.
+
+
+---
 
 ## 6.4 Strategic Analytics
 
