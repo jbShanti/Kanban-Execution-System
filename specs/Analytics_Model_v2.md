@@ -5,14 +5,6 @@ updated: 2026-06-06
 Description:
 Canonical analytics output model for the Kanban Execution System.
 
-Purpose:
-
-* define deterministic analytics outputs
-* separate analytics data from report presentation
-* provide stable contracts for future parsers
-* support dashboards, reports and automation
-* ensure consistency across implementations
-
 This document defines:
 
 * analytics report structure
@@ -28,7 +20,18 @@ This document defines:
 
 ---
 
-# 1. Core Philosophy
+# 1. Purpose
+
+* define deterministic analytics outputs
+* separate analytics data from report presentation
+* provide stable contracts for future parsers
+* support dashboards, reports and automation
+* ensure consistency across implementations
+
+
+---
+
+# 2. Core Principles
 
 Analytics must produce:
 
@@ -60,9 +63,15 @@ Examples of presentation:
 
 All presentations must be generated from the same analytics model.
 
+## 2.1 Decision-Oriented Analytics
+## 2.2 Separation of Concerns
+## 2.3 Traceability
+## 2.4 Actionability
+
+
 ---
 
-# 2 Analytics Domains
+# 3 Analytics Domains
 
 ## Purpose
 
@@ -70,7 +79,7 @@ Analytics are organized into four decision domains.
 Each domain answers a different class of questions.
 Analytics should support decision-making rather than metric collection.
 
-## Domain 1 — Focus Decisions
+## Domain 1 — Focus Domain
 
 Purpose:
 What should be done today and within the next three days?
@@ -83,7 +92,7 @@ Which tasks provide the highest strategic value right now?
 How many tasks are overdue, due today or due within the next three days?
 What is the total score value of overdue and urgent tasks?
 
-## Domain 2 — Tactical Decisions
+## Domain 2 — Tactical Domain
 
 Purpose:
 How should the current workload be managed?
@@ -97,7 +106,7 @@ How many tasks are blocked, delegated or waiting?
 What is the current execution velocity?
 What is the ratio of completed, cancelled and archived tasks?
 
-## Domain 3 — Strategic Decisions
+## Domain 3 — Strategic Domain
 
 Purpose:
 Is the current board structure leading toward meaningful results?
@@ -111,7 +120,7 @@ Is value excessively concentrated in a small number of tasks?
 Is execution momentum increasing or decreasing?
 What strategic execution debt is accumulating?
 
-## Domain 4 — Data Quality
+## Domain 4 — Data Quality Domain
 
 Purpose:
 Can the analytics be trusted?
@@ -122,7 +131,7 @@ What percentage of tasks have no estimate?
 How complete is score coverage across total board value?
 
 
-## Domain 5 — Corridor Analytics
+## Domain 5 — Corridor Domain
 
 Purpose:
 To be added
@@ -289,7 +298,7 @@ Each layer has a single responsibility and must not assume responsibilities belo
 
 ---
 
-# 4. Analytics Processing Pipeline
+# 5. Analytics Processing Pipeline
 
 ## Purpose
 
@@ -588,22 +597,23 @@ Those responsibilities belong to other system components.
 
 ---
 
-# 5. Analytics Objects
+# 6. Analytics Objects
+## 6.1 Analytics Object Pattern
 
-## 5.1 Focus Analytics
+## 6.2 Focus Analytics
 
-## 5.2 Tactical Analytics
+## 6.3 Tactical Analytics
 
-## 5.3 Strategic Analytics
+## 6.4 Strategic Analytics
 
-## 5.4 Data Quality Analytics
+## 6.5 Data Quality Analytics
 
-## 5.5 Corridor Analytics
+## 6.6 Corridor Analytics
 
 
-# 6. ExecutiveSummary
+# 7. ExecutiveSummary
 
-# 7. Recommendations
+# 8. Recommendations
 ---
 
 ## Purpose
@@ -878,7 +888,7 @@ These responsibilities belong to other system components.
 
 ---
 
-# 8. AnalyticsReport
+# 9. AnalyticsReport
 
 ## Purpose
 
@@ -1069,7 +1079,7 @@ Those responsibilities belong to other system components.
 
 ---
 
-## 8.1 Corridors
+## 9.1 Corridors
 
 ### Purpose
 
@@ -1197,7 +1207,7 @@ Those concerns belong to other analytics components.
 
 ---
 
-## 8.2 SummaryAnalytics
+## 9.2 SummaryAnalytics
 
 ### Purpose
 
@@ -1372,7 +1382,7 @@ A reader should be able to understand the most important conclusions of the repo
 
 ---
 
-## 8.3. CorridorAnalytics
+## 9.3. CorridorAnalytics
 
 ### Purpose
 
