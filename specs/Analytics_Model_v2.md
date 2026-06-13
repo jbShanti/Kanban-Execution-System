@@ -16,7 +16,6 @@ Description: |-
 
 # ANALYTICS MODEL V2
 
----
 
 # 1. Purpose
 
@@ -65,7 +64,6 @@ All presentations must be generated from the same analytics model.
 ## 2.2 Separation of Concerns
 ## 2.3 Traceability
 ## 2.4 Actionability
-
 
 ---
 
