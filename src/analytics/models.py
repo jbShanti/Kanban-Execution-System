@@ -169,6 +169,14 @@ class HealthWarning:
     message: str
 
 
+@dataclass(slots=True)
+class OverloadSignal:
+    """Represents a workload overload warning for a specific section."""
+    section_name: str
+    severity: str  # "WARNING" (near limit) or "CRITICAL" (over limit)
+    message: str
+
+
 @dataclass(slots=True, frozen=True)
 class BoardHealthReport:
     board_health_score: float
@@ -180,6 +188,7 @@ class BoardHealthReport:
     top_attention_tasks: list[AttentionScore]
 
     warnings: list[HealthWarning] 
+    overload_signals: list[OverloadSignal] = field(default_factory=lambda: list[OverloadSignal]())
     
 @dataclass(slots=True, frozen=True)
 class TaskMetrics:

@@ -103,6 +103,7 @@ def test_build_board_health_report():
         attention_scores=attention_scores,
         stale_tasks=stale_tasks,
         wip_statuses=wip_statuses,
+        overload_signals=[]
     )
 
     assert report.wip_violations == 1
@@ -154,6 +155,7 @@ def test_health_score_never_goes_below_zero():
         attention_scores=[],
         stale_tasks=stale_tasks,
         wip_statuses=[],
+        overload_signals=[],
     )
 
     assert report.board_health_score == 0.0
@@ -165,6 +167,7 @@ def test_health_report_without_problems():
         attention_scores=[],
         stale_tasks=[],
         wip_statuses=[],
+        overload_signals=[],
     )
 
     assert report.board_health_score == 100.0

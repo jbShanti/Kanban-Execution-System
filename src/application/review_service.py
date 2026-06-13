@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 
 from src.analytics.calculators.wip_metrics import calculate_wip_metrics
+from src.analytics.calculators.overload_detector import detect_overload
+
 
 from src.analytics.attention_scoring import (
     calculate_attention_scores,
@@ -51,6 +53,7 @@ def run_review(
     )
 
     wip_statuses = calculate_wip_metrics(board)
+    overload_signals = detect_overload(wip_statuses)  # <-- НОВАЯ СТРОКА
 
     stale_tasks = calculate_stale_tasks(
         tasks,
@@ -71,6 +74,7 @@ def run_review(
         attention_scores=attention_scores,
         stale_tasks=stale_tasks,
         wip_statuses=wip_statuses,
+        overload_signals=overload_signals,
     )
 
     return render_markdown_report(

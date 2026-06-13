@@ -7,6 +7,7 @@ from src.analytics.models import (
     PriorityScore,
     StaleTask,
     WipStatus,
+    OverloadSignal
 )
 from src.analytics.stale_analytics import (
     ACTIVE_EXECUTION_SECTION_TYPES,
@@ -19,6 +20,7 @@ def build_board_health_report(
     attention_scores: list[AttentionScore],
     stale_tasks: list[StaleTask],
     wip_statuses: list[WipStatus],
+    overload_signals: list[OverloadSignal] | None = None,
 ) -> BoardHealthReport:
     score = 100.0
 
@@ -78,4 +80,5 @@ def build_board_health_report(
         top_priority_tasks=priority_scores[:5],
         top_attention_tasks=attention_scores[:5],
         warnings=warnings,
+        overload_signals=overload_signals
     )
