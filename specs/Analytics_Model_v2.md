@@ -1597,7 +1597,13 @@ DataFreshnessAnalytics may use:
 - projects
 - goals
 - metadata fields
-- update timestamps
+
+#### Assumptions
+
+Task Model, Project Model, Goal Model
+should have canonical foeld of changing of the objects.
+But they don't have it now.
+
 
 #### Calculation
 
@@ -1637,13 +1643,68 @@ Output structure is implementation-dependent.
 
 ---
 
-## 6.6 Corridor Analytics
+# 7. Distribution & Corridor Analysis
 
+Distribution & Corridor Analysis provide mechanisms for analyzing the structure of analytical results and interpreting them using predefined evaluation corridors.
 
-# 7. ExecutiveSummary
+Their purpose is to transform analytical measurements into actionable insights by evaluating how values are distributed and how those distributions compare to expected ranges.
 
-# 8. Recommendations
+## Domain Question
+
+```text
+How should analytical results be analyzed and interpreted?
+```
+
+## Scope
+
+Distribution & Corridor Analysis operate on analytical results produced by Analytics Objects.
+
+They do not generate analytical measurements themselves.
+
+## Responsibilities
+
+Distribution & Corridor Analysis may:
+
+- analyze metric distributions
+- identify concentration patterns
+- evaluate distribution balance
+- classify results using corridors
+- identify deviations from expected ranges
+- support summary generation
+- support recommendation generation
+
+## Design Principle
+
+Distribution Analysis describes the structure of analytical results.
+
+Corridor Evaluation interprets those results against predefined ranges.
+
+Together they provide the bridge between raw analytical measurements and decision-support outputs.
+
+## Conceptual Flow
+
+```text
+Analytics Objects
+        ↓
+Analytics Results
+        ↓
+Distribution Analysis
+        ↓
+Corridor Evaluation
+        ↓
+Executive Summary
+        ↓
+Recommendations
+```
+
 ---
+
+# 8. ExecutiveSummary
+
+---
+
+# 9. Recommendations
+
 
 ## Purpose
 
@@ -1917,7 +1978,7 @@ These responsibilities belong to other system components.
 
 ---
 
-# 9. AnalyticsReport
+# 10. AnalyticsReport
 
 ## Purpose
 
