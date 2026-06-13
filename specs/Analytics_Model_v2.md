@@ -75,7 +75,7 @@ All presentations must be generated from the same analytics model.
 
 ## Purpose
 
-Analytics are organized into four decision domains.
+Analytics are organized into five decision domains.
 Each domain answers a different class of questions.
 Analytics should support decision-making rather than metric collection.
 
@@ -1643,67 +1643,308 @@ Output structure is implementation-dependent.
 
 ---
 
-# 7. Distribution & Corridor Analysis
+# 7. Distribution Analysis
 
-Distribution & Corridor Analysis provide mechanisms for analyzing the structure of analytical results and interpreting them using predefined evaluation corridors.
+## Purpose
 
-Their purpose is to transform analytical measurements into actionable insights by evaluating how values are distributed and how those distributions compare to expected ranges.
+Distribution Analysis examines how analytical values are distributed across a set of entities.
 
-## Domain Question
+While Analytics Objects measure individual metrics, Distribution Analysis evaluates the overall shape, concentration, balance, and spread of those metrics.
 
-```text
-How should analytical results be analyzed and interpreted?
-```
+Its purpose is to answer questions such as:
 
-## Scope
+- Where is work concentrated?
+- How evenly is effort distributed?
+- Which entities dominate the system?
+- Are there significant imbalances?
+- Is the portfolio diversified or concentrated?
 
-Distribution & Corridor Analysis operate on analytical results produced by Analytics Objects.
+Distribution Analysis provides structural insight into analytical results before any interpretation is applied.
 
-They do not generate analytical measurements themselves.
+---
 
 ## Responsibilities
 
-Distribution & Corridor Analysis may:
+Distribution Analysis is responsible for:
 
-- analyze metric distributions
-- identify concentration patterns
-- evaluate distribution balance
-- classify results using corridors
-- identify deviations from expected ranges
-- support summary generation
-- support recommendation generation
+- Analyzing distributions of analytical values.
+- Identifying concentration and imbalance.
+- Detecting dominant entities.
+- Comparing relative proportions.
+- Producing distribution-level observations.
 
-## Design Principle
+Distribution Analysis does **not** determine whether a distribution is good or bad.
 
-Distribution Analysis describes the structure of analytical results.
+Interpretation belongs to Corridor Evaluation or other types of distribution evaluation.
 
-Corridor Evaluation interprets those results against predefined ranges.
+---
 
-Together they provide the bridge between raw analytical measurements and decision-support outputs.
+## Inputs
 
-## Conceptual Flow
+Distribution Analysis consumes outputs produced by Analytics Objects.
 
-```text
-Analytics Objects
-        ↓
-Analytics Results
-        ↓
-Distribution Analysis
-        ↓
-Corridor Evaluation
-        ↓
-Executive Summary
-        ↓
-Recommendations
+Examples:
+
+- Project scores
+- Project workload
+- Project priority
+- Task age
+- Overdue counts
+- Strategic alignment scores
+- Focus scores
+
+---
+
+## Outputs
+
+Distribution Analysis produces structured distribution results.
+
+Example:
+
+```yaml
+distribution:
+  metric: project_workload
+  entities: 12
+
+  top_share:
+    value: 42%
+    owner: Project A
+
+  concentration_ratio:
+    value: 0.61
+
+  balance:
+    value: uneven
+
+  dominant_entity:
+    value: Project A
+```
+
+Outputs describe the structure of the data but do not provide evaluation.
+
+---
+
+## Common Distribution Patterns
+
+### Balanced Distribution
+
+Work or value is spread relatively evenly across entities.
+
+Example:
+
+```yaml
+distribution:
+  pattern: balanced
 ```
 
 ---
 
-# 8. ExecutiveSummary
+### Concentrated Distribution
+
+A small number of entities contain most of the value.
+
+Example:
+
+```yaml
+distribution:
+  pattern: concentrated
+```
 
 ---
 
-# 9. Recommendations
+### Dominant Entity
+
+One entity significantly outweighs all others.
+
+Example:
+
+```yaml
+distribution:
+  pattern: dominant_entity
+  owner: Project A
+```
+
+---
+
+### Fragmented Distribution
+
+Value is spread across many small entities without clear focus.
+
+Example:
+
+```yaml
+distribution:
+  pattern: fragmented
+```
+
+---
+
+## Distribution Analysis Principles
+
+1. Distribution describes structure, not quality.
+2. Distribution is relative rather than absolute.
+3. Multiple distributions may be analyzed simultaneously.
+4. Distribution results are inputs for Corridor Evaluation and Executive Summary.
+
+---
+
+# 8. Corridor Evaluation
+
+## Purpose
+
+Corridor Evaluation interprets analytical results against predefined reference ranges.
+
+While Analytics Objects calculate values and Distribution Analysis describes their structure, Corridor Evaluation determines what those values mean from a decision-making perspective.
+
+Its purpose is to answer questions such as:
+
+- Is the metric healthy?
+- Is attention required?
+- Is the value outside acceptable boundaries?
+- How severe is the deviation?
+
+Corridor Evaluation transforms measurements into assessments.
+
+---
+
+## Responsibilities
+
+Corridor Evaluation is responsible for:
+
+- Comparing analytical values against predefined corridors.
+- Assigning evaluation states.
+- Determining severity levels.
+- Detecting deviations from desired ranges.
+- Producing interpretable assessments.
+
+Corridor Evaluation does not generate recommendations.
+
+Recommendations belong to the Recommendation Engine.
+
+---
+
+## Corridor Concept
+
+A corridor defines an expected operating range for a metric.
+
+Example:
+
+```yaml
+corridor:
+  metric: overdue_ratio
+
+  healthy:
+    min: 0
+    max: 10
+
+  warning:
+    min: 10
+    max: 25
+
+  critical:
+    min: 25
+```
+
+The metric value is evaluated against the corridor to determine its state.
+
+---
+
+## Evaluation States
+
+### Healthy
+
+The value is within the desired operating range.
+
+Example:
+
+```yaml
+evaluation:
+  status: healthy
+```
+
+---
+
+### Warning
+
+The value is outside the desired range and requires attention.
+
+Example:
+
+```yaml
+evaluation:
+  status: warning
+```
+
+---
+
+### Critical
+
+The value significantly exceeds acceptable limits and requires intervention.
+
+Example:
+
+```yaml
+evaluation:
+  status: critical
+```
+
+---
+
+## Evaluation Output
+
+Example:
+
+```yaml
+evaluation:
+  metric: overdue_ratio
+
+  value: 18%
+
+  status: warning
+
+  corridor:
+    healthy: 0-10%
+    warning: 10-25%
+    critical: >25%
+```
+
+---
+
+## Distribution-Based Evaluation
+
+Corridors may also be applied to distribution results.
+
+Example:
+
+```yaml
+evaluation:
+  metric: workload_concentration
+
+  value: 62%
+
+  status: warning
+```
+
+In this case the evaluated object is not a raw metric but a distribution characteristic.
+
+---
+
+## Corridor Evaluation Principles
+
+1. Corridors provide interpretation, not measurement.
+2. Every corridor must be explicitly defined.
+3. Evaluation must be deterministic.
+4. Identical inputs must always produce identical evaluations.
+5. Corridor Evaluation serves as the primary input for Executive Summary generation.
+
+
+---
+
+# 9. ExecutiveSummary
+
+---
+
+# 10. Recommendations
 
 
 ## Purpose
@@ -1978,7 +2219,7 @@ These responsibilities belong to other system components.
 
 ---
 
-# 10. AnalyticsReport
+# 11. AnalyticsReport
 
 ## Purpose
 
