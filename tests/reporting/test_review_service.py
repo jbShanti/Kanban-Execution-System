@@ -106,3 +106,4 @@ def test_run_review_without_wip_limits():
     assert "# Board Health Report" in report
 
     assert "Inbox Task" in report
+    

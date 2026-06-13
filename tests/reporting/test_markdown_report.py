@@ -4,6 +4,7 @@ from src.analytics.models import (
     HealthWarning,
     PriorityScore,
     SectionSummary,
+    OverloadSignal
 )
 from src.analytics.models import (
     BoardMetrics,
@@ -17,6 +18,7 @@ from src.parser.models import (
 )
 from src.reporting.markdown_report import (
     render_markdown_report,
+    render_overload_section
 )
 
 
@@ -126,3 +128,55 @@ def test_render_empty_report():
     assert "No priority items" in report
 
     assert "No attention items" in report
+    
+    
+
+class TestRenderOverloadSection:
+    def test_empty_signals_returns_empty_string(self):
+        """No signals means no section rendered."""
+        assert render_overload_section([]) == ""
+
+    def test_critical_signal_rendered_with_red_icon(self):
+        """CRITICAL signals use red circle icon."""
+        signals = [
+            OverloadSignal(
+                section_name="Dev",
+                severity="CRITICAL",
+                message="Section 'Dev' is OVER WIP limit (6/5 tasks).",
+            )
+        ]
+        result = render_overload_section(signals)
+        
+        assert "🔴" in result
+        assert "**Dev**" in result
+        assert "OVER WIP limit" in result
+        assert "Overload Warnings" in result
+
+    def test_warning_signal_rendered_with_yellow_icon(self):
+        """WARNING signals use yellow circle icon."""
+        signals = [
+            OverloadSignal(
+                section_name="Review",
+                severity="WARNING",
+                message="Section 'Review' is nearing WIP limit.",
+            )
+        ]
+        result = render_overload_section(signals)
+        
+        assert "🟡" in result
+        assert "**Review**" in result
+
+    def test_multiple_signals_rendered_as_list(self):
+        """Multiple signals are rendered as a Markdown list."""
+        signals = [
+            OverloadSignal("Dev", "CRITICAL", "Over limit"),
+            OverloadSignal("Review", "WARNING", "Near limit"),
+        ]
+        result = render_overload_section(signals)
+        
+        # Должны быть обе секции
+        assert "**Dev**" in result
+        assert "**Review**" in result
+        # Должны быть обе иконки
+        assert "🔴" in result
+        assert "🟡" in result

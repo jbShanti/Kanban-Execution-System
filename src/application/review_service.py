@@ -52,8 +52,8 @@ def run_review(
         summary.sections,
     )
 
-    wip_statuses = calculate_wip_metrics(board)
-    overload_signals = detect_overload(wip_statuses)  # <-- НОВАЯ СТРОКА
+    wip_statuses = calculate_wip_metrics(board) 
+    overload_signals = detect_overload(wip_statuses)
 
     stale_tasks = calculate_stale_tasks(
         tasks,
@@ -77,6 +77,7 @@ def run_review(
         overload_signals=overload_signals,
     )
 
+    
     return render_markdown_report(
         board_metrics=board_metrics,
         section_metrics=list(

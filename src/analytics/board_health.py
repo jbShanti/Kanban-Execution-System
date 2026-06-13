@@ -27,6 +27,8 @@ def build_board_health_report(
     warnings: list[HealthWarning] = []
 
     wip_violations = 0
+    
+    signals: list[OverloadSignal] = overload_signals or []
 
     for status in wip_statuses:
         if not status.is_over_limit:
@@ -80,5 +82,5 @@ def build_board_health_report(
         top_priority_tasks=priority_scores[:5],
         top_attention_tasks=attention_scores[:5],
         warnings=warnings,
-        overload_signals=overload_signals
+        overload_signals=signals
     )

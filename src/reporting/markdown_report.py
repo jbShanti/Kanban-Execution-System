@@ -6,6 +6,32 @@ from src.analytics.models import (
     SectionMetrics,
 )
 
+from src.analytics.models import OverloadSignal
+
+def render_overload_section(signals: list[OverloadSignal]) -> str:
+    """Render overload warnings as a Markdown section.
+    
+    Returns an empty string if there are no signals (to avoid empty sections).
+    """
+    if not signals:
+        return ""
+    
+    lines: list[str] = []
+    lines.append("\n### ⚠️ Overload Warnings\n")
+    lines.append(
+        "The following sections are at or over their WIP limits. "
+        "Consider finishing existing work before pulling new tasks.\n"
+    )
+    
+    for signal in signals:
+        # Выбираем иконку по уровню серьёзности
+        icon = "🔴" if signal.severity == "CRITICAL" else "🟡"
+        lines.append(f"- {icon} **{signal.section_name}**: {signal.message}")
+    
+    lines.append("")  # Пустая строка в конце для отступа
+    return "\n".join(lines)
+
+
 
 def render_markdown_report(
     board_metrics: BoardMetrics,
@@ -137,6 +163,12 @@ def render_markdown_report(
     else:
         lines.append("No warnings")
 
+    # === НОВАЯ СТРОКА: Рендерим перегрузку ===
+    
+    lines.append(render_overload_section(board_health.overload_signals))
+        
     lines.append("")
+       
+    
 
     return "\n".join(lines)

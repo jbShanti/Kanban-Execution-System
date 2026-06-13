@@ -11,8 +11,8 @@ Total Score: 1317
 - ℹ️ INFO: 4 tasks, active=3, score=12
 - 📬 Inbox: 2 tasks, active=2, score=0
 - 🏃 DOING: 1 tasks, active=1, score=21
-- 🗓️ TODAY: 3 tasks, active=3, score=30
-- 📝 TO DO: 4 tasks, active=4, score=41
+- 🗓️ TODAY: 4 tasks, active=4, score=30
+- 📝 TO DO: 3 tasks, active=3, score=41
 - ⏰ CONTROL, DEADLINES, AWAIT: 5 tasks, active=5, score=79
 - 🎯 Goals: 4 tasks, active=4, score=30
 - 💚 Health & Self-Care: 12 tasks, active=12, score=147
