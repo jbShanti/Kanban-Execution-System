@@ -31,3 +31,7 @@ build/
 
 # Environment
 .env
+
+# Reports
+report*.md
+debug*.md
