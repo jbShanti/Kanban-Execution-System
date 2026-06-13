@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 from src.parser.models import Section
 
 from src.analytics.service import (
@@ -14,9 +17,25 @@ from tests.helper import (
 
 
 def load_real_board():
-    return load_test_board(
-        "Doing (KB).md"
-    )
+    # 1. Проверяем переменную окружения (идеально для CI или других разработчиков)
+    env_path = os.getenv("KANBAN_REAL_BOARD_PATH")
+    if env_path and Path(env_path).exists():
+        return load_test_board(Path(env_path))
+    
+    # 2. Фоллбэк на твой локальный путь (используем raw-строку r"" или слеши /)
+    local_path = Path(r"O:\Проекты\Kanban\Doing (KB).md")
+    if local_path.exists():
+        return load_test_board(local_path)
+    
+    # 3. Фоллбэк на стандартный путь в репозитории (если кто-то добавит обезличенный файл)
+    repo_path = Path("tests/fixtures/Doing (KB).md")
+    if repo_path.exists():
+        return load_test_board(repo_path)
+        
+    raise FileNotFoundError(
+        "Не удалось найти файл доски. Установите переменную окружения KANBAN_REAL_BOARD_PATH "
+        "или положите файл в O:\\Проекты\\Kanban\\ или tests/fixtures/"
+)
 
 
 def test_real_board_snapshot_builds():

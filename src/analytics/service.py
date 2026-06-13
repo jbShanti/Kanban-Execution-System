@@ -33,28 +33,23 @@ def generate_analytics_report(
     return build_analytics_report(snapshot)
 
 
+from src.analytics.calculators.wip_metrics import calculate_wip_metrics
+
 def build_analytics_snapshot(
     board: Board,
 ) -> AnalyticsSnapshot:
-    """
-    Build complete analytics snapshot for the board.
-    """
-
     summary = build_board_summary(board)
-
-    board_metrics = build_board_metrics(
-        summary,
-    )
-
-    section_metrics = build_section_metrics_map(
-        board,
-        summary.sections,
-    )
+    board_metrics = build_board_metrics(summary)
+    section_metrics = build_section_metrics_map(board, summary.sections)
+    
+    # Новый WIP-калькулятор
+    wip_statuses = calculate_wip_metrics(board)
 
     return AnalyticsSnapshot(
         summary=summary,
         board=board_metrics,
         sections=section_metrics,
+        wip_statuses=wip_statuses,  # <-- НОВОЕ
     )
 
 
@@ -78,3 +73,5 @@ def calculate_task_metrics(
         **time_metrics,
         **score_metrics,
     )
+    
+    

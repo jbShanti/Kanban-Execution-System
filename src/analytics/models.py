@@ -299,6 +299,7 @@ class AnalyticsSnapshot:
     summary: BoardSummary
     board: BoardMetrics
     sections: Mapping[str, SectionMetrics]
+    wip_statuses: list[WipStatus] = field(default_factory=lambda: list[WipStatus]())
     
     
 @dataclass(slots=True)

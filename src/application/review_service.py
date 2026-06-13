@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from src.analytics.calculators.wip_metrics import calculate_wip_metrics
+
 from src.analytics.attention_scoring import (
     calculate_attention_scores,
 )
@@ -21,9 +23,7 @@ from src.analytics.section_metrics import (
 from src.analytics.stale_analytics import (
     calculate_stale_tasks,
 )
-from src.analytics.wip_analytics import (
-    analyze_wip,
-)
+
 from src.reporting.markdown_report import (
     render_markdown_report,
 )
@@ -50,9 +50,7 @@ def run_review(
         summary.sections,
     )
 
-    wip_statuses = analyze_wip(
-        section_metrics,
-    )
+    wip_statuses = calculate_wip_metrics(board)
 
     stale_tasks = calculate_stale_tasks(
         tasks,
