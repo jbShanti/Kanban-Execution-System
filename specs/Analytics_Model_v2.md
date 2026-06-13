@@ -2099,7 +2099,7 @@ Opportunities describe potential gains but do not prescribe actions.
 
 ### Findings
 
-Findings capture important observations that do not naturally belong to strengths, risks, or opportunities.
+Findings capture important contextual observations that do not imply a positive condition, a risk, or a potential improvement.
 
 Examples:
 
@@ -2214,7 +2214,7 @@ Its purpose is to:
 * improve execution quality
 * support deterministic decision-making
 
-Recommendations are generated from analytics results.
+Recommendations are generated from Executive Summary outputs and system configuration.
 
 Recommendations are not analytics themselves.
 
@@ -2267,7 +2267,10 @@ Canonical structure:
 ```yaml
 Recommendation:
 
-  type:
+  category:
+    string
+
+  action:
     string
 
   priority:
@@ -2279,20 +2282,35 @@ Recommendation:
 
 ### Fields
 
-#### type
+#### category
 
-Recommendation category.
+Domain affected by the recommendation.
+
+Examples:
+
+```text
+workload
+portfolio
+focus
+overdue
+strategic
+```
+
+
+#### action
+
+Recommended operation.
 
 Examples:
 
 ```text
 rebalance
-overdue_cleanup
-workload_reduction
-focus_protection
+archive
+cleanup
+protect
+review
+investigate
 ```
-
-Additional recommendation types may be added in future versions.
 
 #### priority
 
@@ -2330,13 +2348,13 @@ Restore corridor targets defined in scoring.yaml.
 ### Structure
 
 ```yaml
-type: rebalance
+category: workload
+
+action: rebalance
 
 priority: high
 
 corridor: "21-25"
-
-action: increase
 
 amount: 2
 
@@ -2400,13 +2418,13 @@ active < target.min
 Generated recommendation:
 
 ```yaml
-type: rebalance
+category: workload
+
+action: rebalance
 
 priority: high
 
 corridor: "21-25"
-
-action: increase
 
 amount: 2
 
@@ -2471,196 +2489,94 @@ These responsibilities belong to other system components.
 
 ---
 
----
-
 # 11. AnalyticsReport
 
 ## Purpose
 
-AnalyticsReport is the canonical output of the Analytics Engine.
+AnalyticsReport is the canonical output of the analytics system.
 
-It contains all analytical results generated from a collection of AnalyticsTaskSnapshot objects.
+It combines executive-level assessment and generated recommendations into a single structured report.
 
-AnalyticsReport serves as the primary contract between:
-
-* Analytics Engine
-* Recommendation Engine
-* Report Renderer
-
-AnalyticsReport is immutable.
+AnalyticsReport serves as the primary interface between analytical components and report rendering components.
 
 ---
 
-## Canonical Structure
+## Responsibilities
+
+AnalyticsReport is responsible for:
+
+- aggregating analytical outputs
+- providing a unified report structure
+- exposing ExecutiveSummary
+- exposing RecommendationCollection
+
+AnalyticsReport does not perform analysis.
+
+AnalyticsReport does not generate recommendations.
+
+AnalyticsReport does not define rendering, formatting, presentation, or user interface behavior.
+
+These responsibilities belong to other system components.
+
+---
+
+## Structure
+
+Canonical structure:
 
 ```yaml
 AnalyticsReport:
 
   generated_at:
+    datetime
 
   summary:
+    ExecutiveSummary
 
-  focus_attention:
-
-  tactical:
-
-  strategic:
-
-  corridors:
+  recommendations:
+    RecommendationCollection
 ```
 
 ---
 
-## Fields
+## Components
 
-### generated_at
+### ExecutiveSummary
 
-Timestamp indicating when the report was generated.
+Contains the executive-level interpretation of analytical results.
 
-Example:
+The canonical ExecutiveSummary model is defined in Section 9.
+
+---
+
+### RecommendationCollection
+
+Contains structured recommendations generated from analytical assessments.
+
+The canonical RecommendationCollection model is defined in Section 10.
+
+---
+
+## Position in the Analytics Pipeline
 
 ```text
-2026-06-10T09:30:00Z
-```
-
----
-
-### summary
-
-High-level analytical overview of the board.
-
-Purpose:
-
-Provide a concise executive summary before detailed analytics.
-
-Typical contents may include:
-
-* total tasks
-* total score
-* active workload
-* overdue workload
-* major observations
-
----
-
-### focus_attention
-
-FocusAttentionAnalytics object.
-
-Purpose:
-
-Describe how attention is distributed across analytical areas.
-
-Answers:
-
-* Where attention is concentrated.
-* Whether attention is fragmented.
-* Whether attention aligns with strategic value.
-
----
-
-### tactical
-
-TacticalAnalytics object.
-
-Purpose:
-
-Describe execution-level conditions requiring attention.
-
-Examples:
-
-* overdue pressure
-* workload imbalance
-* execution bottlenecks
-* corridor health issues
-
----
-
-### strategic
-
-StrategicAnalytics object.
-
-Purpose:
-
-Describe long-term portfolio composition and value allocation.
-
-Examples:
-
-* score distribution
-* value concentration
-* portfolio balance
-* strategic focus
-
----
-
-### corridors
-
-Collection of CorridorAnalytics objects.
-
-Purpose:
-
-Provide the canonical score-corridor analytical table.
-
-Each corridor represents one score range.
-
-Examples:
-
-```text
-21-25
-16-20
-11-15
-6-10
-1-5
-```
-
----
-
-## Generation Flow
-
-```text
-Tasks
-↓
-AnalyticsTaskSnapshot
-↓
-Analytics Engine
-↓
-AnalyticsReport
-↓
+Analytics Objects
+        ↓
+Distribution Analysis
+        ↓
+Corridor Evaluation
+        ↓
+Executive Summary
+        ↓
 Recommendation Engine
-↓
-Report Renderer
+        ↓
+RecommendationCollection
+        ↓
+AnalyticsReport
 ```
 
----
+AnalyticsReport represents the final structured output of the analytics system.
 
-## Design Principle
-
-AnalyticsReport is the single source of truth for analytical output.
-
-Consumers must depend on AnalyticsReport rather than individual analytics engines.
-
-This ensures a stable contract between analytics generation and report rendering.
-
----
-
-## Responsibility
-
-AnalyticsReport answers:
-
-* What is happening on the board?
-* Where attention is allocated?
-* What requires intervention?
-* How value is distributed?
-* What strategic patterns are present?
-
-AnalyticsReport does not contain:
-
-* raw task objects
-* task editing logic
-* board parsing logic
-* recommendation generation logic
-
-Those responsibilities belong to other system components.
 
 ---
 
@@ -2789,545 +2705,5 @@ AnalyticsReport.Corridors does not provide:
 * prioritization decisions
 
 Those concerns belong to other analytics components.
-
----
-
-## 11.2 ExecutiveSummary
-
-### Purpose
-
-ExecutiveSummary provides a concise executive overview of the board state.
-
-It synthesizes findings produced by other analytics components and highlights the most important observations requiring attention.
-
-ExecutiveSummary does not generate new analytics.
-
-Instead, it aggregates and prioritizes insights generated by:
-
-* FocusAttentionAnalytics
-* TacticalAnalytics
-* StrategicAnalytics
-* DataQualityAnalytics
-
----
-
-### Design Principle
-
-```text
-Focus
-+
-Tactical
-+
-Strategic
-+
-Data Quality
-↓
-Summary
-```
-
-ExecutiveSummary is an aggregation layer.
-
-Its purpose is to answer:
-
-```text
-What matters most right now?
-```
-
----
-
-### Canonical Structure
-
-```yaml
-ExecutiveSummary:
-
-  overall_assessment:
-
-  key_findings:
-
-  primary_risk:
-
-  primary_opportunity:
-
-  recommended_focus:
-```
-
----
-
-### overall_assessment
-
-A concise high-level assessment of the current board state.
-
-Typically expressed as a single sentence.
-
-Example:
-
-```text
-Attention is concentrated on high-value work and corridor health is within target ranges.
-```
-
----
-
-### key_findings
-
-List of the most important observations identified by the analytics system.
-
-Recommended range:
-
-```text
-2-5 findings
-```
-
-Examples:
-
-```text
-- 63% of active attention is concentrated in Projects/AI.
-- Corridor 21-25 is operating within target range.
-- Health-related work receives only 8% of active attention.
-```
-
----
-
-### primary_risk
-
-The single most important risk currently affecting execution or value delivery.
-
-Examples:
-
-```text
-High-value overdue score is accumulating in corridor 16-20.
-```
-
-```text
-Attention is heavily concentrated in one area, creating portfolio imbalance.
-```
-
----
-
-### primary_opportunity
-
-The highest-value opportunity currently available.
-
-Examples:
-
-```text
-Completing two tasks in corridor 21-25 would unlock 46 score points.
-```
-
-```text
-Resolving a small overdue backlog would restore corridor health.
-```
-
----
-
-### recommended_focus
-
-The primary recommendation generated from the report.
-
-Recommended Focus should describe where attention should be directed next.
-
-Examples:
-
-```text
-Maintain focus on Projects/AI and reduce overdue workload in corridor 16-20.
-```
-
-```text
-Increase attention allocation to Health-related work during the next planning cycle.
-```
-
----
-
-### Responsibility
-
-ExecutiveSummary answers:
-
-* What is the current overall situation?
-* What findings are most important?
-* What is the primary risk?
-* What is the primary opportunity?
-* Where should attention be directed next?
-
-ExecutiveSummary does not provide:
-
-* raw metrics
-* corridor calculations
-* score calculations
-* attention calculations
-
-Those responsibilities belong to specialized analytics components.
-
----
-
-### Design Principle
-
-ExecutiveSummary is designed for rapid report consumption.
-
-A reader should be able to understand the most important conclusions of the report by reading ExecutiveSummary before reviewing detailed analytical sections.
-
-
----
-
-## 11.3. CorridorAnalytics
-
-### Purpose
-
-CorridorAnalytics represents analytics for a single score corridor.
-
-Its purpose is to provide a complete analytical view of:
-
-* workload
-* value concentration
-* attention allocation
-* corridor health
-
-CorridorAnalytics is the canonical analytics structure used by Corridor Analytics.
-
-Each CorridorAnalytics object represents exactly one score corridor.
-
-Examples:
-
-```text
-21-25
-16-20
-11-15
-6-10
-1-5
-```
-
----
-
-### Canonical Structure
-
-```yaml
-CorridorAnalytics:
-
-  interval:
-
-  workload:
-    ...
-
-  value:
-    ...
-
-  attention:
-    ...
-
-  health:
-    ...
-```
-
----
-
-### 11.3.1 Interval
-
-#### Purpose
-
-Identifies the score corridor.
-
-Examples:
-
-```text
-21-25
-16-20
-11-15
-6-10
-1-5
-```
-
----
-
-### 11.3.2 Workload
-
-#### Purpose
-
-Describes task counts within the corridor.
-
-Answers:
-
-* How many active tasks exist?
-* How many overdue tasks exist?
-* How many tasks have been completed?
-* How many tasks have been archived?
-
----
-
-#### Structure
-
-```yaml
-workload:
-
-  active:
-    5
-
-  overdue:
-    1
-
-  completed:
-    3
-
-  archived:
-    7
-```
-
----
-
-#### active
-
-Number of active tasks within the corridor.
-
-Includes:
-
-```text
-[ ]
-[/]
-```
-
-Excludes:
-
-```text
-[x]
-[-]
-[<]
-[>]
-```
-
----
-
-#### overdue
-
-Number of overdue active tasks within the corridor.
-
----
-
-#### completed
-
-Number of completed non-archived tasks within the corridor.
-
----
-
-#### archived
-
-Number of archived tasks within the corridor.
-
----
-
-### 11.3.3 Value
-
-#### Purpose
-
-Describes score value contained within the corridor.
-
-Answers:
-
-* How much score value exists?
-* What percentage of board value does the corridor represent?
-* What is the average score of tasks in the corridor?
-
----
-
-#### Structure
-
-```yaml
-value:
-
-  total_score:
-    92
-
-  average_score:
-    23.0
-
-  score_share_percentage:
-    23.0
-```
-
----
-
-#### total_score
-
-Sum of scores for all tasks within the corridor.
-
----
-
-#### average_score
-
-Average score of scored tasks within the corridor.
-
-Formula:
-
-```text
-average_score =
-total_score / scored_tasks
-```
-
----
-
-#### score_share_percentage
-
-Percentage of total board score represented by the corridor.
-
-Formula:
-
-```text
-corridor.total_score
-/
-board.total_score
-× 100
-```
-
-Range:
-
-```text
-0.0 .. 100.0
-```
-
----
-
-### 11.3.4 Attention
-
-#### Purpose
-
-Describes how much corridor value is currently receiving attention.
-
-Answers:
-
-* How much score is active?
-* How much score is overdue?
-* How much value is currently at risk?
-
----
-
-#### Structure
-
-```yaml
-attention:
-
-  active_score:
-    71
-
-  overdue_score:
-    24
-```
-
----
-
-#### active_score
-
-Sum of scores of active tasks within the corridor.
-
-Includes:
-
-```text
-[ ]
-[/]
-```
-
----
-
-#### overdue_score
-
-Sum of scores of overdue active tasks within the corridor.
-
----
-
-### 11.3.5 Health
-
-#### Purpose
-
-Measures corridor status relative to configured targets.
-
-Answers:
-
-* Is the corridor underloaded?
-* Is the corridor overloaded?
-* Does the corridor satisfy target levels?
-
----
-
-#### Structure
-
-```yaml
-health:
-
-  target:
-
-    min:
-      3
-
-    max:
-      5
-
-  delta:
-    0
-
-  state:
-    ok
-```
-
----
-
-#### target
-
-Target workload range loaded from:
-
-```text
-scoring.yaml
-```
-
----
-
-#### delta
-
-Difference between actual workload and target workload.
-
-Rules:
-
-Within target:
-
-```text
-delta = 0
-```
-
-Below target:
-
-```text
-delta = active - target.min
-```
-
-Above target:
-
-```text
-delta = active - target.max
-```
-
----
-
-#### state
-
-Supported values:
-
-```text
-ok
-underloaded
-overloaded
-```
-
----
-
-#### Design Principle
-
-Health represents the relationship between:
-
-```text
-actual workload
-vs
-target workload
-```
-
-Health does not measure:
-
-* value
-* priority
-* urgency
-* execution quality
 
 ---
