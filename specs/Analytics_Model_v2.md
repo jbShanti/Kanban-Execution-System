@@ -1937,10 +1937,238 @@ In this case the evaluated object is not a raw metric but a distribution charact
 4. Identical inputs must always produce identical evaluations.
 5. Corridor Evaluation is one of the inputs used by Executive Summary generation.
 
+---
+
+# 9. Executive Summary
+
+## Purpose
+
+Executive Summary converts analytical results into a concise management-level assessment of the system.
+
+While Analytics Objects produce measurements, Distribution Analysis describes structure, and Corridor Evaluation provides assessments, Executive Summary synthesizes these outputs into a coherent narrative that supports decision-making.
+
+Its purpose is to answer questions such as:
+
+- What is happening in the system?
+- What deserves attention right now?
+- What are the most important risks?
+- What are the most important opportunities?
+- What should the decision-maker understand before taking action?
+
+Executive Summary focuses on interpretation rather than measurement.
 
 ---
 
-# 9. ExecutiveSummary
+## Responsibilities
+
+Executive Summary is responsible for:
+
+- Synthesizing results from multiple analytical domains.
+- Highlighting the most important findings.
+- Identifying key risks.
+- Identifying key opportunities.
+- Describing the current system state.
+- Providing management-level situational awareness.
+
+Executive Summary does not generate recommendations.
+
+Recommendations belong to the Recommendation Engine.
+
+---
+
+## Inputs
+
+Executive Summary may consume:
+
+- Focus Analytics
+- Tactical Analytics
+- Strategic Analytics
+- Distribution Analysis results
+- Corridor Evaluation results
+
+The summary should integrate information across domains rather than repeating individual metrics.
+
+---
+
+## Outputs
+
+Executive Summary produces a structured set of findings.
+
+Example:
+
+```yaml
+summary:
+  system_state: stable
+
+  strengths:
+    - Strategic work remains active.
+    - Focus allocation is balanced.
+
+  risks:
+    - Overdue tasks are increasing.
+    - One project contains excessive workload concentration.
+
+  opportunities:
+    - Several inactive projects may be archived.
+```
+
+The summary describes the system but does not prescribe actions.
+
+---
+
+## Executive Summary Structure
+
+### System State
+
+Provides a high-level characterization of the current state.
+
+Examples:
+
+```yaml
+system_state: healthy
+```
+
+```yaml
+system_state: stable
+```
+
+```yaml
+system_state: overloaded
+```
+
+```yaml
+system_state: fragmented
+```
+
+---
+
+### Key Findings
+
+Identifies the most important observations across all analytical domains.
+
+Example:
+
+```yaml
+findings:
+  - Strategic work share increased.
+  - Project concentration remains high.
+  - Task aging is improving.
+```
+
+---
+
+### Risks
+
+Identifies conditions that may negatively impact execution effectiveness.
+
+Example:
+
+```yaml
+risks:
+  - Excessive workload concentration.
+  - Growing overdue backlog.
+```
+
+Risks describe potential problems but do not prescribe solutions.
+
+---
+
+### Opportunities
+
+Identifies areas where improvement may be achieved.
+
+Example:
+
+```yaml
+opportunities:
+  - Reduce inactive project inventory.
+  - Rebalance project workload.
+```
+
+Opportunities describe potential gains but do not prescribe actions.
+
+---
+
+## Summary Generation Principles
+
+### Principle 1 — Synthesis over Enumeration
+
+The summary should combine multiple analytical signals into higher-level observations.
+
+Avoid:
+
+```yaml
+summary:
+  - focus_score = 73
+  - overdue_ratio = 12%
+  - active_projects = 14
+```
+
+Prefer:
+
+```yaml
+summary:
+  - Focus remains healthy despite increasing project load.
+```
+
+---
+
+### Principle 2 — Prioritize Significance
+
+Only findings with meaningful decision impact should be included.
+
+Minor observations should remain in detailed analytics.
+
+---
+
+### Principle 3 — Cross-Domain Interpretation
+
+Executive Summary should identify relationships across analytical domains.
+
+Example:
+
+```yaml
+observation:
+  Strategic focus is declining while operational workload is increasing.
+```
+
+Such observations often provide more value than isolated metrics.
+
+---
+
+### Principle 4 — Action-Neutral Language
+
+Executive Summary explains what is happening.
+
+It does not explain what should be done.
+
+Action generation belongs to the Recommendation Engine.
+
+---
+
+### Principle 5 — Deterministic Generation
+
+Identical analytical inputs should produce identical summaries.
+
+Summary generation must be rule-based and reproducible.
+
+---
+
+## Position in the Analytics Pipeline
+
+```text
+Analytics Objects
+        ↓
+Distribution Analysis
+        ↓
+Corridor Evaluation
+        ↓
+Executive Summary
+        ↓
+Recommendation Engine
+```
+
+Executive Summary acts as the interpretation layer between analytics and recommendations.
 
 ---
 
