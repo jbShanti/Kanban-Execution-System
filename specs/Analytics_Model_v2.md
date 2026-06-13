@@ -1951,9 +1951,10 @@ Its purpose is to answer questions such as:
 
 - What is happening in the system?
 - What deserves attention right now?
+- What are the most important strengths?
 - What are the most important risks?
-- What are the most important opportunities?
-- What should the decision-maker understand before taking action?
+- What opportunities exist?
+- What additional developments should the decision-maker be aware of?
 
 Executive Summary focuses on interpretation rather than measurement.
 
@@ -1964,9 +1965,10 @@ Executive Summary focuses on interpretation rather than measurement.
 Executive Summary is responsible for:
 
 - Synthesizing results from multiple analytical domains.
-- Highlighting the most important findings.
+- Highlighting the most important strengths.
 - Identifying key risks.
 - Identifying key opportunities.
+- Capturing important contextual findings.
 - Describing the current system state.
 - Providing management-level situational awareness.
 
@@ -1992,7 +1994,7 @@ The summary should integrate information across domains rather than repeating in
 
 ## Outputs
 
-Executive Summary produces a structured set of findings.
+Executive Summary produces a structured assessment of the system.
 
 Example:
 
@@ -2001,15 +2003,17 @@ summary:
   system_state: stable
 
   strengths:
-    - Strategic work remains active.
-    - Focus allocation is balanced.
+    - Inbox remains empty.
+    - Strategic activity remains healthy.
 
   risks:
-    - Overdue tasks are increasing.
-    - One project contains excessive workload concentration.
+    - Active workload exceeds target corridor.
 
   opportunities:
-    - Several inactive projects may be archived.
+    - Archive inactive projects.
+
+  findings:
+    - Kanban parser implementation is in progress.
 ```
 
 The summary describes the system but does not prescribe actions.
@@ -2042,31 +2046,34 @@ system_state: fragmented
 
 ---
 
-### Key Findings
+### Strengths
 
-Identifies the most important observations across all analytical domains.
+Strengths identify conditions that positively support execution effectiveness.
 
-Example:
+Examples:
 
 ```yaml
-findings:
-  - Strategic work share increased.
-  - Project concentration remains high.
-  - Task aging is improving.
+strengths:
+  - Inbox remains empty.
+  - Strategic activity remains healthy.
+  - Focus allocation is balanced.
 ```
+
+Strengths describe what is working well and should be preserved.
 
 ---
 
 ### Risks
 
-Identifies conditions that may negatively impact execution effectiveness.
+Risks identify conditions that may negatively impact execution effectiveness.
 
-Example:
+Examples:
 
 ```yaml
 risks:
-  - Excessive workload concentration.
-  - Growing overdue backlog.
+  - Active workload exceeds target corridor.
+  - Overdue backlog continues to grow.
+  - Project concentration remains excessive.
 ```
 
 Risks describe potential problems but do not prescribe solutions.
@@ -2075,17 +2082,35 @@ Risks describe potential problems but do not prescribe solutions.
 
 ### Opportunities
 
-Identifies areas where improvement may be achieved.
+Opportunities identify areas where measurable improvement may be achieved.
 
-Example:
+Examples:
 
 ```yaml
 opportunities:
-  - Reduce inactive project inventory.
-  - Rebalance project workload.
+  - Archive inactive projects.
+  - Rebalance workload distribution.
+  - Increase strategic work allocation.
 ```
 
 Opportunities describe potential gains but do not prescribe actions.
+
+---
+
+### Findings
+
+Findings capture important observations that do not naturally belong to strengths, risks, or opportunities.
+
+Examples:
+
+```yaml
+findings:
+  - Kanban parser implementation is in progress.
+  - New project entered active execution.
+  - Project portfolio structure changed.
+```
+
+Findings provide context and situational awareness.
 
 ---
 
@@ -2108,7 +2133,8 @@ Prefer:
 
 ```yaml
 summary:
-  - Focus remains healthy despite increasing project load.
+  strengths:
+    - Focus remains healthy despite increasing project load.
 ```
 
 ---
