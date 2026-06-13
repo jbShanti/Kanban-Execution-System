@@ -1,19 +1,17 @@
 ---
-
 created: 2026-06-06
-updated: 2026-06-06
-Description:
-Canonical analytics output model for the Kanban Execution System.
+updated: 2026-06-13T16:56
+Description: |-
+  Canonical analytics output model for the Kanban Execution System.
 
-This document defines:
+  This document defines:
 
-* analytics report structure
-* summary metrics
-* corridor analytics
-* status calculation rules
-* delta calculation rules
-* reporting invariants
-
+  * analytics report structure
+  * summary metrics
+  * corridor analytics
+  * status calculation rules
+  * delta calculation rules
+  * reporting invariants
 ---
 
 # ANALYTICS MODEL V2
