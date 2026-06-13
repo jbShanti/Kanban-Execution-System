@@ -1935,7 +1935,7 @@ In this case the evaluated object is not a raw metric but a distribution charact
 2. Every corridor must be explicitly defined.
 3. Evaluation must be deterministic.
 4. Identical inputs must always produce identical evaluations.
-5. Corridor Evaluation serves as the primary input for Executive Summary generation.
+5. Corridor Evaluation is one of the inputs used by Executive Summary generation.
 
 
 ---
@@ -2410,7 +2410,7 @@ Those responsibilities belong to other system components.
 
 ---
 
-## 9.1 Corridors
+## 11.1 Corridors
 
 ### Purpose
 
@@ -2538,7 +2538,7 @@ Those concerns belong to other analytics components.
 
 ---
 
-## 9.2 ExecutiveSummary
+## 11.2 ExecutiveSummary
 
 ### Purpose
 
@@ -2713,7 +2713,7 @@ A reader should be able to understand the most important conclusions of the repo
 
 ---
 
-## 9.3. CorridorAnalytics
+## 11.3. CorridorAnalytics
 
 ### Purpose
 
@@ -2764,7 +2764,7 @@ CorridorAnalytics:
 
 ---
 
-### 6.3.1 Interval
+### 11.3.1 Interval
 
 #### Purpose
 
@@ -2782,7 +2782,7 @@ Examples:
 
 ---
 
-### 6.3.2 Workload
+### 11.3.2 Workload
 
 #### Purpose
 
@@ -2857,7 +2857,7 @@ Number of archived tasks within the corridor.
 
 ---
 
-### 6.3.3 Value
+### 11.3.3 Value
 
 #### Purpose
 
@@ -2928,7 +2928,7 @@ Range:
 
 ---
 
-### 6.3.4 Attention
+### 11.3.4 Attention
 
 #### Purpose
 
@@ -2975,7 +2975,7 @@ Sum of scores of overdue active tasks within the corridor.
 
 ---
 
-### 6.3.5 Health
+### 11.3.5 Health
 
 #### Purpose
 
