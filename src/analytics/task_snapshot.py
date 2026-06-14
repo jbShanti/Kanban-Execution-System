@@ -34,6 +34,7 @@ def build_task_snapshot(
         due_date=task.due,
         scheduled_date=task.scheduled,
         time_estimate_minutes=time_estimate_minutes,
+        tags=tuple(task.tags),
         is_active=task.is_active,
         is_completed=task.is_completed,
         is_archived=task.archived,

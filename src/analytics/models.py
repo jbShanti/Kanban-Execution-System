@@ -3,6 +3,7 @@ from src.parser.models import Board, Section, Task, TaskStatus
 from typing import Mapping
 from datetime import datetime, date
 
+
 SCORE_CORRIDOR_ORDER = (
     "21-25",
     "16-20",
@@ -354,6 +355,8 @@ class AnalyticsTaskSnapshot:
     status: TaskStatus
 
     score: int
+    
+    tags: tuple[str, ...]
 
     due_date: date | None
     scheduled_date: date | None
@@ -364,6 +367,7 @@ class AnalyticsTaskSnapshot:
     is_completed: bool
     is_archived: bool
     is_overdue: bool
+    
     
 @dataclass(frozen=True)
 class FocusAttentionAnalytics:
