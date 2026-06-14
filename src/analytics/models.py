@@ -364,3 +364,9 @@ class AnalyticsTaskSnapshot:
     is_completed: bool
     is_archived: bool
     is_overdue: bool
+    
+@dataclass(frozen=True)
+class FocusAttentionAnalytics:
+    active_tasks: int
+    overdue_tasks: int
+    high_score_tasks: int
