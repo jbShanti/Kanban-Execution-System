@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 
 from src.analytics.models import AnalyticsTaskSnapshot
-from src.parser.models import Task
+from src.parser.models import Task, Board
 
 
 def build_task_snapshot(
@@ -39,3 +39,16 @@ def build_task_snapshot(
         is_archived=task.archived,
         is_overdue=is_overdue,
     )
+    
+    
+def build_task_snapshots(
+    board: Board,
+    today: date,
+) -> list[AnalyticsTaskSnapshot]:
+    return [
+        build_task_snapshot(
+            task=task,
+            today=today,
+        )
+        for task in board.tasks
+    ]
