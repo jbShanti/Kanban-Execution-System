@@ -74,3 +74,91 @@ def test_build_focus_attention_analytics():
     assert analytics.active_tasks == 2
     assert analytics.overdue_tasks == 1
     assert analytics.high_score_tasks == 1
+    
+    
+    
+
+
+def test_attention_by_tag_aggregates_scores():
+    snapshots = [
+        AnalyticsTaskSnapshot(
+            title="Task A",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=10,
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            tags=("health",),
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+        AnalyticsTaskSnapshot(
+            title="Task B",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=15,
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            tags=("health",),
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+        AnalyticsTaskSnapshot(
+            title="Task C",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=20,
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            tags=("ai",),
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    analytics = build_focus_attention_analytics(
+        snapshots=snapshots,
+    )
+
+    assert analytics.attention_by_tag == {
+        "health": 25,
+        "ai": 20,
+    }
+    
+    
+
+def test_attention_by_tag_counts_score_for_each_tag():
+    snapshots = [
+        AnalyticsTaskSnapshot(
+            title="Task A",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=20,
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            tags=("health", "ai"),
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    analytics = build_focus_attention_analytics(
+        snapshots=snapshots,
+    )
+
+    assert analytics.attention_by_tag == {
+        "health": 20,
+        "ai": 20,
+    }

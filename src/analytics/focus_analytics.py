@@ -34,8 +34,21 @@ def build_focus_attention_analytics(
         if task.score >= HIGH_PRIORITY_SCORE_THRESHOLD
     )
 
+    attention_by_tag: dict[str, int] = {}
+
+    for task in snapshots:
+        if not task.is_active:
+            continue
+
+        for tag in task.tags:
+            attention_by_tag[tag] = (
+                attention_by_tag.get(tag, 0)
+                + task.score
+            )
+
     return FocusAttentionAnalytics(
         active_tasks=active_tasks,
         overdue_tasks=overdue_tasks,
         high_score_tasks=high_score_tasks,
+        attention_by_tag=attention_by_tag,
     )

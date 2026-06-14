@@ -374,3 +374,5 @@ class FocusAttentionAnalytics:
     active_tasks: int
     overdue_tasks: int
     high_score_tasks: int
+
+    attention_by_tag: dict[str, int]
