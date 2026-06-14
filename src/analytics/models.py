@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from src.parser.models import Board, Section, Task
+from src.parser.models import Board, Section, Task, TaskStatus
 from typing import Mapping
-from datetime import datetime
+from datetime import datetime, date
 
 SCORE_CORRIDOR_ORDER = (
     "21-25",
@@ -344,3 +344,23 @@ class AnalyticsReport:
     high_value_percentage: float
 
     generated_at: datetime
+    
+    
+@dataclass(frozen=True)
+class AnalyticsTaskSnapshot:
+    title: str
+
+    section: str
+    status: TaskStatus
+
+    score: int
+
+    due_date: date | None
+    scheduled_date: date | None
+
+    time_estimate_minutes: int | None
+
+    is_active: bool
+    is_completed: bool
+    is_archived: bool
+    is_overdue: bool
