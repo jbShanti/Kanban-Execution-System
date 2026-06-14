@@ -46,9 +46,30 @@ def build_focus_attention_analytics(
                 + task.score
             )
 
+    total_attention_score = sum(
+        task.score
+        for task in snapshots
+        if task.is_active
+    )
+    
+    top_attention_tags = tuple(
+        (
+            tag,
+            score,
+            score / total_attention_score,
+        )
+        for tag, score in sorted(
+           attention_by_tag.items(),
+           key=lambda item: (-item[1], item[0]),
+        )[:7]
+    )
+    
+    
     return FocusAttentionAnalytics(
         active_tasks=active_tasks,
         overdue_tasks=overdue_tasks,
         high_score_tasks=high_score_tasks,
         attention_by_tag=attention_by_tag,
+        total_attention_score=total_attention_score,
+        top_attention_tags=top_attention_tags,
     )

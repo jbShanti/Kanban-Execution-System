@@ -376,3 +376,9 @@ class FocusAttentionAnalytics:
     high_score_tasks: int
 
     attention_by_tag: dict[str, int]
+    
+    total_attention_score: int
+    top_attention_tags: tuple[
+       tuple[str, int, float],
+       ...
+    ]
