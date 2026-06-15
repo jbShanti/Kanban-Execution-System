@@ -2576,7 +2576,501 @@ AnalyticsReport represents the final structured output of the analytics system.
 
 ---
 
-## 11.1 Corridors
+# 11.1 BoardHealth
+
+## Purpose
+
+`BoardHealth` evaluates the quality and analytical readiness of a Kanban board.
+
+It answers the question:
+
+> How reliable and complete is the board data for analytical processing?
+
+All analytical modules MUST interpret their results in the context of `BoardHealth`.
+
+---
+
+## Output Model
+
+```yaml
+board_health:
+  total_tasks: integer
+
+  score_coverage: percentage
+  tag_coverage: percentage
+  analytics_coverage: percentage
+
+  missing_score: integer
+  missing_tag: integer
+
+  orphan_tasks: integer
+
+  sample_orphans:
+    - task: string
+      missing:
+        - score
+        - tag
+
+  status:
+    - excellent
+    - good
+    - warning
+    - poor
+    - awful
+```
+
+---
+
+## Metrics
+
+### total_tasks
+
+Total number of tasks included in board analysis.
+
+Example:
+
+```yaml
+total_tasks: 127
+```
+
+---
+
+### score_coverage
+
+Percentage of tasks with a populated `Score`.
+
+Formula:
+
+```text
+score_coverage =
+(tasks_with_score / total_tasks) × 100
+```
+
+Example:
+
+```yaml
+score_coverage: 84%
+```
+
+---
+
+### tag_coverage
+
+Percentage of tasks assigned at least one analytical tag.
+
+At the current stage of the system, analytical tags are derived from `Tags Area`.
+
+Formula:
+
+```text
+tag_coverage =
+(tasks_with_tag / total_tasks) × 100
+```
+
+Example:
+
+```yaml
+tag_coverage: 78%
+```
+
+---
+
+### analytics_coverage
+
+Primary indicator of board analytical readiness.
+
+Measures the percentage of tasks that contain both:
+
+* Score
+* Analytical Tag
+
+Only these tasks can fully participate in analytical models.
+
+Formula:
+
+```text
+analytics_coverage =
+(tasks_with_score_and_tag / total_tasks) × 100
+```
+
+Example:
+
+```yaml
+analytics_coverage: 71%
+```
+
+---
+
+### missing_score
+
+Number of tasks without a populated `Score`.
+
+Formula:
+
+```text
+missing_score =
+count(tasks_without_score)
+```
+
+Example:
+
+```yaml
+missing_score: 20
+```
+
+---
+
+### missing_tag
+
+Number of tasks without an analytical tag.
+
+Formula:
+
+```text
+missing_tag =
+count(tasks_without_tag)
+```
+
+Example:
+
+```yaml
+missing_tag: 28
+```
+
+---
+
+### orphan_tasks
+
+Number of tasks that cannot fully participate in analytical processing.
+
+A task is considered an orphan if it lacks at least one required analytical attribute:
+
+* Score
+* Analytical Tag
+
+Formula:
+
+```text
+orphan_tasks =
+count(tasks_without_score OR tasks_without_tag)
+```
+
+Example:
+
+```yaml
+orphan_tasks: 37
+```
+
+---
+
+### sample_orphans
+
+Representative sample of orphan tasks.
+
+Contains up to 5 orphan tasks selected from the board.
+
+The purpose of the collection is to help identify the most common metadata quality issues without requiring manual board inspection.
+
+Selection priority:
+
+1. Tasks missing both `Score` and `Tag`
+2. Tasks missing `Score`
+3. Tasks missing `Tag`
+
+Example:
+
+```yaml
+sample_orphans:
+  - task: "Refactor Metadata Parser"
+    missing:
+      - score
+      - tag
+
+  - task: "Review Blood Pressure Report"
+    missing:
+      - tag
+
+  - task: "Telegram Integration Validation"
+    missing:
+      - score
+```
+
+---
+
+## Status Evaluation
+
+Status is determined by `analytics_coverage`.
+
+| Analytics Coverage | Status |
+|-------------------|----------|
+| ≥ 99% | excellent |
+| ≥ 90% | good |
+| ≥ 75% | warning |
+| ≥ 50% | poor |
+| ≥ 25% | awful |
+| < 25% | critical |
+
+---
+
+## Interpretation
+
+### excellent
+
+The board demonstrates near-complete analytical readiness.
+
+Analytical conclusions can be considered highly reliable.
+
+### good
+
+The board is analytically healthy.
+
+Minor metadata gaps may exist but are unlikely to significantly affect conclusions.
+
+### warning
+
+A noticeable portion of tasks is excluded from analytical calculations.
+
+Results should be interpreted with caution.
+
+Improving metadata quality is recommended.
+
+### poor
+
+A large portion of the board is excluded from analytical processing.
+
+Analytical conclusions may be materially distorted.
+
+Improving metadata quality should become a priority.
+
+### awful
+
+The board has lost most of its analytical value.
+
+Analytical outputs should be considered unreliable until metadata quality is restored.
+
+### critical
+
+The board is analytically unusable.
+
+Most tasks lack the metadata required for analytical processing.
+
+Analytical conclusions MUST NOT be used for decision-making until board metadata quality is restored.
+
+The primary objective should be metadata remediation rather than analytical interpretation.
+
+---
+
+## Reporting Requirements
+
+`BoardHealth` is a mandatory section of every `AnalyticsReport`.
+
+It MUST be presented before all other analytical modules.
+
+All analytical conclusions MUST be interpreted through the lens of `BoardHealth`.
+
+If:
+
+```yaml
+analytics_coverage < 75%
+```
+
+the report MUST include a warning indicating reduced analytical reliability.
+
+If:
+
+```yaml
+analytics_coverage < 50%
+```
+
+the report SHOULD prioritize metadata remediation recommendations over analytical conclusions.
+
+
+If:
+
+analytics_coverage < 25%
+
+the report MUST clearly state that analytical conclusions are unreliable
+and SHOULD prioritize board metadata remediation over analytical findings.
+
+
+---
+
+## Example
+
+```yaml
+board_health:
+  total_tasks: 127
+
+  score_coverage: 84%
+  tag_coverage: 78%
+  analytics_coverage: 71%
+
+  missing_score: 20
+  missing_tag: 28
+
+  orphan_tasks: 37
+
+  sample_orphans:
+    - task: "Refactor Metadata Parser"
+      missing:
+        - score
+        - tag
+
+    - task: "Telegram Integration Validation"
+      missing:
+        - score
+
+    - task: "Prepare Strategic Review"
+      missing:
+        - tag
+
+  status: warning
+```
+
+### Interpretation
+
+The board demonstrates partial analytical readiness. Only 71% of tasks participate fully in analytical calculations. Results remain useful but should be interpreted with caution due to the significant number of orphan tasks and incomplete metadata coverage.
+
+
+---
+
+# 11.2 AnalyticsConfidence
+
+## Purpose
+
+`AnalyticsConfidence` represents the reliability level of analytical conclusions derived from the current board state.
+
+It translates board metadata quality into a confidence level that can be consistently used across all analytical modules.
+
+`AnalyticsConfidence` is derived exclusively from `BoardHealth`.
+
+---
+
+## Output Model
+
+```yaml
+analytics_confidence:
+  - high
+  - medium
+  - low
+  - none
+```
+
+---
+
+## Confidence Mapping
+
+Analytics confidence is determined by `BoardHealth.status`.
+
+| BoardHealth Status | Analytics Confidence |
+| ------------------ | -------------------- |
+| excellent          | high                 |
+| good               | high                 |
+| warning            | medium               |
+| poor               | low                  |
+| awful              | low                  |
+| critical           | none                 |
+
+---
+
+## Interpretation
+
+### high
+
+Board metadata quality is sufficient for reliable analytical conclusions.
+
+Findings and recommendations may be used with high confidence.
+
+---
+
+### medium
+
+Board metadata quality contains noticeable gaps.
+
+Analytical conclusions remain useful but should be interpreted with caution.
+
+---
+
+### low
+
+A significant portion of board data is unavailable for analytical processing.
+
+Analytical conclusions may be materially distorted and require careful validation.
+
+---
+
+### none
+
+Board metadata quality is insufficient for meaningful analytical processing.
+
+Analytical conclusions MUST be considered unreliable.
+
+The primary focus should be metadata remediation rather than analytical interpretation.
+
+---
+
+## Usage Rules
+
+All analytical modules MUST expose the current `analytics_confidence` level.
+
+Example:
+
+```yaml
+focus_attention:
+  analytics_confidence: medium
+```
+
+```yaml
+strategic:
+  analytics_confidence: low
+```
+
+---
+
+## Reporting Requirements
+
+Every `AnalyticsReport` MUST include a single top-level `analytics_confidence` value.
+
+Example:
+
+```yaml
+analytics_confidence: high
+```
+
+This value MUST be derived from `BoardHealth`.
+
+Analytical modules SHOULD reference this value instead of implementing independent confidence calculations.
+
+---
+
+## Future Extensions
+
+Analytical modules may adapt their behavior according to `analytics_confidence`.
+
+Examples:
+
+```text
+high
+→ Full analytics
+
+medium
+→ Full analytics with caution notices
+
+low
+→ Analytics with reduced trust and remediation recommendations
+
+none
+→ Analytics may be suppressed in favor of metadata remediation guidance
+```
+
+The specific adaptation rules are defined by individual analytical modules.
+
+
+
+---
+
+
+## 11.3 Corridors
 
 ### Purpose
 
