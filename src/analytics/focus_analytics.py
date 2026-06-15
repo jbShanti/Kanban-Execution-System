@@ -8,6 +8,9 @@ from src.analytics.models import (
 
 HIGH_PRIORITY_SCORE_THRESHOLD = 17
 
+def task_score(task: AnalyticsTaskSnapshot) -> int:
+    return task.score or 0
+
 
 def build_focus_attention_analytics(
     snapshots: list[AnalyticsTaskSnapshot],
@@ -31,7 +34,7 @@ def build_focus_attention_analytics(
     high_score_tasks = sum(
         1
         for task in snapshots
-        if task.score >= HIGH_PRIORITY_SCORE_THRESHOLD
+        if task_score(task) >= HIGH_PRIORITY_SCORE_THRESHOLD
     )
 
     attention_by_tag: dict[str, int] = {}
@@ -43,11 +46,11 @@ def build_focus_attention_analytics(
         for tag in task.tags:
             attention_by_tag[tag] = (
                 attention_by_tag.get(tag, 0)
-                + task.score
+                + task_score(task)
             )
 
     total_attention_score = sum(
-        task.score
+        task_score(task)
         for task in snapshots
         if task.is_active
     )

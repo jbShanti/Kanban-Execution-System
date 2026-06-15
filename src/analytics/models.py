@@ -1,3 +1,4 @@
+from enum import StrEnum
 from dataclasses import dataclass, field
 from src.parser.models import Board, Section, Task, TaskStatus
 from typing import Mapping
@@ -178,6 +179,45 @@ class OverloadSignal:
     message: str
 
 
+class MissingMetadata(StrEnum):
+    SCORE = "score"
+    TAG = "tag"
+    
+    
+@dataclass(frozen=True)
+class OrphanTask:
+    title: str
+    missing: tuple[MissingMetadata, ...]
+
+
+class BoardHealthStatus(StrEnum):
+    EXCELLENT = "excellent"
+    GOOD = "good"
+    WARNING = "warning"
+    POOR = "poor"
+    AWFUL = "awful"
+    CRITICAL = "critical"
+
+
+@dataclass(frozen=True)
+class BoardHealth:
+    total_tasks: int
+
+    score_coverage: float
+    tag_coverage: float
+    analytics_coverage: float
+
+    missing_score: int
+    missing_tag: int
+
+    orphan_tasks: int
+
+    sample_orphans: tuple[OrphanTask,...]
+
+    status: BoardHealthStatus
+
+
+
 @dataclass(slots=True, frozen=True)
 class BoardHealthReport:
     board_health_score: float
@@ -354,7 +394,7 @@ class AnalyticsTaskSnapshot:
     section: str
     status: TaskStatus
 
-    score: int
+    score: int | None
     
     tags: tuple[str, ...]
 

@@ -30,7 +30,7 @@ def build_task_snapshot(
         title=task.title,
         section=task.section.title,
         status=task.status,
-        score=task.score_value,
+        score=task.score,
         due_date=task.due,
         scheduled_date=task.scheduled,
         time_estimate_minutes=time_estimate_minutes,
