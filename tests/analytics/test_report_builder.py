@@ -3,6 +3,8 @@ from src.analytics.models import (
     AnalyticsSnapshot,
     BoardSummary,
     BoardMetrics,
+    BoardHealth,
+    BoardHealthStatus,
 )
 from src.analytics.report_builder import build_analytics_report
 
@@ -12,6 +14,22 @@ def test_build_analytics_report_returns_analytics_report() -> None:
         summary=BoardSummary(),
         board=BoardMetrics(),
         sections={},
+        board_health=BoardHealth(
+            total_tasks=0,
+
+            score_coverage=1.0,
+            tag_coverage=1.0,
+            analytics_coverage=1.0,
+
+            missing_score=0,
+            missing_tag=0,
+
+            orphan_tasks=0,
+
+            sample_orphans=(),
+
+            status=BoardHealthStatus.EXCELLENT,
+        ),
     )
 
     report = build_analytics_report(snapshot)
@@ -23,6 +41,23 @@ def test_build_analytics_report_returns_analytics_report() -> None:
     
 def test_build_analytics_report_populates_fields() -> None:
     from src.analytics.models import ScoreCorridorSummary
+    
+    EMPTY_BOARD_HEALTH = BoardHealth(
+        total_tasks=0,
+
+        score_coverage=1.0,
+        tag_coverage=1.0,
+        analytics_coverage=1.0,
+
+        missing_score=0,
+        missing_tag=0,
+
+        orphan_tasks=0,
+
+        sample_orphans=(),
+
+        status=BoardHealthStatus.EXCELLENT,
+    )
 
     snapshot = AnalyticsSnapshot(
         summary=BoardSummary(
@@ -59,6 +94,7 @@ def test_build_analytics_report_populates_fields() -> None:
         ),
         board=BoardMetrics(),
         sections={},
+        board_health=EMPTY_BOARD_HEALTH,
     )
 
     report = build_analytics_report(snapshot)
@@ -111,3 +147,28 @@ def test_build_analytics_report_populates_fields() -> None:
     assert abs(total_share - 100.0) < 0.01
 
     
+    
+def test_build_analytics_report_preserves_board_health() -> None:
+
+    board_health = BoardHealth(
+        total_tasks=10,
+        score_coverage=0.8,
+        tag_coverage=0.7,
+        analytics_coverage=0.6,
+        missing_score=2,
+        missing_tag=3,
+        orphan_tasks=4,
+        sample_orphans=(),
+        status=BoardHealthStatus.POOR,
+    )
+
+    snapshot = AnalyticsSnapshot(
+        summary=BoardSummary(),
+        board=BoardMetrics(),
+        sections={},
+        board_health=board_health,
+    )
+
+    report = build_analytics_report(snapshot)
+
+    assert report.board_health is board_health

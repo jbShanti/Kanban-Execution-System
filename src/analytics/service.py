@@ -24,6 +24,15 @@ from src.analytics.section_metrics import (
 )
 from src.parser.models import Board, Task
 
+from datetime import date
+
+from src.analytics.analytics_readiness import (
+    build_board_health,
+)
+from src.analytics.task_snapshot import (
+    build_task_snapshot,
+)
+
 
 def generate_analytics_report(
     board: Board,
@@ -42,6 +51,20 @@ def build_analytics_snapshot(
     board_metrics = build_board_metrics(summary)
     section_metrics = build_section_metrics_map(board, summary.sections)
     
+    today = date.today()
+
+    task_snapshots = [
+        build_task_snapshot(
+            task,
+            today,
+        )
+        for task in board.tasks
+    ]
+    
+    board_health = build_board_health(
+        task_snapshots
+        )
+    
     # Новый WIP-калькулятор
     wip_statuses = calculate_wip_metrics(board)
 
@@ -49,6 +72,7 @@ def build_analytics_snapshot(
         summary=summary,
         board=board_metrics,
         sections=section_metrics,
+        board_health=board_health,
         wip_statuses=wip_statuses,  # <-- НОВОЕ
     )
 

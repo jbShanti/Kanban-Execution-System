@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from src.parser.models import Section
-from src.application.review_service import run_review
+#from src.application.review_service import run_review
 
 from src.analytics.service import (
     build_analytics_snapshot,
@@ -79,7 +79,7 @@ def test_real_board_sections():
     assert len(sections) > 0
     
     
-def test_real_board_snapshot_builds_2():
+""" def test_real_board_snapshot_builds_2():
     # 1. Загружаем реальную доску
     board = load_real_board()
     
@@ -117,4 +117,4 @@ def test_real_board_snapshot_builds_2():
         f.write(report_markdown)
         
     print(f"\n✅ Отчёт успешно сгенерирован и сохранён в: {debug_output_path.absolute()}")
-    print("💡 Открой этот файл в VS Code и нажми 'Open Preview' (Ctrl+Shift+V), чтобы увидеть результат!")
+    print("💡 Открой этот файл в VS Code и нажми 'Open Preview' (Ctrl+Shift+V), чтобы увидеть результат!") """

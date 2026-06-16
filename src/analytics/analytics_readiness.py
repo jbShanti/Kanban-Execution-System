@@ -6,6 +6,8 @@ from src.analytics.models import (
     AnalyticsTaskSnapshot,
     BoardHealth,
     BoardHealthStatus,
+    OrphanTask,
+    MissingMetadata,
 )
 
 def evaluate_board_health_status(
@@ -89,6 +91,37 @@ def build_board_health(
         analytics_coverage
     )
     
+    orphans: list[OrphanTask] = []
+
+    for snapshot in snapshots:
+
+        missing: list[MissingMetadata] = []
+
+        if snapshot.score is None:
+            missing.append(MissingMetadata.SCORE)
+
+        if len(snapshot.tags) == 0:
+            missing.append(MissingMetadata.TAG)
+
+        if not missing:
+            continue
+
+        orphans.append(
+            OrphanTask(
+                title=snapshot.title,
+                is_active=snapshot.is_active,
+                missing=tuple(missing),
+            )
+        )
+        
+    orphans.sort(
+        key=lambda orphan: (
+            orphan_priority(orphan),
+            not orphan.is_active,
+            orphan.title,
+        )
+    )
+    
     return BoardHealth(
         total_tasks=total_tasks,
 
@@ -101,7 +134,45 @@ def build_board_health(
 
         orphan_tasks=orphan_tasks,
 
-        sample_orphans=(),
+        sample_orphans=tuple(
+            orphans[:5]
+        ),
 
         status=status,
     )
+    
+    
+def orphan_priority(
+    orphan: OrphanTask,
+) -> int:
+    """
+    Lower value means higher priority.
+
+    Priority order:
+
+    1. Missing score and tag
+    2. Missing tag only
+    3. Missing score only
+    4. Any other orphan state
+    """
+
+    missing_score = (
+        MissingMetadata.SCORE
+        in orphan.missing
+    )
+
+    missing_tag = (
+        MissingMetadata.TAG
+        in orphan.missing
+    )
+
+    if missing_score and missing_tag:
+        return 1
+
+    if missing_tag:
+        return 2
+
+    if missing_score:
+        return 3
+
+    return 4

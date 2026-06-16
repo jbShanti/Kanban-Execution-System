@@ -88,5 +88,6 @@ def build_analytics_report(
         high_value_percentage=high_value_percentage,
         focus_tasks=focus_tasks,
         focus_percentage=focus_percentage,
+        board_health=snapshot.board_health,
         generated_at=datetime.now(),
     )

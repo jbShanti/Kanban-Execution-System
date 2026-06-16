@@ -187,9 +187,10 @@ class MissingMetadata(StrEnum):
 @dataclass(frozen=True)
 class OrphanTask:
     title: str
+    is_active: bool
     missing: tuple[MissingMetadata, ...]
-
-
+    
+    
 class BoardHealthStatus(StrEnum):
     EXCELLENT = "excellent"
     GOOD = "good"
@@ -349,6 +350,9 @@ class AnalyticsSnapshot:
     summary: BoardSummary
     board: BoardMetrics
     sections: Mapping[str, SectionMetrics]
+    
+    board_health: BoardHealth
+    
     wip_statuses: list[WipStatus] = field(default_factory=lambda: list[WipStatus]())
     
     
@@ -383,6 +387,8 @@ class AnalyticsReport:
 
     high_value_tasks: int
     high_value_percentage: float
+    
+    board_health: BoardHealth
 
     generated_at: datetime
     
@@ -422,3 +428,4 @@ class FocusAttentionAnalytics:
        tuple[str, int, float],
        ...
     ]
+    
