@@ -1,212 +1,605 @@
-# Kanban Execution System
+# Kanban Execution System (KES)
 
-A local-first Kanban analysis and execution system designed for personal productivity, strategic execution, and AI-assisted reviews.
+## Purpose
 
-The system treats a Markdown Kanban board as the single source of truth and builds a structured domain model, analytics layer, and review workflows on top of it.
+Kanban Execution System (KES) is a local-first Markdown Kanban analysis system.
 
-## Current Status
+The system treats Markdown Kanban boards as the single source of truth and provides:
 
-The project is in active development.
+- deterministic parsing of Kanban boards
+- structured domain models
+- board analytics
+- board health evaluation
+- analytical reporting foundations
 
-Implemented:
+KES is designed to evolve into a complete execution analysis platform while preserving Markdown as the canonical data format.
 
-* Domain model for Board, Section, and Task
-* Markdown parser with metadata support
-* Duration parsing
-* Task status model
-* Analytics engine
-* Review service
-* Golden tests and domain invariant tests
+---
 
-Current test status:
+# Current Repository Status
 
-* 92 passing tests
+This section describes the actual implementation state of the repository.
 
-## Core Principles
+## Implemented
 
-### Local-First
+### Domain Layer
 
-All data is stored in plain Markdown files.
+- Board model
+- Section model
+- Task model
+- Task status model
 
-No database is required.
+### Parser Layer
 
-### Human-Readable Source of Truth
+- Markdown board parsing
+- Section detection
+- Task extraction
+- Metadata extraction
+- Due date parsing
+- Score parsing
+- Tag parsing
+- Duration parsing
 
-The Kanban board remains editable by both humans and AI systems.
+### Analytics Foundation
 
-### Strong Domain Model
+- Board metrics
+- Section metrics
+- Task metrics
+- WIP metrics
+- Board health metrics
+- Score corridor metrics
+- Overload detection foundations
 
-The system uses explicit domain entities:
+### Reporting Foundation
 
-* Board
-* Section
-* Task
+- Analytics report models
+- Review/report infrastructure foundations
 
-instead of manipulating raw Markdown structures.
+### Test Infrastructure
 
-### Deterministic Analytics
+- Parser tests
+- Analytics tests
+- Golden tests
+- Invariant tests
 
-Analytics are calculated from board data using deterministic rules.
+---
 
-The system avoids hidden state and opaque calculations.
+## Partially Implemented
 
-## Repository Structure
+### Analytics Model V2 Migration
+
+Some structures defined in Analytics_Model_v2 are present.
+
+The complete analytics pipeline has not yet been implemented.
+
+---
+
+## Not Implemented
+
+### Recommendation Engine
+
+The repository does not currently generate recommendations.
+
+### Safe Automation Layer
+
+The repository does not modify boards automatically.
+
+### Autonomous Execution Workflows
+
+No autonomous task management or execution logic currently exists.
+
+---
+
+# Specification Hierarchy
+
+All contributors and LLM agents must follow this hierarchy.
+
+When conflicts exist between documents, the higher-priority document wins.
+
+---
+
+## Priority 1 — Canonical System Specification
+
+### KANBAN_EXECUTION_SYSTEM.md
+
+Defines:
+
+- system philosophy
+- architectural boundaries
+- system goals
+- roadmap
+- long-term architecture
+
+This document is the primary source of truth.
+
+---
+
+## Priority 2 — Domain Specifications
+
+### Task_Model.md
+
+Defines:
+
+- task schema
+- task lifecycle
+- task invariants
+- board structure expectations
+
+### METADATA_STANDARDS.md
+
+Defines:
+
+- metadata syntax
+- metadata typing
+- metadata validation rules
+- metadata interpretation
+
+---
+
+## Priority 3 — Analytics Specification
+
+### Analytics_Model_v2.md
+
+Defines:
+
+- analytics contracts
+- analytics outputs
+- analytics pipeline
+- report structure
+- executive summary structure
+
+---
+
+## Priority 4 — System Boundaries
+
+### SYSTEM BOUNDARIES.md
+
+Defines:
+
+- forbidden behaviors
+- mutation restrictions
+- safety requirements
+- automation limits
+
+---
+
+## Priority 5 — Implementation
+
+Source code reflects the current implementation state.
+
+Implementation may lag behind specifications.
+
+When implementation conflicts with specifications:
+
+**Specifications are authoritative.**
+
+---
+
+# Operating Principles
+
+All contributors and LLM agents must follow these principles.
+
+## Principle 1 — Markdown is the Source of Truth
+
+Markdown files are authoritative.
+
+Generated artifacts are derived data.
+
+No generated artifact may become the primary source of truth.
+
+---
+
+## Principle 2 — Deterministic First
+
+Before introducing AI behavior:
+
+1. Parse deterministically.
+2. Analyze deterministically.
+3. Validate deterministically.
+
+AI layers must consume deterministic outputs.
+
+---
+
+## Principle 3 — Analysis Before Recommendation
+
+The system roadmap is:
 
 ```text
-src/
-├── parser/
-│   ├── models.py
-│   └── parser.py
-│
-├── analytics/
-│   ├── models.py
-│   ├── service.py
-│   └── calculators/
-│       ├── status_metrics.py
-│       ├── time_metrics.py
-│       └── score_metrics.py
-│
-├── review/
-│
-└── ...
+Markdown
+↓
+Parser
+↓
+Domain Model
+↓
+Analytics
+↓
+Executive Summary
+↓
+Recommendations
+↓
+Automation
 ```
 
-## Domain Model
+A later layer must never be implemented before the previous layer is stable.
 
-### Task
+---
 
-A task contains:
+## Principle 4 — Safety Before Automation
 
-* title
-* status
-* section
-* score
-* due date
-* scheduled date
-* completion date
-* time estimate
-* tags
-* metadata
-* archive state
+Automation is the final stage of the roadmap.
 
-Domain helpers:
+No automatic board modification should be introduced before:
 
-* is_active
-* is_actionable
-* is_completed
-* is_done
-* score_value
+- parser compliance
+- analytics stability
+- recommendation validation
 
-### Section
+have been completed.
 
-Logical grouping of tasks.
+---
 
-### Board
+# Repository Structure
 
-Top-level domain object representing the entire Kanban board.
+Current high-level structure:
 
-## Analytics
-
-The analytics layer is organized into independent calculators.
-
-### Status Metrics
-
-* active_tasks
-* completed_tasks
-* cancelled_tasks
-* delegated_tasks
-* scheduled_tasks
-* archived_tasks
-
-### Time Metrics
-
-* overdue_tasks
-* due_today_tasks
-* due_next_3_days_tasks
-
-### Score Metrics
-
-* tasks_without_score
-* total_score
-* active_score
-
-## Testing
-
-The project uses pytest.
-
-Test categories include:
-
-* parser tests
-* golden tests
-* analytics tests
-* domain invariant tests
-* review tests
-
-The goal is to maintain a highly testable and deterministic core.
-
-## Development Roadmap
-
-### 1. Board-Centric Analytics
-
-Move analytics from task collections toward board-level analysis.
-
-Target direction:
-
-```python
-calculate_board_metrics(board: Board)
+```text
+repository/
+│
+├── src/
+│   ├── parser/
+│   ├── analytics/
+│   └── ...
+│
+├── tests/
+│
+├── README.md
+│
+├── KANBAN_EXECUTION_SYSTEM.md
+├── TASK_MODEL.md
+├── METADATA_STANDARDS.md
+├── ANALYTICS_MODEL_V2.md
+└── SYSTEM BOUNDARIES.md
 ```
 
-This will allow analytics to leverage board metadata, sections, and future board-level signals.
+---
 
-### 2. Execution Metrics
+# Current Domain Model
 
-Add execution-focused analytics such as:
+Current implementation is centered on three primary entities.
 
-* completed_score
-* completion_rate
-* completion_velocity
+```text
+Board
+ └── Section
+      └── Task
+```
 
-These metrics will support daily and weekly execution reviews.
+## Board
 
-### 3. Analytics Architecture Consolidation
+Represents an entire Kanban board.
 
-Review and consolidate legacy analytics modules.
+Contains:
 
-Goal:
+- sections
+- board metadata
 
-* one analytics architecture
-* calculators as the primary extension mechanism
-* reduced duplication
+---
 
-### 4. Review Intelligence
+## Section
 
-Expand review workflows using deterministic metrics produced by the analytics layer.
-
-Focus areas:
-
-* daily review
-* weekly review
-* execution bottlenecks
-* overload detection
-
-### 5. Analytics Signal Model
-
-Implement the canonical analytics signals defined in the project documentation.
+Represents a logical board section.
 
 Examples:
 
-* workload signals
-* execution signals
-* score signals
-* health indicators
+- Inbox
+- Today
+- Doing
+- Waiting
+- Archive
 
-## Long-Term Vision
+Contains:
 
-Kanban Execution System aims to become a local-first execution operating system that combines:
+- tasks
+- section metadata
 
-* structured task management
-* deterministic analytics
-* review workflows
-* AI-assisted decision support
+---
 
-while keeping Markdown as the primary source of truth.
+## Task
+
+Represents a single actionable item.
+
+Current implementation supports:
+
+- title
+- status
+- score
+- due date
+- tags
+- duration
+- metadata
+
+---
+
+# Current Parser Capabilities
+
+## Supported
+
+The parser currently supports:
+
+- task status parsing
+- section parsing
+- metadata extraction
+- score extraction
+- due extraction
+- tag extraction
+- duration extraction
+
+---
+
+## Not Yet Supported
+
+The following specification fields are not fully implemented:
+
+- scheduled
+- start
+- completed_at
+- repeat
+- priority
+- tracking
+- analytics metadata processing
+- finance metadata processing
+
+Parser compliance is an active roadmap item.
+
+---
+
+# Current Analytics Capabilities
+
+## Implemented
+
+### Board Analytics
+
+- board metrics
+- board health metrics
+- score aggregation
+
+### Task Analytics
+
+- task metrics
+- score metrics
+
+### Execution Analytics
+
+- WIP metrics
+- overload detection
+
+### Corridor Analytics
+
+- score corridor evaluation
+
+---
+
+## Planned
+
+Analytics_Model_v2 defines future analytics domains:
+
+### Focus Analytics
+
+Examples:
+
+- overdue analysis
+- due-today analysis
+- attention analysis
+
+### Tactical Analytics
+
+Examples:
+
+- workload analysis
+- execution pressure
+- waiting analysis
+
+### Strategic Analytics
+
+Examples:
+
+- value concentration
+- execution debt
+- long-term board health
+
+### Executive Summary
+
+Human-readable analytical synthesis.
+
+---
+
+# Development Roadmap
+
+This roadmap is intended to guide both human developers and LLM agents.
+
+Each phase should be completed before the next phase begins.
+
+---
+
+## Phase 0 — Documentation Alignment
+
+Goal:
+
+Align repository documentation with actual implementation.
+
+Deliverables:
+
+- updated README
+- updated roadmap
+- documented specification hierarchy
+
+Success Criteria:
+
+A new contributor can understand repository state without external context.
+
+---
+
+## Phase 1 — Parser Compliance
+
+Goal:
+
+Achieve compliance with Task_Model and Metadata_Standards.
+
+Required Work:
+
+Implement support for:
+
+- scheduled
+- start
+- completed_at
+- repeat
+- priority
+- tracking
+
+Success Criteria:
+
+All canonical metadata fields are parsed into domain models.
+
+---
+
+## Phase 2 — Analytics Model V2 Foundation
+
+Goal:
+
+Introduce analytics snapshots and analytics context.
+
+Target Pipeline:
+
+```text
+Tasks
+↓
+AnalyticsTaskSnapshot
+↓
+Analytics Context
+↓
+Analytics Report
+```
+
+Success Criteria:
+
+Analytics no longer operate directly on raw task collections.
+
+---
+
+## Phase 3 — Focus Analytics
+
+Implement:
+
+- overdue analysis
+- due today analysis
+- upcoming analysis
+- attention scoring
+- focus scoring
+
+Source:
+
+Analytics_Model_v2.md
+
+---
+
+## Phase 4 — Tactical Analytics
+
+Implement:
+
+- workload analysis
+- WIP pressure analysis
+- execution pressure
+- waiting analysis
+- velocity analysis
+
+Source:
+
+Analytics_Model_v2.md
+
+---
+
+## Phase 5 — Strategic Analytics
+
+Implement:
+
+- value concentration
+- score distribution
+- execution debt
+- strategic board health
+
+Source:
+
+Analytics_Model_v2.md
+
+---
+
+## Phase 6 — Executive Summary
+
+Goal:
+
+Generate deterministic analytical summaries.
+
+Pipeline:
+
+```text
+Analytics
+↓
+Executive Summary
+```
+
+Recommendations are explicitly out of scope.
+
+---
+
+## Phase 7 — Recommendation Engine
+
+Goal:
+
+Generate recommendations from analytics outputs.
+
+Pipeline:
+
+```text
+Analytics
+↓
+Executive Summary
+↓
+Recommendations
+```
+
+Recommendations must consume analytics outputs rather than raw tasks.
+
+---
+
+## Phase 8 — Safe Automation Layer
+
+Goal:
+
+Introduce controlled board modifications.
+
+Must comply with:
+
+- KANBAN_EXECUTION_SYSTEM.md
+- SYSTEM BOUNDARIES.md
+
+Automation is not allowed before earlier phases are complete.
+
+---
+
+# Rules for LLM Agents
+
+When working in this repository:
+
+1. Read the specification hierarchy first.
+2. Determine current implementation state before proposing changes.
+3. Do not assume planned features already exist.
+4. Prefer deterministic implementations over AI-driven implementations.
+5. Do not introduce automation before roadmap completion.
+6. Treat Markdown as the canonical data source.
+7. Update tests alongside implementation changes.
+8. Preserve backward compatibility unless specifications explicitly require otherwise.
+
+If uncertain:
+
+- trust specifications over implementation;
+- trust higher-priority specifications over lower-priority specifications.
