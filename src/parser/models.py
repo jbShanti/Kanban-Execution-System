@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, StrEnum
 from datetime import date, datetime, timedelta
 from dataclasses import dataclass, field
 
@@ -20,12 +20,12 @@ def empty_metadata() -> dict[str, str]:
     return {}
 
 
-class SectionType(str, Enum):
+class SectionType(StrEnum):
     INBOX = "inbox"
 
     TACTICAL = "tactical"
     EXECUTION = "execution"
-
+    
     QUEUED = "queued"
     FOCUS = "focus"
 
@@ -49,6 +49,14 @@ class Section:
     priority_weight: int | None = None
 
 
+class Priority(StrEnum):
+    LOWEST = "lowest"
+    LOW = "low"
+    NORMAL = "normal"
+    HIGH = "high"
+    HIGHEST = "highest"
+
+
 @dataclass(slots=True)
 class Task:
     title: str
@@ -57,6 +65,9 @@ class Task:
     section: Section
         
     score: int | None = None
+    priority: Priority | None = None
+    
+    start: date | None = None
     due: date | None = None
     scheduled: date | None = None
     completed_at: date | None = None

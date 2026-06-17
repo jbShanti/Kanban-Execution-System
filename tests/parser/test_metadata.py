@@ -2,10 +2,14 @@ from datetime import date
 
 from src.parser.metadata import (
     extract_metadata,
+    extract_start_date,
     extract_tags,
     extract_due_date,
     strip_metadata,
+    extract_completion_date,
 )
+from src.parser.models import SectionType, Section
+from src.parser.parser import parse_task_line
 
 
 def test_extract_metadata():
@@ -40,3 +44,85 @@ def test_strip_metadata():
     result = strip_metadata(text)
 
     assert result == "Review Parser"
+    
+
+
+
+
+def test_parse_scheduled_date() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Prepare report [scheduled::2026-06-20]",
+        section,
+    )
+
+    assert task is not None
+    assert task.scheduled == date(2026, 6, 20)
+    assert task.title == "Prepare report"
+    
+    
+def test_parse_invalid_scheduled_date() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Prepare report [scheduled::2026-99-99]",
+        section,
+    )
+
+    assert task is not None
+    assert task.scheduled is None
+    
+def test_extract_start_date() -> None:
+    text = "- [ ] Task [start::2026-06-20]"
+
+    result = extract_start_date(text)
+
+    assert result == date(2026, 6, 20)
+    
+def test_parse_start_date() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Prepare report [start::2026-06-20]",
+        section,
+    )
+
+    assert task is not None
+    assert task.start == date(2026, 6, 20)
+    assert task.title == "Prepare report"
+    
+def test_extract_completion_date() -> None:
+    text = "- [x] Task [completion::2026-06-20]"
+
+    result = extract_completion_date(text)
+
+    assert result == date(2026, 6, 20)
+    
+def test_parse_completion_date() -> None:
+    section = Section(
+        title="Done",
+        raw_title="## Done",
+        type=SectionType.DONE,
+    )
+
+    task = parse_task_line(
+        "- [x] Release feature [completion::2026-06-20]",
+        section,
+    )
+
+    assert task is not None
+    assert task.completed_at == date(2026, 6, 20)
+    assert task.title == "Release feature"

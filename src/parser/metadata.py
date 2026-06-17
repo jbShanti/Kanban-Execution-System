@@ -99,3 +99,86 @@ def strip_metadata(text: str) -> str:
     text = STATUS_CLEAN_PATTERN.sub("", text)
 
     return normalize_whitespace(text)
+
+
+SCHEDULED_PATTERN = re.compile(
+    r"\[scheduled::(\d{4}-\d{2}-\d{2})\]",
+    re.IGNORECASE,
+)
+
+
+def extract_scheduled_date(text: str) -> date | None:
+    """
+    Extracts scheduled date from task metadata.
+
+    Supported format:
+
+        [scheduled::2026-06-20]
+
+    Returns:
+        date object if valid date found,
+        otherwise None.
+    """
+
+    match = SCHEDULED_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    try:
+        return date.fromisoformat(match.group(1))
+    except ValueError:
+        return None
+    
+
+
+START_PATTERN = re.compile(
+    r"\[start::(\d{4}-\d{2}-\d{2})\]",
+    re.IGNORECASE,
+)
+
+
+def extract_start_date(text: str) -> date | None:
+    """
+    Extracts start date from task metadata.
+
+    Supported format:
+
+        [start::2026-06-20]
+    """
+
+    match = START_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    try:
+        return date.fromisoformat(match.group(1))
+    except ValueError:
+        return None
+    
+
+COMPLETION_PATTERN = re.compile(
+    r"\[completion::(\d{4}-\d{2}-\d{2})\]",
+    re.IGNORECASE,
+)
+
+
+def extract_completion_date(text: str) -> date | None:
+    """
+    Extract completion date from metadata.
+
+    Supported format:
+
+        [completion::2026-06-20]
+    """
+
+    match = COMPLETION_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    try:
+        return date.fromisoformat(match.group(1))
+    except ValueError:
+        return None

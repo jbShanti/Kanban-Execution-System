@@ -3,6 +3,9 @@ from pathlib import Path
 from src.parser.metadata import (
     extract_due_date,
     extract_metadata,
+    extract_scheduled_date,
+    extract_start_date,
+    extract_completion_date,
     extract_status,
     extract_tags,
     strip_metadata,
@@ -125,6 +128,12 @@ def parse_task_line(
     tags = extract_tags(text)
 
     due_date = extract_due_date(text)
+    
+    scheduled=extract_scheduled_date(text)
+    
+    start_date = extract_start_date(text)
+    
+    completion_date = extract_completion_date(text)
 
     score: int | None = None
 
@@ -145,9 +154,10 @@ def parse_task_line(
 
         score=score,
         due=due_date,
-        scheduled=None,
+        scheduled=scheduled,
+        start=start_date,
 
-        completed_at=None,
+        completed_at=completion_date,
 
         time_estimate=time_estimate,
 
