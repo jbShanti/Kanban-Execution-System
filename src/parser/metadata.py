@@ -201,3 +201,18 @@ def extract_priority(text: str) -> Priority | None:
         return Priority(match.group(1).lower())
     except ValueError:
         return None
+    
+    
+REPEAT_PATTERN = re.compile(
+    r"\[repeat::([^\]]+)\]",
+    re.IGNORECASE,
+)
+
+
+def extract_repeat(text: str) -> str | None:
+    match = REPEAT_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    return match.group(1).strip()

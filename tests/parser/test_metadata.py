@@ -3,6 +3,7 @@ from datetime import date
 from src.parser.metadata import (
     extract_metadata,
     extract_priority,
+    extract_repeat,
     extract_start_date,
     extract_tags,
     extract_due_date,
@@ -151,3 +152,27 @@ def test_parse_priority() -> None:
     assert task is not None
     assert task.priority == Priority.HIGH
     assert task.title == "Prepare report"
+    
+    
+def test_extract_repeat() -> None:
+    text = "- [ ] Weekly review [repeat::every week]"
+
+    result = extract_repeat(text)
+
+    assert result == "every week"
+
+def test_parse_repeat() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Weekly review [repeat::every week]",
+        section,
+    )
+
+    assert task is not None
+    assert task.repeat == "every week"
+    assert task.title == "Weekly review"

@@ -4,6 +4,7 @@ from src.parser.metadata import (
     extract_due_date,
     extract_metadata,
     extract_priority,
+    extract_repeat,
     extract_scheduled_date,
     extract_start_date,
     extract_completion_date,
@@ -146,6 +147,8 @@ def parse_task_line(
 
 
     priority = extract_priority(text)
+    
+    repeat = extract_repeat(text)
 
     time_estimate = parse_duration(metadata.get("time"))
 
@@ -158,6 +161,7 @@ def parse_task_line(
 
         score=score,
         priority=priority,
+        repeat=repeat,
         due=due_date,
         scheduled=scheduled,
         start=start_date,

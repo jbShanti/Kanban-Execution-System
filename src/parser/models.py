@@ -66,6 +66,7 @@ class Task:
         
     score: int | None = None
     priority: Priority | None = None
+    repeat: str | None = None
     
     start: date | None = None
     due: date | None = None
