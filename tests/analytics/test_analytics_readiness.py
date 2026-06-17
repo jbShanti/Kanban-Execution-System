@@ -499,3 +499,52 @@ def test_sample_orphans_is_limited_to_top_five() -> None:
         "Orphan 4",
         "Orphan 5",
     )
+    
+    
+def test_ignored_tasks_are_excluded_from_orphans() -> None:
+
+    snapshots = [
+        AnalyticsTaskSnapshot(
+            title="Ignored Orphan",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=None,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+            analytics_ignore=True,
+        ),
+        AnalyticsTaskSnapshot(
+            title="Real Orphan",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=None,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+            analytics_ignore=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    assert health.total_tasks == 1
+
+    assert health.orphan_tasks == 1
+
+    assert len(health.sample_orphans) == 1
+
+    assert (
+        health.sample_orphans[0].title
+        == "Real Orphan"
+    )

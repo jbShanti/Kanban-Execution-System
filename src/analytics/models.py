@@ -414,6 +414,7 @@ class AnalyticsTaskSnapshot:
     is_archived: bool
     is_overdue: bool
     
+    analytics_ignore: bool = False 
     
 @dataclass(frozen=True)
 class FocusAttentionAnalytics:

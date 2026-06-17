@@ -36,23 +36,29 @@ def evaluate_board_health_status(
 def build_board_health(
     snapshots: Sequence[AnalyticsTaskSnapshot],
 ) -> BoardHealth:
-    total_tasks = len(snapshots)
+    eligible_snapshots = [
+        snapshot
+        for snapshot in snapshots
+        if not snapshot.analytics_ignore
+    ]  
+    
+    total_tasks = len(eligible_snapshots)
  
     missing_score = sum(
         1
-        for snapshot in snapshots
+        for snapshot in eligible_snapshots
         if snapshot.score is None
     )
     
     missing_tag = sum(
         1
-        for snapshot in snapshots
+        for snapshot in eligible_snapshots
         if len(snapshot.tags) == 0
     )
 
     orphan_tasks = sum(
         1
-        for snapshot in snapshots
+        for snapshot in eligible_snapshots
         if snapshot.score is None
         or len(snapshot.tags) == 0
     )
@@ -76,7 +82,7 @@ def build_board_health(
     
     analytics_ready_tasks = sum(
         1
-        for snapshot in snapshots
+        for snapshot in eligible_snapshots
         if snapshot.score is not None
         and len(snapshot.tags) > 0
     )
@@ -93,7 +99,7 @@ def build_board_health(
     
     orphans: list[OrphanTask] = []
 
-    for snapshot in snapshots:
+    for snapshot in eligible_snapshots:
 
         missing: list[MissingMetadata] = []
 
