@@ -2,13 +2,14 @@ from datetime import date
 
 from src.parser.metadata import (
     extract_metadata,
+    extract_priority,
     extract_start_date,
     extract_tags,
     extract_due_date,
     strip_metadata,
     extract_completion_date,
 )
-from src.parser.models import SectionType, Section
+from src.parser.models import Priority, SectionType, Section
 from src.parser.parser import parse_task_line
 
 
@@ -126,3 +127,27 @@ def test_parse_completion_date() -> None:
     assert task is not None
     assert task.completed_at == date(2026, 6, 20)
     assert task.title == "Release feature"
+    
+def test_extract_priority() -> None:
+    text = "- [ ] Task [priority::high]"
+
+    result = extract_priority(text)
+
+    assert result == Priority.HIGH
+    
+    
+def test_parse_priority() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Prepare report [priority::high]",
+        section,
+    )
+
+    assert task is not None
+    assert task.priority == Priority.HIGH
+    assert task.title == "Prepare report"

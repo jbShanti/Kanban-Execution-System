@@ -1,6 +1,7 @@
 import re
 from datetime import date
 from typing import Final
+from src.parser.models import Priority
 
 
 METADATA_PATTERN: Final = re.compile(
@@ -180,5 +181,23 @@ def extract_completion_date(text: str) -> date | None:
 
     try:
         return date.fromisoformat(match.group(1))
+    except ValueError:
+        return None
+    
+    
+PRIORITY_PATTERN = re.compile(
+    r"\[priority::([a-z]+)\]",
+    re.IGNORECASE,
+)
+
+
+def extract_priority(text: str) -> Priority | None:
+    match = PRIORITY_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    try:
+        return Priority(match.group(1).lower())
     except ValueError:
         return None
