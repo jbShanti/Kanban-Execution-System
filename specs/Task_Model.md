@@ -421,19 +421,6 @@ Is used for price when buying or cost when paying for service
 
 ---
 
-### Tracking Metadata
-
-```md
-[tracking::external]
-```
-
-Meaning:
-- tracked externally
-- excluded from overload analytics
-- monitored only for deadlines
-
----
-
 ### Analytics Metadata
 
 ```md
@@ -465,8 +452,9 @@ Optional semantic classification.
 | due      | date        |
 | time     | duration    |
 | repeat   | string/enum |
-| tracking | enum        |
+| analytics| enum        |
 | finance  | enum/number |
+
 ### Canonical duration formats:  
 15m  
 30m  

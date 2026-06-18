@@ -352,35 +352,6 @@ low
 
 ---
 
-## tracking
-
-### Syntax
-
-```md
-[tracking::external]
-```
-
-### Type
-
-```text
-enum
-```
-
-### Supported Values
-
-```text
-external
-manual
-passive
-ignored
-```
-
-### Meaning
-
-Controls analytics and overload participation.
-
----
-
 ## analytics
 
 ### Syntax
@@ -401,6 +372,8 @@ enum
 ignore
 passive
 historical
+external
+exclude
 ```
 
 ---
@@ -617,7 +590,6 @@ start
 completion
 repeat
 priority
-tracking
 analytics
 finance
 cost

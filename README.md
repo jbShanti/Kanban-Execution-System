@@ -345,7 +345,6 @@ The following specification fields are not fully implemented:
 - completed_at
 - repeat
 - priority
-- tracking
 - analytics metadata processing
 - finance metadata processing
 
@@ -454,7 +453,6 @@ Implement support for:
 - completed_at
 - repeat
 - priority
-- tracking
 
 Success Criteria:
 
