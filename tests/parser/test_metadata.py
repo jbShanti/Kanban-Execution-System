@@ -9,6 +9,7 @@ from src.parser.metadata import (
     extract_due_date,
     strip_metadata,
     extract_completion_date,
+    extract_analytics,
 )
 from src.parser.models import Priority, SectionType, Section
 from src.parser.parser import parse_task_line
@@ -176,3 +177,56 @@ def test_parse_repeat() -> None:
     assert task is not None
     assert task.repeat == "every week"
     assert task.title == "Weekly review"
+    
+    
+def test_extract_analytics() -> None:
+    text = """
+    - [ ] Task
+      [analytics::ignore]
+      [analytics::external]
+    """
+
+    result = extract_analytics(text)
+
+    assert result == {
+        "ignore",
+        "external",
+    }
+    
+def test_parse_analytics() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Prepare report [analytics::ignore] [analytics::external]",
+        section,
+    )
+
+    assert task is not None
+    assert task.analytics == {
+        "ignore",
+        "external",
+    }
+    assert task.title == "Prepare report"
+    
+    
+
+def test_parse_analytics_ignore() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Prepare report [analytics::ignore]",
+        section,
+    )
+
+    assert task is not None
+    assert task.analytics == {"ignore"}
+    assert task.ignored is True
+    assert task.title == "Prepare report"

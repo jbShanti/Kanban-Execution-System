@@ -11,6 +11,7 @@ from src.parser.metadata import (
     extract_status,
     extract_tags,
     strip_metadata,
+    extract_analytics,
 )
 
 from src.parser.models import (
@@ -148,6 +149,8 @@ def parse_task_line(
 
     priority = extract_priority(text)
     
+    analytics=extract_analytics(text)
+    
     repeat = extract_repeat(text)
 
     time_estimate = parse_duration(metadata.get("time"))
@@ -172,10 +175,10 @@ def parse_task_line(
 
         tags=tags,
         metadata=metadata,
+        analytics=analytics,
 
         archived=False,
-        ignored=False,
-
+        
         updated_at=None,
 
         raw_line=text,

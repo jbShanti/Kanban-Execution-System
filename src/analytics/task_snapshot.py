@@ -39,6 +39,7 @@ def build_task_snapshot(
         is_completed=task.is_completed,
         is_archived=task.archived,
         is_overdue=is_overdue,
+        analytics_ignore=task.ignored,
     )
     
     

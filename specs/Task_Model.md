@@ -459,7 +459,7 @@ Optional semantic classification.
 | due      | date        |
 | time     | duration    |
 | repeat   | string/enum |
-| analytics| enum        |
+| analytics| enum flags  |
 | finance  | enum/number |
 
 ### Canonical duration formats:  

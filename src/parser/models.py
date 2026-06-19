@@ -57,6 +57,9 @@ class Priority(StrEnum):
     HIGHEST = "highest"
 
 
+def create_analytics() -> set[str]:
+    return set()
+
 @dataclass(slots=True)
 class Task:
     title: str
@@ -66,6 +69,7 @@ class Task:
         
     score: int | None = None
     priority: Priority | None = None
+    analytics: set[str] = field(default_factory=create_analytics)
     repeat: str | None = None
     
     start: date | None = None
@@ -82,8 +86,7 @@ class Task:
     metadata: dict[str, str] = field(default_factory=empty_metadata)
 
     archived: bool = False
-    ignored: bool = False
-
+    
     raw_line: str = ""
     
     
@@ -118,6 +121,10 @@ class Task:
             TaskStatus.COMPLETED,
             TaskStatus.CANCELLED,
         }
+    
+    @property
+    def ignored(self) -> bool:
+        return "ignore" in self.analytics
     
     @property
     def score_value(self) -> int:

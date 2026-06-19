@@ -145,3 +145,35 @@ def test_indented_hashtag_is_not_section():
     assert not is_section_header(
         "    #Health/Physical"
     )
+    
+def test_task_ignored_property() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Test",
+        status=TaskStatus.OPEN,
+        section=section,
+        analytics={"ignore"},
+    )
+
+    assert task.ignored is True
+    
+def test_task_not_ignored_property() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Test",
+        status=TaskStatus.OPEN,
+        section=section,
+        analytics=set(),
+    )
+
+    assert task.ignored is False

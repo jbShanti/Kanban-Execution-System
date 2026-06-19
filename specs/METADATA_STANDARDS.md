@@ -363,7 +363,7 @@ low
 ### Type
 
 ```text
-enum
+enum flags
 ```
 
 ### Supported Values

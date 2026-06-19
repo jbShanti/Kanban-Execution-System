@@ -216,3 +216,15 @@ def extract_repeat(text: str) -> str | None:
         return None
 
     return match.group(1).strip()
+
+
+ANALYTICS_PATTERN = re.compile(
+    r"\[analytics::([a-z0-9_-]+)\]",
+    re.IGNORECASE,
+)
+
+def extract_analytics(text: str) -> set[str]:
+    return {
+        value.lower()
+        for value in ANALYTICS_PATTERN.findall(text)
+    }

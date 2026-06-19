@@ -107,3 +107,46 @@ def test_archived_task_snapshot():
     )
 
     assert snapshot.is_archived is True
+    
+    
+def test_build_task_snapshot_with_analytics_ignore() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Ignored task",
+        status=TaskStatus.OPEN,
+        section=section,
+        analytics={"ignore"},
+    )
+
+    snapshot = build_task_snapshot(
+        task,
+        today=date(2026, 6, 19),
+    )
+
+    assert snapshot.analytics_ignore is True
+    
+    
+def test_build_task_snapshot_without_analytics_ignore() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Normal task",
+        status=TaskStatus.OPEN,
+        section=section,
+    )
+
+    snapshot = build_task_snapshot(
+        task,
+        today=date(2026, 6, 19),
+    )
+
+    assert snapshot.analytics_ignore is False
