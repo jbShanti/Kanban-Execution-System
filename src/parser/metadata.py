@@ -228,3 +228,34 @@ def extract_analytics(text: str) -> set[str]:
         value.lower()
         for value in ANALYTICS_PATTERN.findall(text)
     }
+    
+    
+    
+CATEGORY_PATTERN = re.compile(
+    r"\[category::([^\]]+)\]",
+    re.IGNORECASE,
+)
+
+
+def extract_category(text: str) -> str | None:
+    match = CATEGORY_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    return match.group(1).strip().lower()
+
+
+FINANCE_PATTERN = re.compile(
+    r"\[finance::([^\]]+)\]",
+    re.IGNORECASE,
+)
+
+
+def extract_finance(text: str) -> str | None:
+    match = FINANCE_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    return match.group(1).strip().lower()

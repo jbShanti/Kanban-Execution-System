@@ -10,6 +10,8 @@ from src.parser.metadata import (
     strip_metadata,
     extract_completion_date,
     extract_analytics,
+    extract_category,
+    extract_finance,
 )
 from src.parser.models import Priority, SectionType, Section
 from src.parser.parser import parse_task_line
@@ -230,3 +232,52 @@ def test_parse_analytics_ignore() -> None:
     assert task.analytics == {"ignore"}
     assert task.ignored is True
     assert task.title == "Prepare report"
+    
+    
+def test_extract_category() -> None:
+    text = "- [ ] Workout [category::health]"
+
+    result = extract_category(text)
+
+    assert result == "health"
+    
+def test_parse_category() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Workout [category::health]",
+        section,
+    )
+
+    assert task is not None
+    assert task.category == "health"
+    assert task.title == "Workout"
+    
+    
+def test_extract_finance() -> None:
+    text = "- [ ] Pay rent [finance::regular]"
+
+    result = extract_finance(text)
+
+    assert result == "regular"
+    
+    
+def test_parse_finance() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Pay rent [finance::regular]",
+        section,
+    )
+
+    assert task is not None
+    assert task.finance == "regular"
+    assert task.title == "Pay rent"

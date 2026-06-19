@@ -150,3 +150,25 @@ def test_build_task_snapshot_without_analytics_ignore() -> None:
     )
 
     assert snapshot.analytics_ignore is False
+    
+    
+def test_build_task_snapshot_with_category() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Workout",
+        status=TaskStatus.OPEN,
+        section=section,
+        category="health",
+    )
+
+    snapshot = build_task_snapshot(
+        task,
+        today=date(2026, 6, 19),
+    )
+
+    assert snapshot.category == "health"

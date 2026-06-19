@@ -69,6 +69,8 @@ class Task:
         
     score: int | None = None
     priority: Priority | None = None
+    category: str | None = None
+    finance: str | None = None
     analytics: set[str] = field(default_factory=create_analytics)
     repeat: str | None = None
     

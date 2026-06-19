@@ -403,18 +403,21 @@ class AnalyticsTaskSnapshot:
     score: int | None
     
     tags: tuple[str, ...]
-
+    
     due_date: date | None
     scheduled_date: date | None
 
     time_estimate_minutes: int | None
 
+    
     is_active: bool
     is_completed: bool
     is_archived: bool
     is_overdue: bool
     
+    category: str | None = None
     analytics_ignore: bool = False 
+       
     
 @dataclass(frozen=True)
 class FocusAttentionAnalytics:

@@ -177,3 +177,4 @@ def test_task_not_ignored_property() -> None:
     )
 
     assert task.ignored is False
+    

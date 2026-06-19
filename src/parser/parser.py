@@ -12,6 +12,8 @@ from src.parser.metadata import (
     extract_tags,
     strip_metadata,
     extract_analytics,
+    extract_category,
+    extract_finance,
 )
 
 from src.parser.models import (
@@ -126,7 +128,8 @@ def parse_task_line(
 
     title = strip_metadata(text)
 
-    metadata = extract_metadata(text)
+       
+    finance = extract_finance(text)
 
     tags = extract_tags(text)
 
@@ -138,24 +141,27 @@ def parse_task_line(
     
     completion_date = extract_completion_date(text)
 
+    
+    priority = extract_priority(text)
+    
+    analytics=extract_analytics(text)
+    
+    repeat = extract_repeat(text)
+    
+    category = extract_category(text)
+
     score: int | None = None
+    
+    metadata = extract_metadata(text)
 
     if "score" in metadata:
         try:
             score = int(metadata["score"])
         except ValueError:
             score = None
-
-
-    priority = extract_priority(text)
     
-    analytics=extract_analytics(text)
-    
-    repeat = extract_repeat(text)
-
     time_estimate = parse_duration(metadata.get("time"))
-
-
+    
     return Task(
         title=title,
         status=TaskStatus(status_raw),
@@ -175,6 +181,8 @@ def parse_task_line(
 
         tags=tags,
         metadata=metadata,
+        category=category,
+        finance=finance,
         analytics=analytics,
 
         archived=False,
