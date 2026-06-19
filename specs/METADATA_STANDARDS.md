@@ -370,10 +370,7 @@ enum
 
 ```text
 ignore
-passive
-historical
 external
-exclude
 ```
 
 ---

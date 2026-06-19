@@ -211,7 +211,7 @@ Optional:
 - recurrence metadata
 - priority metadata
 - category metadata
-- tracking metadata
+- analytics metadata
 - notes
 - links
 
@@ -425,12 +425,19 @@ Is used for price when buying or cost when paying for service
 
 ```md
 [analytics::ignore]
+[analytics::external]
 ```
 
 Meaning:
-- excluded from analytics
-- excluded from recommendations
-- excluded from scoring systems
+- ignore:
+  - excluded from analytics
+  - excluded from recommendations
+  - excluded from scoring systems
+- external:
+  - excluded from overload analytics
+  - execution happens outside KES
+  - still visible in portfolio analytics
+  - deadlines remain tracked
 
 ---
 
