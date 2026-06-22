@@ -437,21 +437,11 @@ A new contributor can understand repository state without external context.
 
 ---
 
-## Phase 1 — Parser Compliance
+## Phase 1 — Parser Compliance (completed)
 
 Goal:
 
 Achieve compliance with Task_Model and Metadata_Standards.
-
-Required Work:
-
-Implement support for:
-
-- scheduled
-- start
-- completed_at
-- repeat
-- priority
 
 Success Criteria:
 
@@ -459,7 +449,7 @@ All canonical metadata fields are parsed into domain models.
 
 ---
 
-## Phase 2 — Analytics Model V2 Foundation
+## Phase 2 — Analytics Model V2 Foundation (in progress)
 
 Goal:
 
