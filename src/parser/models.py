@@ -72,6 +72,7 @@ class Task:
     category: str | None = None
     finance: str | None = None
     cost: int | None = None
+    currency: str | None = None
     analytics: set[str] = field(default_factory=create_analytics)
     repeat: str | None = None
     

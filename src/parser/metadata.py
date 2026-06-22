@@ -278,3 +278,23 @@ def extract_cost(text: str) -> int | None:
         return abs(int(float(match.group(1))))
     except (TypeError, ValueError):
         return None
+    
+    
+CURRENCY_PATTERN = re.compile(
+    r"\[currency::([^\]]+)\]",
+    re.IGNORECASE,
+)
+
+
+def extract_currency(text: str) -> str | None:
+    match = CURRENCY_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    value = match.group(1).strip().upper()
+
+    if len(value) < 3:
+        return None
+
+    return value[:3]

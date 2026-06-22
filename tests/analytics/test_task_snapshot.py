@@ -172,3 +172,47 @@ def test_build_task_snapshot_with_category() -> None:
     )
 
     assert snapshot.category == "health"
+    
+    
+def test_build_task_snapshot_with_cost() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Buy Omega 3",
+        status=TaskStatus.OPEN,
+        section=section,
+        cost=1500,
+    )
+
+    snapshot = build_task_snapshot(
+        task,
+        today=date(2026, 6, 19),
+    )
+
+    assert snapshot.cost == 1500
+    
+    
+def test_build_task_snapshot_with_currency() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Buy Omega 3",
+        status=TaskStatus.OPEN,
+        section=section,
+        currency="RUB",
+    )
+
+    snapshot = build_task_snapshot(
+        task,
+        today=date(2026, 6, 19),
+    )
+
+    assert snapshot.currency == "RUB"

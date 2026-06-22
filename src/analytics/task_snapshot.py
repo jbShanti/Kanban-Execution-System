@@ -41,6 +41,8 @@ def build_task_snapshot(
         is_archived=task.archived,
         is_overdue=is_overdue,
         analytics_ignore=task.ignored,
+        cost=task.cost,
+        currency=task.currency,
     )
     
     

@@ -435,8 +435,13 @@ Numeric financial amount.
 ### Syntax
 
 ```md
-[currency::RUB]
+[currency::<code>]
 ```
+
+### Purpose
+
+Specifies the currency associated with a task cost. Used together with the `cost` metadata field.
+
 
 ### Type
 
@@ -447,10 +452,45 @@ string
 ### Supported Examples
 
 ```text
+[currency::RUB]
+[currency::USD]
+[currency::EUR]
+[currency::CHF]
+```
+
+### Normalization
+
+- Currency codes are normalized to uppercase.
+- The parser accepts any letter case.
+- Only valid ISO 4217 currency codes are allowed.
+- Invalid values are ignored.
+
+### Normalization Examples
+
+```text
+[currency::rub]      -> RUB
+[currency::Usd]      -> USD
+[currency::CHF]      -> CHF
+[currency::invalid]  -> None
+```
+
+
+### Canonical values
+
+```text
 RUB
 USD
 EUR
 CHF
+GBP
+JPY
+CNY
+```
+
+### Reference
+
+```text
+ISO 4217
 ```
 
 ---

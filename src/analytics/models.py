@@ -416,8 +416,10 @@ class AnalyticsTaskSnapshot:
     is_overdue: bool
     
     category: str | None = None
+    cost: int | None = None
+    currency: str | None = None
     analytics_ignore: bool = False 
-       
+    
     
 @dataclass(frozen=True)
 class FocusAttentionAnalytics:

@@ -13,6 +13,7 @@ from src.parser.metadata import (
     extract_category,
     extract_finance,
     extract_cost,
+    extract_currency,
 )
 from src.parser.models import Priority, SectionType, Section
 from src.parser.parser import parse_task_line
@@ -321,3 +322,43 @@ def test_extract_negative_cost() -> None:
 
 def test_extract_decimal_cost() -> None:
     assert extract_cost("[cost::1500.99]") == 1500
+    
+    
+def test_extract_currency() -> None:
+    text = "- [ ] Buy Omega 3 [currency::rub]"
+
+    result = extract_currency(text)
+
+    assert result == "RUB"
+
+
+def test_extract_currency_takes_first_three_characters() -> None:
+    text = "- [ ] Buy Omega 3 [currency::eurusd]"
+
+    result = extract_currency(text)
+
+    assert result == "EUR"
+
+
+def test_extract_currency_returns_none_for_short_value() -> None:
+    text = "- [ ] Buy Omega 3 [currency::ab]"
+
+    result = extract_currency(text)
+
+    assert result is None
+
+
+def test_parse_currency() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Buy Omega 3 [currency::rub]",
+        section,
+    )
+
+    assert task is not None
+    assert task.currency == "RUB"
