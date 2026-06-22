@@ -329,26 +329,25 @@ The parser currently supports:
 - task status parsing
 - section parsing
 - metadata extraction
-- score extraction
-- due extraction
-- tag extraction
-- duration extraction
 
----
 
-## Not Yet Supported
 
-The following specification fields are not fully implemented:
+Supported metadata:
 
-- scheduled
+- score
+- due
+- time_estimate (task duration estimate)
 - start
-- completed_at
-- repeat
+- scheduled
+- completion
 - priority
-- analytics metadata processing
-- finance metadata processing
-
-Parser compliance is an active roadmap item.
+- repeat
+- category
+- finance
+- cost
+- currency
+- analytics
+- tags
 
 ---
 
