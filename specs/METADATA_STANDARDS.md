@@ -405,11 +405,11 @@ skipped
 
 ## cost
 
-### Syntax
+### Examples
 
-```md
 [cost::1500]
-```
+[cost::-1500]
+[cost::1500.99]
 
 ### Type
 
@@ -420,6 +420,13 @@ integer
 ### Meaning
 
 Numeric financial amount.
+
+### Normalization:
+
+- Negative values are converted to absolute values.
+- Fractional values are truncated to the integer part.
+- Invalid values are ignored.
+
 
 ---
 

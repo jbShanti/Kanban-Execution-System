@@ -259,3 +259,22 @@ def extract_finance(text: str) -> str | None:
         return None
 
     return match.group(1).strip().lower()
+
+
+
+COST_PATTERN = re.compile(
+    r"\[cost::(-?\d+(?:\.\d+)?)\]",
+    re.IGNORECASE,
+)
+
+
+def extract_cost(text: str) -> int | None:
+    match = COST_PATTERN.search(text)
+
+    if not match:
+        return None
+
+    try:
+        return abs(int(float(match.group(1))))
+    except (TypeError, ValueError):
+        return None

@@ -413,11 +413,28 @@ Supported examples:
 
 ### Cost Metadata
 
----
-```md
+Type: Integer
+
+Represents the monetary amount associated with a task.
+
+Examples:
+
 [cost::1500]
-```
-Is used for price when buying or cost when paying for service
+[cost::-1500]
+[cost::1500.99]
+
+Normalization rules:
+
+- Negative values are converted to absolute values.
+- Fractional values are truncated to the integer part.
+- Invalid values are ignored.
+
+Examples:
+
+[cost::1500]     -> 1500
+[cost::-1500]    -> 1500
+[cost::1500.99]  -> 1500
+[cost::abc]      -> None
 
 ---
 

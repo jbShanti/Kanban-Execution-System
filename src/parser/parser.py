@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from src.parser.metadata import (
+    extract_cost,
     extract_due_date,
     extract_metadata,
     extract_priority,
@@ -130,6 +131,8 @@ def parse_task_line(
 
        
     finance = extract_finance(text)
+    
+    cost = extract_cost(text)
 
     tags = extract_tags(text)
 
@@ -183,6 +186,7 @@ def parse_task_line(
         metadata=metadata,
         category=category,
         finance=finance,
+        cost=cost,
         analytics=analytics,
 
         archived=False,

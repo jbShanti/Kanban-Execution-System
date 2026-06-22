@@ -12,6 +12,7 @@ from src.parser.metadata import (
     extract_analytics,
     extract_category,
     extract_finance,
+    extract_cost,
 )
 from src.parser.models import Priority, SectionType, Section
 from src.parser.parser import parse_task_line
@@ -281,3 +282,42 @@ def test_parse_finance() -> None:
     assert task is not None
     assert task.finance == "regular"
     assert task.title == "Pay rent"
+    
+def test_extract_cost() -> None:
+    text = "- [ ] Buy Omega 3 [cost::1500]"
+
+    result = extract_cost(text)
+
+    assert result == 1500
+
+
+def test_parse_cost() -> None:
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = parse_task_line(
+        "- [ ] Buy Omega 3 [cost::1500]",
+        section,
+    )
+
+    assert task is not None
+    assert task.cost == 1500
+    assert task.title == "Buy Omega 3"
+    
+    
+def test_extract_invalid_cost() -> None:
+    text = "- [ ] Buy Omega 3 [cost::abc]"
+
+    result = extract_cost(text)
+
+    assert result is None
+    
+def test_extract_negative_cost() -> None:
+    assert extract_cost("[cost::-1500]") == 1500
+
+
+def test_extract_decimal_cost() -> None:
+    assert extract_cost("[cost::1500.99]") == 1500
