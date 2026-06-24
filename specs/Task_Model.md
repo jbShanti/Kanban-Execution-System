@@ -1552,3 +1552,22 @@ Review service MUST return structured output:
 - `status = ok` только если issues = []
 - review НЕ должен мутировать задачу (только анализ)
 - severity влияет только на рекомендации, не на структуру
+
+
+# 24. Emoji
+
+Emoji are optional task markers.
+
+Syntax:
+
+[ ] 🔥 Task
+[ ] 🔥 🚀 Task
+[ ] 🔥🚀 Task
+
+Rules:
+
+- Emoji are parsed only from the beginning of the task title.
+- Spaces between emoji are allowed.
+- Parsing stops at the first non-emoji token.
+- Emoji appearing later in the title are preserved as part of the title.
+- Parsed emoji are stored in `Task.emoji`.

@@ -298,3 +298,59 @@ def extract_currency(text: str) -> str | None:
         return None
 
     return value[:3]
+
+import unicodedata
+
+
+def _is_emoji_base(char: str) -> bool:
+    return unicodedata.category(char) == "So"
+
+
+def _parse_emoji_prefix(
+    title: str,
+) -> tuple[list[str], str]:
+
+    emoji: list[str] = []
+
+    i = 0
+    n = len(title)
+
+    while i < n:
+
+        while i < n and title[i].isspace():
+            i += 1
+
+        if i >= n:
+            break
+
+        char = title[i]
+
+        if not _is_emoji_base(char):
+            break
+
+        token = char
+        i += 1
+
+        # Variation Selector-16 (⚙️ ❤️ ☀️ ...)
+        if i < n and ord(title[i]) == 0xFE0F:
+            token += title[i]
+            i += 1
+
+        emoji.append(token)
+
+    clean_title = title[i:].strip()
+
+    return emoji, clean_title
+
+def extract_emoji(
+    title: str,
+) -> list[str]:
+    emoji, _ = _parse_emoji_prefix(title)
+    return emoji
+
+
+def strip_emoji(
+    title: str,
+) -> str:
+    _, clean_title = _parse_emoji_prefix(title)
+    return clean_title

@@ -14,9 +14,11 @@ from src.parser.metadata import (
     extract_finance,
     extract_cost,
     extract_currency,
+    extract_emoji,
+    strip_emoji,
 )
 from src.parser.models import Priority, SectionType, Section
-from src.parser.parser import parse_task_line
+from src.parser.parser import DEFAULT_SECTION, parse_task_line
 
 
 def test_extract_metadata():
@@ -362,3 +364,106 @@ def test_parse_currency() -> None:
 
     assert task is not None
     assert task.currency == "RUB"
+    
+    
+def test_extract_single_emoji():
+    assert extract_emoji(
+        "🔥 Позвонить клиенту"
+    ) == ["🔥"]
+
+
+def test_strip_single_emoji():
+    assert strip_emoji(
+        "🔥 Позвонить клиенту"
+    ) == "Позвонить клиенту"
+
+
+def test_extract_multiple_emoji_with_spaces():
+    assert extract_emoji(
+        "🔥 🚀 📞 Позвонить клиенту"
+    ) == ["🔥", "🚀", "📞"]
+
+
+def test_strip_multiple_emoji_with_spaces():
+    assert strip_emoji(
+        "🔥 🚀 📞 Позвонить клиенту"
+    ) == "Позвонить клиенту"
+
+
+def test_extract_multiple_emoji_without_spaces():
+    assert extract_emoji(
+        "🔥🚀📞 Позвонить клиенту"
+    ) == ["🔥", "🚀", "📞"]
+
+
+def test_strip_multiple_emoji_without_spaces():
+    assert strip_emoji(
+        "🔥🚀📞 Позвонить клиенту"
+    ) == "Позвонить клиенту"
+
+
+def test_extract_no_emoji():
+    assert extract_emoji(
+        "Позвонить клиенту"
+    ) == []
+
+
+def test_strip_no_emoji():
+    assert strip_emoji(
+        "Позвонить клиенту"
+    ) == "Позвонить клиенту"
+
+
+def test_extract_trailing_emoji_stays_in_title():
+    assert extract_emoji(
+        "🔥 Позвонить клиенту 📞"
+    ) == ["🔥"]
+
+
+def test_strip_trailing_emoji_stays_in_title():
+    assert strip_emoji(
+        "🔥 Позвонить клиенту 📞"
+    ) == "Позвонить клиенту 📞"
+
+
+def test_extract_variation_selector_emoji():
+    assert extract_emoji(
+        "⚙️🗂️ Настроить систему"
+    ) == ["⚙️", "🗂️"]
+
+
+def test_strip_variation_selector_emoji():
+    assert strip_emoji(
+        "⚙️🗂️ Настроить систему"
+    ) == "Настроить систему"
+    
+    
+    
+def test_parse_root_task_with_emoji():
+    task = parse_task_line(
+        "- [ ] 🔥🚀📞 Позвонить клиенту",
+        section=DEFAULT_SECTION,
+    )
+
+    assert task is not None
+
+    assert task.emoji == [
+        "🔥",
+        "🚀",
+        "📞",
+    ]
+
+    assert task.title == "Позвонить клиенту"
+    
+    
+def test_parse_subtask_does_not_extract_emoji():
+    task = parse_task_line(
+        "\t- [ ] 🚀 Написать клиенту",
+        section=DEFAULT_SECTION,
+    )
+
+    assert task is not None
+
+    assert task.emoji == []
+
+    assert task.title == "🚀 Написать клиенту"

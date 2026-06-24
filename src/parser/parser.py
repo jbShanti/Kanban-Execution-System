@@ -4,6 +4,7 @@ from src.parser.metadata import (
     extract_cost,
     extract_currency,
     extract_due_date,
+    extract_emoji,
     extract_metadata,
     extract_priority,
     extract_repeat,
@@ -12,6 +13,7 @@ from src.parser.metadata import (
     extract_completion_date,
     extract_status,
     extract_tags,
+    strip_emoji,
     strip_metadata,
     extract_analytics,
     extract_category,
@@ -122,6 +124,7 @@ def parse_task_line(
     Parse a single markdown task line into a Task object.
     """
 
+    depth = extract_depth(text)
     status_raw = extract_status(text)
 
     # Ignore non-task lines
@@ -130,6 +133,12 @@ def parse_task_line(
 
     title = strip_metadata(text)
 
+    emoji: list[str] = []
+
+    if depth == 0:
+        emoji = extract_emoji(title)
+        title = strip_emoji(title)
+    
        
     finance = extract_finance(text)
     
@@ -194,7 +203,8 @@ def parse_task_line(
         analytics=analytics,
 
         archived=False,
-        
+        depth=depth,
+        emoji=emoji,
         updated_at=None,
 
         raw_line=text,
@@ -280,3 +290,8 @@ def parse_markdown_file(
     return Board(parse_markdown_lines(
         text.splitlines()),
     )
+    
+def extract_depth(
+    line: str,
+) -> int:
+    return len(line) - len(line.lstrip("\t"))

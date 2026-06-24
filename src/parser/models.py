@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 from dataclasses import dataclass, field
 
 
+
 class TaskStatus(str, Enum):
     OPEN = "open"
     IN_PROGRESS = "in_progress"
@@ -18,6 +19,10 @@ def empty_tags() -> list[str]:
 
 def empty_metadata() -> dict[str, str]:
     return {}
+
+
+def empty_emoji() -> list[str]:
+    return []
 
 
 class SectionType(StrEnum):
@@ -66,7 +71,9 @@ class Task:
     status: TaskStatus
 
     section: Section
-        
+    
+    depth: int = 0
+    
     score: int | None = None
     priority: Priority | None = None
     category: str | None = None
@@ -86,6 +93,7 @@ class Task:
     time_estimate: timedelta | None = None
 
     tags: list[str] = field(default_factory=empty_tags)
+    emoji: list[str] = field(default_factory=empty_emoji)
 
     metadata: dict[str, str] = field(default_factory=empty_metadata)
 
