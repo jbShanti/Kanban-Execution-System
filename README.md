@@ -2,591 +2,316 @@
 
 ## Purpose
 
-Kanban Execution System (KES) is a local-first Markdown Kanban analysis system.
+Kanban Execution System (KES) is a specification-driven productivity system that transforms a Kanban board from a passive task tracker into an active execution environment.
 
-The system treats Markdown Kanban boards as the single source of truth and provides:
+The goal of KES is not merely to store tasks, but to support:
 
-- deterministic parsing of Kanban boards
-- structured domain models
-- board analytics
-- board health evaluation
-- analytical reporting foundations
+- daily execution;
+- continuous prioritization;
+- analytical reflection;
+- strategic alignment;
+- gradual reduction of chaos and cognitive load.
 
-KES is designed to evolve into a complete execution analysis platform while preserving Markdown as the canonical data format.
-
----
-
-# Current Repository Status
-
-This section describes the actual implementation state of the repository.
-
-## Implemented
-
-### Domain Layer
-
-- Board model
-- Section model
-- Task model
-- Task status model
-
-### Parser Layer
-
-- Markdown board parsing
-- Section detection
-- Task extraction
-- Metadata extraction
-- Due date parsing
-- Score parsing
-- Tag parsing
-- Duration parsing
-
-### Analytics Foundation
-
-- Board metrics
-- Section metrics
-- Task metrics
-- WIP metrics
-- Board health metrics
-- Score corridor metrics
-- Overload detection foundations
-
-### Reporting Foundation
-
-- Analytics report models
-- Review/report infrastructure foundations
-
-### Test Infrastructure
-
-- Parser tests
-- Analytics tests
-- Golden tests
-- Invariant tests
+KES treats a Kanban board as an operational representation of a person's commitments, projects, goals, and attention.
 
 ---
 
-## Partially Implemented
+## Core Principles
 
-### Analytics Model V2 Migration
+### Execution Over Organization
 
-Some structures defined in Analytics_Model_v2 are present.
+The purpose of the system is not to create a perfectly organized board.
 
-The complete analytics pipeline has not yet been implemented.
-
----
-
-## Not Implemented
-
-### Recommendation Engine
-
-The repository does not currently generate recommendations.
-
-### Safe Automation Layer
-
-The repository does not modify boards automatically.
-
-### Autonomous Execution Workflows
-
-No autonomous task management or execution logic currently exists.
+The purpose is to help complete meaningful work.
 
 ---
 
-# Specification Hierarchy
+### Simplicity Over Complexity
 
-All contributors and LLM agents must follow this hierarchy.
+Every element in the system must justify its existence.
 
-When conflicts exist between documents, the higher-priority document wins.
+Additional structure is introduced only when it improves execution quality.
 
 ---
 
-## Priority 1 — Canonical System Specification
+### Specification Before Automation
 
-### KANBAN_EXECUTION_SYSTEM.md
+Automation is built on top of explicit models.
+
+The system is defined by specifications first and tooling second.
+
+---
+
+### Human-Centered Design
+
+The board exists to support decision making.
+
+The user remains the final authority over priorities and actions.
+
+---
+
+## What KES Is
+
+KES is:
+
+- a personal execution system;
+- a Kanban-based operational framework;
+- a task lifecycle model;
+- a metadata standard;
+- an analytical framework;
+- a decision-support environment;
+- a foundation for future automation and AI assistance.
+
+KES defines:
+
+- how tasks are represented;
+- how tasks move through states;
+- what metadata is required;
+- how analytics are generated;
+- how reviews are conducted;
+- how execution quality is evaluated.
+
+---
+
+## What KES Is Not
+
+KES is not:
+
+- a generic task manager;
+- a project management platform;
+- a GTD implementation;
+- a note-taking system;
+- a knowledge base;
+- a calendar replacement;
+- an AI agent framework;
+- a productivity methodology intended for everyone.
+
+KES is specifically designed as an execution-focused system built around a Kanban board and a formal set of operating rules.
+
+---
+
+## Architecture Overview
+
+At a high level, KES consists of four layers.
+
+### 1. System Boundaries
 
 Defines:
 
-- system philosophy
-- architectural boundaries
-- system goals
-- roadmap
-- long-term architecture
+- scope of the system;
+- responsibilities;
+- exclusions;
+- conceptual limits.
 
-This document is the primary source of truth.
-
----
-
-## Priority 2 — Domain Specifications
-
-### Task_Model.md
+### 2. Domain Models
 
 Defines:
 
-- task schema
-- task lifecycle
-- task invariants
-- board structure expectations
+- tasks;
+- states;
+- metadata;
+- lifecycle rules.
 
-### METADATA_STANDARDS.md
-
-Defines:
-
-- metadata syntax
-- metadata typing
-- metadata validation rules
-- metadata interpretation
-
----
-
-## Priority 3 — Analytics Specification
-
-### Analytics_Model_v2.md
+### 3. Analytics Layer
 
 Defines:
 
-- analytics contracts
-- analytics outputs
-- analytics pipeline
-- report structure
-- executive summary structure
+- execution metrics;
+- board analysis;
+- review procedures;
+- diagnostic outputs.
+
+### 4. Automation Layer
+
+Defines future automation capabilities:
+
+- assistants;
+- workflows;
+- orchestration;
+- decision support.
 
 ---
 
-## Priority 4 — System Boundaries
+## Specification Hierarchy
 
-### SYSTEM BOUNDARIES.md
+The repository is specification-driven.
 
-Defines:
+The following documents are considered canonical sources of truth.
 
-- forbidden behaviors
-- mutation restrictions
-- safety requirements
-- automation limits
+### Level 1 — System Scope
 
----
+- `SYSTEM BOUNDARIES.md`
 
-## Priority 5 — Implementation
-
-Source code reflects the current implementation state.
-
-Implementation may lag behind specifications.
-
-When implementation conflicts with specifications:
-
-**Specifications are authoritative.**
+Defines what belongs inside KES and what does not.
 
 ---
 
-# Operating Principles
+### Level 2 — Domain Models
 
-All contributors and LLM agents must follow these principles.
+- `Task_Model.md`
+- `METADATA_STANDARDS.md`
 
-## Principle 1 — Markdown is the Source of Truth
-
-Markdown files are authoritative.
-
-Generated artifacts are derived data.
-
-No generated artifact may become the primary source of truth.
+Define the structure and behavior of tasks.
 
 ---
 
-## Principle 2 — Deterministic First
+### Level 3 — Analytics
 
-Before introducing AI behavior:
+- `Analytics_Model_v2.md`
 
-1. Parse deterministically.
-2. Analyze deterministically.
-3. Validate deterministically.
-
-AI layers must consume deterministic outputs.
+Defines analytical models, metrics, and review procedures.
 
 ---
 
-## Principle 3 — Analysis Before Recommendation
+### Level 4 — Implementation
 
-The system roadmap is:
+Implementation artifacts, prompts, scripts, automations, and tools must conform to the specifications above.
+
+---
+
+### Conflict Resolution
+
+If documents conflict:
+
+1. System Boundaries prevail over all other documents.
+2. Domain Models prevail over Analytics.
+3. Analytics prevail over implementation artifacts.
+4. README is descriptive and never overrides specifications.
+
+---
+
+## Current Status
+
+Current focus is the stabilization of the specification layer.
+
+Completed:
+
+- System Boundaries
+- Task Model
+- Metadata Standards
+- Analytics Model v2
+
+In progress:
+
+- Documentation consolidation
+- Repository restructuring
+- Specification alignment
+
+Planned:
+
+- Review protocols
+- Execution workflows
+- Automation architecture
+- Agent integration
+
+---
+
+## Roadmap
+
+### Phase 1 — Foundation
+
+Goal:
+
+Establish a complete and internally consistent specification layer.
+
+Includes:
+
+- System Boundaries
+- Task Model
+- Metadata Standards
+- Analytics Model
+
+Status: Completed
+
+---
+
+### Phase 2 — Operational System
+
+Goal:
+
+Create a coherent execution framework based on the specifications.
+
+Includes:
+
+- review protocols;
+- board operating procedures;
+- execution workflows;
+- decision-support processes.
+
+Status: In Progress
+
+---
+
+### Phase 3 — Automation
+
+Goal:
+
+Reduce manual overhead while preserving human control.
+
+Includes:
+
+- workflow automation;
+- analytics generation;
+- assistant-driven reviews;
+- structured recommendations.
+
+Status: Planned
+
+---
+
+### Phase 4 — Autonomous Assistance
+
+Goal:
+
+Build intelligent agents capable of operating within KES constraints.
+
+Includes:
+
+- agent orchestration;
+- multi-step execution;
+- contextual decision support;
+- autonomous monitoring.
+
+Status: Planned
+
+---
+
+## Repository Structure
 
 ```text
-Markdown
-↓
-Parser
-↓
-Domain Model
-↓
-Analytics
-↓
-Executive Summary
-↓
-Recommendations
-↓
-Automation
-```
-
-A later layer must never be implemented before the previous layer is stable.
-
----
-
-## Principle 4 — Safety Before Automation
-
-Automation is the final stage of the roadmap.
-
-No automatic board modification should be introduced before:
-
-- parser compliance
-- analytics stability
-- recommendation validation
-
-have been completed.
-
----
-
-# Repository Structure
-
-Current high-level structure:
-
-```text
-repository/
-│
-├── src/
-│   ├── parser/
-│   ├── analytics/
-│   └── ...
-│
-├── tests/
-│
+/
 ├── README.md
-│
-├── KANBAN_EXECUTION_SYSTEM.md
-├── TASK_MODEL.md
+├── SYSTEM BOUNDARIES.md
+├── Task_Model.md
 ├── METADATA_STANDARDS.md
-├── ANALYTICS_MODEL_V2.md
-└── SYSTEM BOUNDARIES.md
+├── Analytics_Model_v2.md
+└── future implementation artifacts
 ```
 
 ---
 
-# Current Domain Model
+## For Developers
 
-Current implementation is centered on three primary entities.
+When contributing to KES:
 
-```text
-Board
- └── Section
-      └── Task
-```
+1. Start with System Boundaries.
+2. Verify compliance with Domain Models.
+3. Verify consistency with Analytics.
+4. Only then modify implementation artifacts.
 
-## Board
-
-Represents an entire Kanban board.
-
-Contains:
-
-- sections
-- board metadata
+New functionality should extend the specifications rather than bypass them.
 
 ---
 
-## Section
+## Vision
 
-Represents a logical board section.
+The long-term vision of KES is to create a system where:
 
-Examples:
+- commitments become visible;
+- priorities become explicit;
+- execution becomes measurable;
+- reviews become systematic;
+- automation becomes safe and predictable.
 
-- Inbox
-- Today
-- Doing
-- Waiting
-- Archive
-
-Contains:
-
-- tasks
-- section metadata
-
----
-
-## Task
-
-Represents a single actionable item.
-
-Current implementation supports:
-
-- title
-- status
-- score
-- due date
-- tags
-- duration
-- metadata
-
----
-
-# Current Parser Capabilities
-
-## Supported
-
-The parser currently supports:
-
-- task status parsing
-- section parsing
-- metadata extraction
-
-
-
-Supported metadata:
-
-- score
-- due
-- time_estimate (task duration estimate)
-- start
-- scheduled
-- completion
-- priority
-- repeat
-- category
-- finance
-- cost
-- currency
-- analytics
-- tags
-
----
-
-# Current Analytics Capabilities
-
-## Implemented
-
-### Board Analytics
-
-- board metrics
-- board health metrics
-- score aggregation
-
-### Task Analytics
-
-- task metrics
-- score metrics
-
-### Execution Analytics
-
-- WIP metrics
-- overload detection
-
-### Corridor Analytics
-
-- score corridor evaluation
-
----
-
-## Planned
-
-Analytics_Model_v2 defines future analytics domains:
-
-### Focus Analytics
-
-Examples:
-
-- overdue analysis
-- due-today analysis
-- attention analysis
-
-### Tactical Analytics
-
-Examples:
-
-- workload analysis
-- execution pressure
-- waiting analysis
-
-### Strategic Analytics
-
-Examples:
-
-- value concentration
-- execution debt
-- long-term board health
-
-### Executive Summary
-
-Human-readable analytical synthesis.
-
----
-
-# Development Roadmap
-
-This roadmap is intended to guide both human developers and LLM agents.
-
-Each phase should be completed before the next phase begins.
-
----
-
-## Phase 0 — Documentation Alignment
-
-Goal:
-
-Align repository documentation with actual implementation.
-
-Deliverables:
-
-- updated README
-- updated roadmap
-- documented specification hierarchy
-
-Success Criteria:
-
-A new contributor can understand repository state without external context.
-
----
-
-## Phase 1 — Parser Compliance (completed)
-
-Goal:
-
-Achieve compliance with Task_Model and Metadata_Standards.
-
-Success Criteria:
-
-All canonical metadata fields are parsed into domain models.
-
----
-
-## Phase 2 — Analytics Model V2 Foundation (in progress)
-
-Goal:
-
-Introduce analytics snapshots and analytics context.
-
-Target Pipeline:
-
-```text
-Tasks
-↓
-AnalyticsTaskSnapshot
-↓
-Analytics Context
-↓
-Analytics Report
-```
-
-Success Criteria:
-
-Analytics no longer operate directly on raw task collections.
-
----
-
-## Phase 3 — Focus Analytics
-
-Implement:
-
-- overdue analysis
-- due today analysis
-- upcoming analysis
-- attention scoring
-- focus scoring
-
-Source:
-
-Analytics_Model_v2.md
-
----
-
-## Phase 4 — Tactical Analytics
-
-Implement:
-
-- workload analysis
-- WIP pressure analysis
-- execution pressure
-- waiting analysis
-- velocity analysis
-
-Source:
-
-Analytics_Model_v2.md
-
----
-
-## Phase 5 — Strategic Analytics
-
-Implement:
-
-- value concentration
-- score distribution
-- execution debt
-- strategic board health
-
-Source:
-
-Analytics_Model_v2.md
-
----
-
-## Phase 6 — Executive Summary
-
-Goal:
-
-Generate deterministic analytical summaries.
-
-Pipeline:
-
-```text
-Analytics
-↓
-Executive Summary
-```
-
-Recommendations are explicitly out of scope.
-
----
-
-## Phase 7 — Recommendation Engine
-
-Goal:
-
-Generate recommendations from analytics outputs.
-
-Pipeline:
-
-```text
-Analytics
-↓
-Executive Summary
-↓
-Recommendations
-```
-
-Recommendations must consume analytics outputs rather than raw tasks.
-
----
-
-## Phase 8 — Safe Automation Layer
-
-Goal:
-
-Introduce controlled board modifications.
-
-Must comply with:
-
-- KANBAN_EXECUTION_SYSTEM.md
-- SYSTEM BOUNDARIES.md
-
-Automation is not allowed before earlier phases are complete.
-
----
-
-# Rules for LLM Agents
-
-When working in this repository:
-
-1. Read the specification hierarchy first.
-2. Determine current implementation state before proposing changes.
-3. Do not assume planned features already exist.
-4. Prefer deterministic implementations over AI-driven implementations.
-5. Do not introduce automation before roadmap completion.
-6. Treat Markdown as the canonical data source.
-7. Update tests alongside implementation changes.
-8. Preserve backward compatibility unless specifications explicitly require otherwise.
-
-If uncertain:
-
-- trust specifications over implementation;
-- trust higher-priority specifications over lower-priority specifications.
+The board should evolve from a collection of tasks into a reliable operating system for personal execution.
+ 
