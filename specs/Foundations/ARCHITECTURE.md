@@ -568,7 +568,7 @@ Semi-Autonomous Execution Infrastructure
 
 ---
 
-# 13.1 Configuration Model
+# 14 Configuration Model
 
 ## Purpose
 
@@ -839,7 +839,7 @@ Handles:
 - overload interpretation
 
 
-# 14. Technical Architecture
+# 15. Technical Architecture
 
 ## Source of Truth
 
@@ -880,86 +880,6 @@ Obsidian Vault
 
 ---
 
-# 15. MVP Scope
-
-## Phase 1 — Parsing Layer
-
-Goal:  
-Markdown → structured JSON model
-
-Tasks:
-
-- task extraction
-- metadata extraction
-- archive detection
-- section parsing
-- task normalization
-
----
-
-## Phase 2 — Deterministic Analytics
-
-Tasks:
-
-- overdue detection
-- Health Index
-- score analysis
-- active context analysis
-- execution metrics
-
-No LLM required.
-
----
-
-## Phase 3 — AI Recommendations
-
-AI used only for:
-
-- prioritization nuance
-- simplification
-- overload interpretation
-- recommendation generation
-
----
-
-## Phase 4 — Suggested Mutations
-
-AI suggests:
-
-- score changes
-- backlog moves
-- simplifications
-- context reduction
-
-Human approves.
-
----
-
-## Phase 5 — Safe Automation
-
-Only deterministic actions:
-
-- archive completed tasks
-- recurring task generation
-- reports
-- summaries
-- metrics updates
-
----
-
-## Read-Only First Principle
-
-The system must first:
-- observe
-- analyze
-- recommend
-
-Before:
-- modifying
-- mutating
-- automating actions
-
----
 
 # 16. Explicit Non-Goals
 
