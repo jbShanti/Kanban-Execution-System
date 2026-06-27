@@ -2291,7 +2291,16 @@ Opportunities describe potential gains but do not prescribe actions.
 
 ### Findings
 
-Findings capture important contextual observations that do not imply a positive condition, a risk, or a potential improvement.
+Findings are the primary analytical conclusions produced by the Analytics Engine. They communicate the meaning of analytical measurements and provide the foundation for Executive Summary, Risks, Strengths and Opportunities.
+
+
+Strength is a positive Finding.
+
+Risk is a negative Finding.
+
+Opportunity is an actionable Finding.
+
+Context Finding is an informational Finding.
 
 Examples:
 

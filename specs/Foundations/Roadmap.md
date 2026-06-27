@@ -1,388 +1,283 @@
-# Kanban Execution System Roadmap
+# Roadmap
 
-## Purpose
+## Vision
 
-This roadmap describes the planned evolution of the Kanban Execution System (KES).
+The Kanban Execution System (KES) evolves through several maturity levels.
 
-The roadmap is organized around system maturity levels rather than individual features.
-
-Each phase represents a meaningful increase in capability and should result in a usable, coherent system state.
-
-The goal is not to maximize functionality.
-
-The goal is to maximize execution effectiveness while preserving conceptual simplicity.
+Development focuses on building a deterministic execution core first, followed by progressively adding intelligent capabilities while preserving reproducibility and explainability.
 
 ---
 
-# Current Status
-
-| Phase | Name | Status |
-|---------|---------|---------|
-| Phase 1 | Specification Foundation | Complete |
-| Phase 2 | Operational Execution System | In Progress |
-| Phase 3 | Automation Layer | Planned |
-| Phase 4 | Autonomous Assistance | Planned |
-
----
-
-# Phase 1 — Specification Foundation
+# Phase 1. Board Understanding
 
 ## Goal
 
-Establish a complete and internally consistent specification layer that defines the system independently of any implementation.
+Build a complete and deterministic understanding of the Kanban board.
 
-## Deliverables
+### Deliverables
 
-### System Scope
+* Markdown Parser
+* Domain Model
+* Metadata Model
+* Validation Engine
+* Analytics Objects
+* Findings
+* Analytics Test Suite
 
-- System Boundaries
-- Core principles
-- Explicit exclusions
+### Output
 
-### Domain Models
+```text
+Board
+    ↓
+Structured Domain Model
+    ↓
+Analytics Objects
+    ↓
+Findings
+```
 
-- Task Model
-- Task lifecycle
-- State definitions
+### Success Criteria
 
-### Metadata Standards
-
-- Required metadata
-- Optional metadata
-- Metadata governance rules
-
-### Analytics
-
-- Analytics Model
-- Review framework
-- Diagnostic outputs
-
-### Documentation
-
-- README
-- Specification hierarchy
-- Repository structure
-
-## Exit Criteria
-
-Phase 1 is complete when:
-
-- all core specifications exist;
-- terminology is consistent;
-- responsibilities are clearly defined;
-- implementation is not required to understand the system.
-
-## Status
-
-Completed.
+* Every supported board is parsed deterministically.
+* Analytics Objects produce reproducible results.
+* Findings accurately describe the current board state.
 
 ---
 
-# Phase 2 — Operational Execution System
+# Phase 2. Deterministic Review (MVP)
 
 ## Goal
 
-Transform the specification layer into a practical operating system for daily execution.
+Generate a complete daily review without relying on AI-assisted decision making.
 
-The focus of this phase is operational behavior rather than automation.
+All outputs must be deterministic, reproducible and fully testable.
 
-## Deliverables
+### Components
 
-### Review Protocols
+#### Analytics Engine
 
-- Morning Review
-- Evening Review
-- Weekly Review
-- Monthly Review
+Produces deterministic Findings describing:
 
-### Board Operations
+* Board Health
+* Focus Analysis
+* Corridor Analysis
+* Flow Analysis
+* Portfolio Analysis
+* Strategic Alignment
 
-- Task intake rules
-- Prioritization rules
-- WIP management rules
-- Project management rules
+#### High Five
 
-### Decision Frameworks
+Selects the five highest-value tasks for today using deterministic prioritization rules.
 
-- Task selection process
-- Escalation rules
-- Deferral rules
-- Abandonment rules
+#### Report Composer
 
-### Execution Standards
+Produces a structured daily review using a fixed section order.
 
-- Definition of Ready
-- Definition of Done
-- Completion criteria
-- Quality criteria
+### Report Structure (MVP)
 
-### Analytics Usage
+1. Inbox
+2. High Five
+3. Schedule Review
+4. Board Health
+5. Focus Analysis
+6. Corridor Analysis
+7. Score Suggestions
+8. Task Analysis
+9. Strategic Findings
 
-- Daily analytics
-- Weekly analytics
-- Trend analysis
-- Bottleneck detection
+### Success Criteria
 
-## Exit Criteria
-
-Phase 2 is complete when:
-
-- all review protocols are defined;
-- board operation rules are documented;
-- decision-making processes are repeatable;
-- a user can operate KES consistently without additional guidance.
-
-## Status
-
-In Progress.
+* Identical boards always produce identical reports.
+* Every Finding is traceable to deterministic analytics.
+* The report is immediately useful for daily execution.
 
 ---
 
-# Phase 3 — Automation Layer
+# Phase 3. Task Intelligence
 
 ## Goal
 
-Reduce manual overhead without changing the underlying system model.
+Improve task quality through semantic understanding and contextual reasoning.
 
-Automation must implement the specifications rather than replace them.
+### Components
 
-## Deliverables
+#### Task Improvement
 
-### Automated Analytics
+Suggest improvements for any task:
 
-- Board analysis generation
-- Trend detection
-- Progress reporting
-- Diagnostic reporting
+* Title
+* Project
+* Area
+* Score
+* Due Date
+* Metadata
+* Tags
 
-### Workflow Automation
+#### Inbox Structuring
 
-- Metadata validation
-- State validation
-- Consistency checks
-- Rule enforcement
+Suggest:
 
-### Review Assistance
+* Project
+* Area
+* Score
+* Due Date
 
-- Guided reviews
-- Review preparation
-- Insight generation
-- Recommendation generation
+for unprocessed tasks.
 
-### Integration Layer
+#### Schedule Planner
 
-- Kanban platform integration
-- Local tooling integration
-- Data synchronization
+Answer the question:
 
-## Exit Criteria
+> If not today, then when?
 
-Phase 3 is complete when:
+using future workload and execution constraints.
 
-- repetitive operational work is automated;
-- analytics are generated automatically;
-- reviews require significantly less manual effort;
-- automation remains compliant with all specifications.
+#### Score Optimizer
 
-## Status
+Suggest Score adjustments that better reflect task value and improve board balance.
 
-Planned.
+### Success Criteria
+
+* Tasks become easier to execute.
+* Inbox processing becomes significantly faster.
+* Scheduling suggestions are context-aware and useful.
 
 ---
 
-# Phase 4 — Autonomous Assistance
+# Phase 4. Adaptive Intelligence
 
 ## Goal
 
-Create intelligent assistants capable of operating within KES constraints.
+Improve review quality using historical knowledge and user context.
 
-The objective is assistance, not replacement of human judgment.
+### Components
 
-## Deliverables
+* Historical Analytics
+* Trend Analysis
+* Predictive Analytics
+* Finding Prioritization
+* Adaptive Report Composition
+* Personalized Review Ordering
 
-### Agent Framework
+### Architecture
 
-- Agent architecture
-- Agent responsibilities
-- Agent permissions
-- Agent communication model
+```text
+Findings
+      ↓
+Priority Engine
+      ↓
+Adaptive Report Composer
+```
 
-### Context Management
+### Success Criteria
 
-- Board context
-- Project context
-- Historical context
-- Execution context
-
-### Autonomous Monitoring
-
-- Risk detection
-- Stagnation detection
-- Priority drift detection
-- Execution health monitoring
-
-### Decision Support
-
-- Strategic recommendations
-- Tactical recommendations
-- Workflow recommendations
-- Review recommendations
-
-## Exit Criteria
-
-Phase 4 is complete when:
-
-- agents can analyze the system autonomously;
-- agents can generate useful recommendations;
-- agents operate within defined boundaries;
-- human control remains preserved.
-
-## Status
-
-Planned.
+* Reports adapt to the current execution context.
+* The highest-value Findings appear first.
+* Historical trends influence analytical conclusions.
 
 ---
 
-# Future Exploration
+# Phase 5. Execution Intelligence
 
-The following areas may be explored after Phase 4.
+## Goal
 
-These items are intentionally excluded from the current roadmap.
+Transform KES into an intelligent execution assistant.
 
-## Possible Directions
+### Components
 
-### Multi-Agent Systems
+* Strategic Recommendations
+* Execution Optimization
+* Portfolio Optimization
+* Capacity Forecasting
+* Goal Alignment Analysis
+* Scenario Simulation
+* Continuous Learning
 
-Multiple specialized agents working within KES.
+### Success Criteria
 
-### Personal Knowledge Integration
-
-Integration with knowledge management systems.
-
-### State Management Systems
-
-Integration with health, energy, focus, and cognitive state tracking.
-
-### Predictive Analytics
-
-Forecasting task completion, project risks, and execution capacity.
-
-### Adaptive Workflows
-
-Dynamic workflows based on historical behavior.
+* KES proactively recommends improvements.
+* Recommendations become increasingly personalized.
+* The system continuously improves execution quality over time.
 
 ---
 
-# Roadmap Governance
+# Architecture Evolution
 
-Roadmap priorities should follow these principles:
+## Phase 1
 
-1. Specifications before implementation.
-2. Operational clarity before automation.
-3. Automation before autonomy.
-4. Simplicity before feature growth.
-5. Human decision-making before agent decision-making.
-
-Any roadmap change should preserve these principles.
-
----
-
-# Long-Term Vision
-
-Kanban Execution System aims to evolve from:
-
-**Task Tracking**
-
-→ into
-
-**Execution Management**
-
-→ into
-
-**Execution Intelligence**
-
-→ into
-
-**Human-Centered Autonomous Assistance**
-
-while maintaining a transparent, understandable, and specification-driven architecture.
-
-
-# 15. MVP Scope
-
-## Phase 1 — Parsing Layer
-
-Goal:  
-Markdown → structured JSON model
-
-Tasks:
-
-- task extraction
-- metadata extraction
-- archive detection
-- section parsing
-- task normalization
+```text
+Board
+    ↓
+Parser
+    ↓
+Findings
+```
 
 ---
 
-## Phase 2 — Deterministic Analytics
+## Phase 2
 
-Tasks:
-
-- overdue detection
-- Health Index
-- score analysis
-- active context analysis
-- execution metrics
-
-No LLM required.
-
----
-
-## Phase 3 — AI Recommendations
-
-AI used only for:
-
-- prioritization nuance
-- simplification
-- overload interpretation
-- recommendation generation
+```text
+Board
+      ↓
+Analytics Engine
+      ↓
+High Five
+      ↓
+Report Composer
+      ↓
+Daily Review
+```
 
 ---
 
-## Phase 4 — Suggested Mutations
+## Phase 3
 
-AI suggests:
-
-- score changes
-- backlog moves
-- simplifications
-- context reduction
-
-Human approves.
-
----
-
-## Phase 5 — Safe Automation
-
-Only deterministic actions:
-
-- archive completed tasks
-- recurring task generation
-- reports
-- summaries
-- metrics updates
+```text
+Board
+      ↓
+Task Intelligence
+      ↓
+Improved Tasks
+```
 
 ---
 
-## Read-Only First Principle
+## Phase 4
 
-The system must first:
-- observe
-- analyze
-- recommend
+```text
+Board
+      ↓
+Analytics
+      ↓
+Findings
+      ↓
+Priority Engine
+      ↓
+Adaptive Report Composer
+      ↓
+Adaptive Daily Review
+```
 
-Before:
-- modifying
-- mutating
-- automating actions
+---
+
+## Phase 5
+
+```text
+Board + Historical Data
+            ↓
+Execution Intelligence
+            ↓
+Execution Recommendations
+```
+
+---
+
+# Guiding Principles
+
+1. Deterministic logic always precedes intelligent assistance.
+2. Every analytical conclusion must be explainable.
+3. AI enhances decision quality but does not replace deterministic execution logic.
+4. User value is more important than report completeness.
+5. Reports evolve from fixed structure to adaptive composition based on the current execution context.
+6. KES is designed to become an execution assistant rather than a reporting tool.
