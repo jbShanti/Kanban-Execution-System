@@ -1711,6 +1711,127 @@ DataFreshnessAnalytics:
 ```
 
 Output structure is implementation-dependent.
+---
+
+# 7. Findings
+
+## Purpose
+
+A **Finding** is the primary output of the Analytics Engine.
+
+While Analytics Objects calculate metrics and evaluate individual aspects of the system, Findings transform analytical results into meaningful conclusions that can be communicated to the user.
+
+Analytics Objects answer:
+
+> **What was measured?**
+
+Findings answer:
+
+> **What does it mean?**
+
+A Finding represents a complete analytical conclusion supported by one or more Analytics Objects.
+
+Findings are the building blocks for:
+
+* Executive Summary
+* Recommendations
+* Historical comparison
+* Future conversational interfaces
+
+---
+
+## Processing Pipeline
+
+```text
+Task
+      ↓
+Analytics Objects
+      ↓
+Findings
+      ↓
+Executive Summary
+      ↓
+Recommendations
+      ↓
+Report Renderer
+```
+
+---
+
+## Finding Model
+
+```yaml
+Finding
+
+id:
+
+title:
+
+statement:
+
+severity:
+
+confidence:
+
+evidence:
+
+analytics_sources:
+```
+
+| Field                 | Description                                                |
+| --------------------- | ---------------------------------------------------------- |
+| **id**                | Stable identifier of the Finding type.                     |
+| **title**             | Short human-readable title.                                |
+| **statement**         | Natural language statement displayed in the report.        |
+| **severity**          | Relative importance (Info / Success / Warning / Critical). |
+| **confidence**        | Confidence level of the conclusion.                        |
+| **evidence**          | Structured evidence supporting the conclusion.             |
+| **analytics_sources** | Analytics Objects used to produce the Finding.             |
+
+---
+
+## Supported Findings
+
+| Analytics Object              | Finding                | Purpose                                                        | Example Statement                                                                   |
+| ----------------------------- | ---------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **CorridorAnalytics**         | Corridor Status        | Describe the current state of an individual Score Corridor.    | "Corridor 21–25 contains 5 active tasks and is within its target range."            |
+| **CorridorAnalytics**         | Corridor Health        | Evaluate whether a corridor is healthy.                        | "Corridor 6–10 exceeds its target workload."                                        |
+| **CorridorAnalytics**         | System Corridor Health | Evaluate the overall health of all Score Corridors.            | "All five Score Corridors are simultaneously within their target ranges."           |
+| **WorkloadAnalytics**         | Current Workload       | Describe the current execution workload.                       | "The board currently contains 19 active tasks."                                     |
+| **WorkloadAnalytics**         | Workload Balance       | Evaluate workload against the target operating range.          | "The overall workload remains balanced."                                            |
+| **FlowAnalytics**             | Execution Flow         | Describe recent execution activity.                            | "Seven tasks were completed during the review period."                              |
+| **FlowAnalytics**             | Execution Momentum     | Evaluate execution speed and throughput.                       | "Execution momentum remains consistently high."                                     |
+| **FocusAnalytics**            | Focus Distribution     | Describe where execution effort is concentrated.               | "Most active work is currently focused on the Parser."                              |
+| **FocusAnalytics**            | Focus Alignment        | Evaluate whether execution matches strategic priorities.       | "Current execution is aligned with strategic objectives."                           |
+| **PortfolioBalanceAnalytics** | Portfolio Composition  | Describe the composition of the work portfolio.                | "Infrastructure tasks represent 48% of the active portfolio."                       |
+| **PortfolioBalanceAnalytics** | Portfolio Balance      | Evaluate portfolio diversification.                            | "The portfolio remains well balanced across strategic areas."                       |
+| **OverduePressureAnalytics**  | Overdue Snapshot       | Describe the current overdue situation.                        | "One active task is overdue."                                                       |
+| **OverduePressureAnalytics**  | Execution Pressure     | Evaluate the operational impact of overdue work.               | "Overdue work does not currently threaten execution capacity."                      |
+| **DataQualityAnalytics**      | Board Integrity        | Describe the quality of board data.                            | "All active tasks have a valid Score."                                              |
+| **DataQualityAnalytics**      | Data Reliability       | Evaluate whether analytics can be trusted.                     | "Board quality is sufficient for reliable analytics."                               |
+| **ExecutiveSummaryAnalytics** | Overall System Health  | Summarize the overall condition of the execution system.       | "The system is currently in its healthiest observed state."                         |
+| **TrendAnalytics**            | Trajectory             | Evaluate the long-term direction of the system.                | "Execution quality has improved for eight consecutive reviews."                     |
+| **StabilityAnalytics**        | Stability              | Evaluate consistency over time.                                | "The system has remained stable for the past two weeks."                            |
+| **GoalAlignmentAnalytics**    | Goal Alignment         | Evaluate alignment between execution and strategic goals.      | "82% of active work directly supports strategic objectives."                        |
+| **TechnicalDebtAnalytics**    | Maintenance Pressure   | Evaluate whether maintenance work is crowding out development. | "Maintenance workload is beginning to displace strategic development."              |
+| **DecisionAnalytics**         | Decision Readiness     | Determine whether management intervention is required.         | "Current conditions do not require changes to execution strategy."                  |
+| **PredictiveAnalytics**       | Forecast               | Predict future system state.                                   | "At the current pace, Corridor 16–20 will exceed its target range within one week." |
+| **ImprovementAnalytics**      | Continuous Improvement | Evaluate long-term improvement of the execution system.        | "Active workload has decreased by 24% without reducing delivery capacity."          |
+
+---
+
+## Design Principles
+
+* Findings are deterministic and reproducible.
+* Findings are derived exclusively from Analytics Objects.
+* Findings communicate conclusions, not raw metrics.
+* Multiple Analytics Objects may contribute to a single Finding.
+* One Analytics Object may produce multiple Findings.
+* Executive Summary is a prioritized collection of Findings.
+* Recommendations are generated from Findings rather than directly from Analytics Objects.
+* Report Renderer is responsible only for presentation and never generates new Findings.
+
+
 
 ---
 
