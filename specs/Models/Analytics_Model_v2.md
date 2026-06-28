@@ -2014,7 +2014,7 @@ The Analytics Engine instantiates those Finding types using analytical results a
 
 ---
 
-# 7. Distribution Analysis
+# 8. Distribution Analysis
 
 ## Purpose
 
@@ -2159,7 +2159,7 @@ distribution:
 
 ---
 
-# 8. Corridor Evaluation
+# 9. Corridor Evaluation
 
 ## Purpose
 
@@ -2276,7 +2276,7 @@ evaluation:
   corridor:
     healthy: 0-10%
     warning: 10-25%
-    critical: >25%
+    critical: > 25%
 ```
 
 ---
@@ -2310,7 +2310,7 @@ In this case the evaluated object is not a raw metric but a distribution charact
 
 ---
 
-# 9. Executive Summary
+# 10. Executive Summary
 
 ## Purpose
 
