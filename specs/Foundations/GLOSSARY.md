@@ -160,7 +160,68 @@ The next executable step required to move work forward.
 A task should ideally have a clearly identifiable next action.
 
 ---
+# Modeling Concepts
 
+## Parser Model
+
+A **Parser Model** defines how information is represented in source files and how it is parsed into structured data.
+
+Parser Models specify syntax, formatting rules, metadata conventions, and parsing behavior. They do not define business logic or analytical behavior.
+
+Parser Models are the boundary between external representations (such as Markdown) and the internal models used by the Kanban Execution System.
+
+---
+
+## Domain Model
+
+A **Domain Model** defines the canonical business entities of the Kanban Execution System, together with their properties, relationships, and invariants.
+
+Domain Models represent the persistent state of the system independently of storage format, analytics, or presentation.
+
+They serve as the single source of truth for all higher-level system components.
+
+---
+
+## Analytics Model
+
+An **Analytics Model** defines deterministic analytical objects that derive measurements from the Domain Model.
+
+Analytics Models specify analytical inputs, calculation rules, metrics, and interpretation without modifying the underlying Domain Model.
+
+They transform domain state into measurable insights that can be consumed by reports and recommendation engines.
+
+---
+
+## Report Model
+
+A **Report Model** defines the structure of analytical output presented to the user.
+
+Report Models organize analytical results into human-readable sections such as Executive Summary, Findings, Recommendations, statistics, and supporting evidence.
+
+They represent the presentation layer of analytics and are derived entirely from Analytics Models without introducing additional business logic.
+
+---
+
+## Service Contract
+
+A **Service Contract** defines the structure and semantics of data exchanged between system components or services.
+
+Service Contracts specify the expected input and output of a component while remaining independent of implementation details.
+
+They enable stable communication between parsers, validators, analytics, automation, and reporting components.
+
+---
+
+## Snapshot
+
+A **Snapshot** is an immutable representation of the Domain Model captured at a specific point in time.
+
+Snapshots provide a stable input for analytical processing, ensuring that all calculations operate on a consistent system state regardless of subsequent changes.
+
+Snapshots are transient analytical artifacts and are not part of the persistent Domain Model.
+
+
+---
 # Organizational Concepts
 
 ## Area
