@@ -2314,23 +2314,44 @@ In this case the evaluated object is not a raw metric but a distribution charact
 
 ## Purpose
 
+Executive Summary is the aggregation layer of the analytics pipeline.
 
-Executive Summary is an aggregation layer, not an analytical layer. It consumes Findings, not measurements. Its responsibility is to aggregate, prioritize, and present the current system state. It never performs additional analysis or generates recommendations.
+Its responsibility is to aggregate, prioritize, and organize Findings into a concise representation of the current system state.
 
-Executive Summary converts analytical results into a concise management-level assessment of the system.
+Executive Summary is **not** an analytical component.
 
-While Analytics Objects produce measurements, Distribution Analysis describes structure, and Corridor Evaluation provides assessments, Executive Summary synthesizes these outputs into a coherent narrative that supports decision-making.
+It does **not**:
 
-Its purpose is to answer questions such as:
+* evaluate measurements;
+* perform additional analysis;
+* derive new Findings;
+* generate recommendations.
 
-- What is happening in the system?
-- What deserves attention right now?
-- What are the most important strengths?
-- What are the most important risks?
-- What opportunities exist?
-- What additional developments should the decision-maker be aware of?
+Executive Summary provides a management-level view of the system while preserving the analytical conclusions already established by the Analytics Engine.
 
-Executive Summary focuses on interpretation rather than measurement.
+---
+
+## Position in the Analytics Pipeline
+
+```text
+Board
+        ↓
+Analytics Objects
+        ↓
+Distribution Analysis
+        ↓
+Corridor Evaluation
+        ↓
+Findings
+        ↓
+Executive Summary
+        ↓
+Recommendation Engine
+        ↓
+Analytics Report
+```
+
+Executive Summary represents the architectural boundary between analytical processing and decision support.
 
 ---
 
@@ -2338,250 +2359,157 @@ Executive Summary focuses on interpretation rather than measurement.
 
 Executive Summary is responsible for:
 
-- Synthesizing results from multiple analytical domains.
-- Highlighting the most important strengths.
-- Identifying key risks.
-- Identifying key opportunities.
-- Capturing important contextual findings.
-- Describing the current system state.
-- Providing management-level situational awareness.
+* aggregating Findings;
+* prioritizing Findings by decision significance;
+* grouping related Findings;
+* presenting the current system state;
+* reducing analytical complexity for decision-makers.
 
-Executive Summary does not generate recommendations.
+Executive Summary is **not** responsible for:
 
-Recommendations belong to the Recommendation Engine.
+* analytical calculations;
+* interpreting measurements;
+* evaluating corridors;
+* generating new Findings;
+* generating recommendations.
 
 ---
 
 ## Inputs
 
-Executive Summary may consume:
+Executive Summary consumes only:
 
-- Focus Analytics
-- Tactical Analytics
-- Strategic Analytics
-- Distribution Analysis results
-- Corridor Evaluation results
+```yaml
+FindingCollection
+```
 
-The summary should integrate information across domains rather than repeating individual metrics.
+Executive Summary is intentionally decoupled from Analytics Objects, Distribution Analysis, and Corridor Evaluation.
+
+Those analytical components communicate with Executive Summary exclusively through Findings.
 
 ---
 
 ## Outputs
 
-Executive Summary produces a structured assessment of the system.
+Executive Summary produces a structured management-level overview of the current system state.
 
 Example:
 
 ```yaml
-summary:
+ExecutiveSummary:
+
   system_state: stable
 
   strengths:
+
     - Inbox remains empty.
-    - Strategic activity remains healthy.
+    - Strategic execution remains balanced.
 
   risks:
-    - Active workload exceeds target corridor.
+
+    - Active workload exceeds the healthy operating range.
 
   opportunities:
-    - Archive inactive projects.
 
-  findings:
-    - Kanban parser implementation is in progress.
+    - Several inactive projects may be archived.
+
+  context:
+
+    - Parser implementation continues as planned.
 ```
 
-The summary describes the system but does not prescribe actions.
+Executive Summary reorganizes existing Findings.
+
+It does not create new analytical conclusions.
 
 ---
 
-## Executive Summary Structure
+## Aggregation Principles
 
-### System State
+### Principle 1 — Findings Are the Single Source of Truth
 
-Provides a high-level characterization of the current state.
+Executive Summary aggregates Findings exclusively.
 
-Examples:
-
-```yaml
-system_state: healthy
-```
-
-```yaml
-system_state: stable
-```
-
-```yaml
-system_state: overloaded
-```
-
-```yaml
-system_state: fragmented
-```
+It never consumes analytical measurements or intermediate analytical results directly.
 
 ---
 
-### Strengths
+### Principle 2 — Aggregation over Analysis
 
-Strengths identify conditions that positively support execution effectiveness.
+Executive Summary reorganizes and prioritizes existing Findings.
 
-Examples:
-
-```yaml
-strengths:
-  - Inbox remains empty.
-  - Strategic activity remains healthy.
-  - Focus allocation is balanced.
-```
-
-Strengths describe what is working well and should be preserved.
+It never derives additional analytical conclusions.
 
 ---
 
-### Risks
+### Principle 3 — Preserve Meaning
 
-Risks identify conditions that may negatively impact execution effectiveness.
+Aggregation must not alter the semantic meaning of Findings.
 
-Examples:
-
-```yaml
-risks:
-  - Active workload exceeds target corridor.
-  - Overdue backlog continues to grow.
-  - Project concentration remains excessive.
-```
-
-Risks describe potential problems but do not prescribe solutions.
+Executive Summary may simplify presentation but must faithfully preserve the original analytical conclusions.
 
 ---
 
-### Opportunities
+### Principle 4 — Prioritize Decision Value
 
-Opportunities identify areas where measurable improvement may be achieved.
+Only Findings with meaningful impact on situational awareness should appear in the Executive Summary.
 
-Examples:
-
-```yaml
-opportunities:
-  - Archive inactive projects.
-  - Rebalance workload distribution.
-  - Increase strategic work allocation.
-```
-
-Opportunities describe potential gains but do not prescribe actions.
+Less significant Findings remain available within the detailed analytical output.
 
 ---
 
-### Findings
+### Principle 5 — Action-Neutral Representation
 
-Findings are the primary analytical conclusions produced by the Analytics Engine. They communicate the meaning of analytical measurements and provide the foundation for Executive Summary, Risks, Strengths and Opportunities.
+Executive Summary describes the current system state.
 
+It never prescribes actions or proposes solutions.
 
-Strength is a positive Finding.
-
-Risk is a negative Finding.
-
-Opportunity is an actionable Finding.
-
-Context Finding is an informational Finding.
-
-Examples:
-
-```yaml
-findings:
-  - Kanban parser implementation is in progress.
-  - New project entered active execution.
-  - Project portfolio structure changed.
-```
-
-Findings provide context and situational awareness.
+Action generation belongs exclusively to the Recommendation Engine.
 
 ---
 
-## Summary Generation Principles
+### Principle 6 — Deterministic Generation
 
-### Principle 1 — Synthesis over Enumeration
+Identical collections of Findings must always produce identical Executive Summaries.
 
-The summary should combine multiple analytical signals into higher-level observations.
+Summary generation must be deterministic, reproducible, and independent of presentation.
 
-Avoid:
+---
 
-```yaml
-summary:
-  - focus_score = 73
-  - overdue_ratio = 12%
-  - active_projects = 14
-```
-
-Prefer:
+## Canonical Structure
 
 ```yaml
-summary:
+ExecutiveSummary:
+
+  system_state:
+
   strengths:
-    - Focus remains healthy despite increasing project load.
+
+  risks:
+
+  opportunities:
+
+  context:
 ```
 
 ---
 
-### Principle 2 — Prioritize Significance
+## Design Principle
 
-Only findings with meaningful decision impact should be included.
+Executive Summary is an aggregation layer, not an analytical layer.
 
-Minor observations should remain in detailed analytics.
+Its sole responsibility is to transform a collection of Findings into a concise, decision-oriented representation of the current system state.
 
----
+The Analytics Engine determines **what is true**.
 
-### Principle 3 — Cross-Domain Interpretation
+Executive Summary determines **what is most important**.
 
-Executive Summary should identify relationships across analytical domains.
+The Recommendation Engine determines **what should be done**.
 
-Example:
-
-```yaml
-observation:
-  Strategic focus is declining while operational workload is increasing.
-```
-
-Such observations often provide more value than isolated metrics.
 
 ---
 
-### Principle 4 — Action-Neutral Language
-
-Executive Summary explains what is happening.
-
-It does not explain what should be done.
-
-Action generation belongs to the Recommendation Engine.
-
----
-
-### Principle 5 — Deterministic Generation
-
-Identical analytical inputs should produce identical summaries.
-
-Summary generation must be rule-based and reproducible.
-
----
-
-## Position in the Analytics Pipeline
-
-```text
-Analytics Objects
-        ↓
-Distribution Analysis
-        ↓
-Corridor Evaluation
-        ↓
-Executive Summary
-        ↓
-Recommendation Engine
-```
-
-Executive Summary acts as the interpretation layer between analytics and recommendations.
-
----
-
-# 10. Recommendations
+# 11. Recommendations
 
 
 ## Purpose
