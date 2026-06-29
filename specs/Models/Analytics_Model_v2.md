@@ -332,7 +332,7 @@ Daily Review
 | **Board Understanding** | Parse the Markdown board and build the domain model. Validate metadata and task integrity. | Structured Board Model |
 | **Analytics Objects** | Execute deterministic analytical algorithms over the board state. Each object analyzes a specific aspect of the execution system. | Analytics Results |
 | **Findings** | Convert analytical results into atomic, user-meaningful observations. Findings represent the primary analytical output of the system. | Findings |
-| **Executive Summary** | Aggregate and prioritize the most important Findings into high-level management conclusions. | Executive Summary |
+| **Executive Summary** | Aggregate Findings into a concise representation of the current execution state.| Executive Summary |
 | **Recommendation Engine** | Generate actionable recommendations based on the Executive Summary and deterministic execution rules. | Recommendations |
 | **Report Composer** | Assemble all report sections into a coherent Daily Review. In the MVP, section order is fixed. Future versions may dynamically prioritize content based on user value. | Daily Review |
 
@@ -2313,6 +2313,9 @@ In this case the evaluated object is not a raw metric but a distribution charact
 # 10. Executive Summary
 
 ## Purpose
+
+
+Executive Summary is an aggregation layer, not an analytical layer. It consumes Findings, not measurements. Its responsibility is to aggregate, prioritize, and present the current system state. It never performs additional analysis or generates recommendations.
 
 Executive Summary converts analytical results into a concise management-level assessment of the system.
 
