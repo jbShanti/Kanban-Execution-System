@@ -31,17 +31,20 @@ from src.parser.sections import (
     resolve_section_type,
 )
 
-from src.parser.section_parser import build_section, clean_section_title
+from src.parser.section_parser import build_section, clean_section_title, extract_priority_weight, extract_wip_limit
 
 from datetime import timedelta
 
 import re
 
 
-DEFAULT_SECTION = build_section(
-    "Inbox",
-    "Inbox",
-    resolve_section_type("Inbox"),
+DEFAULT_SECTION: Section = build_section(
+    raw_title="Inbox",
+    clean_title="Inbox",
+    emoji=[],
+    priority_weight=None,
+    wip_limit=None,
+    section_type=resolve_section_type("Inbox"),
 )
 
 
@@ -254,14 +257,22 @@ def parse_markdown_lines(
 
         if is_section_header(line):
 
-            raw_section_title = extract_section_name(line)
+            raw_title = extract_section_name(line)
 
-            clean_title = clean_section_title(raw_section_title)
+            priority = extract_priority_weight(raw_title)
+            wip_limit = extract_wip_limit(raw_title)
+            emoji = extract_emoji(raw_title)
+
+            clean_title = clean_section_title(raw_title)
+            section_type = resolve_section_type(clean_title)
 
             current_section = build_section(
-                raw_title=raw_section_title,
+                raw_title=raw_title,
                 clean_title=clean_title,
-                section_type=resolve_section_type(clean_title),
+                emoji=emoji,
+                priority_weight=priority,
+                wip_limit=wip_limit,
+                section_type=section_type,
             )
 
             continue

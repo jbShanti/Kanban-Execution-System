@@ -1,4 +1,4 @@
-from src.parser.models import SectionType
+from src.parser.models import SectionType, Section
 from src.parser.section_parser import (
     build_section,
     clean_section_title,
@@ -9,15 +9,22 @@ from src.parser.metadata import extract_emoji
 from src.parser.sections import resolve_section_type
 
 
-def test_build_simple_section():
-    raw_title = "Health"
+def create_section(raw_title: str) -> Section:
     clean_title = clean_section_title(raw_title)
 
-    section = build_section(
+    return build_section(
         raw_title=raw_title,
         clean_title=clean_title,
+        emoji=extract_emoji(raw_title),
+        priority_weight=extract_priority_weight(raw_title),
+        wip_limit=extract_wip_limit(raw_title),
         section_type=resolve_section_type(clean_title),
     )
+
+
+def test_build_simple_section():
+    
+    section = create_section("Health")
 
     assert section.raw_title == "Health"
     assert section.title == "Health"
@@ -58,13 +65,8 @@ def test_section_type_after_emoji_removal():
 
 def test_build_section_with_emoji_and_priority():
     raw_title = "❤️ Health [P::5]"
-    clean_title = clean_section_title(raw_title)
-
-    section = build_section(
-        raw_title=raw_title,
-        clean_title=clean_title,
-        section_type=resolve_section_type(clean_title),
-    )
+    
+    section = create_section(raw_title)
 
     assert section.raw_title == "❤️ Health [P::5]"
     assert section.title == "Health"
@@ -74,13 +76,8 @@ def test_build_section_with_emoji_and_priority():
 
 def test_build_section_with_multiple_emoji():
     raw_title = "❤️🔥 Health"
-    clean_title = clean_section_title(raw_title)
-
-    section = build_section(
-        raw_title=raw_title,
-        clean_title=clean_title,
-        section_type=resolve_section_type(clean_title),
-    )
+    
+    section = create_section(raw_title)
 
     assert section.title == "Health"
     assert section.emoji == ["❤️", "🔥"]

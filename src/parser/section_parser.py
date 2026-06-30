@@ -4,7 +4,6 @@ from typing import Optional
 from src.parser.models import Section, SectionType
 
 from src.parser.metadata import (
-    extract_emoji,
     strip_emoji,
 )
 
@@ -51,15 +50,19 @@ def clean_section_title(
 
 
 def build_section(
+    *,
     raw_title: str,
     clean_title: str,
+    emoji: list[str],
+    priority_weight: int | None,
+    wip_limit: int | None,
     section_type: SectionType,
 ) -> Section:
     return Section(
         title=clean_title,
         raw_title=raw_title,
-        emoji=extract_emoji(raw_title),
+        emoji=emoji,
         type=section_type,
-        wip_limit=extract_wip_limit(raw_title),
-        priority_weight=extract_priority_weight(raw_title),
+        wip_limit=wip_limit,
+        priority_weight=priority_weight,
     )

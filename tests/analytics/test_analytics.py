@@ -18,12 +18,7 @@ from src.parser.models import (
     TaskStatus,
 )
 
-from src.parser.sections import (
-    resolve_section_type,
-)
-
-from src.parser.section_parser import build_section
-
+from tests.helper import create_section
 
 def build_task(
     title: str,
@@ -33,25 +28,15 @@ def build_task(
     due: date | None = None,
     scheduled: date | None = None,
 ) -> Task:
-
-    section_obj = build_section(
-        section,
-        resolve_section_type(section),
-    )
-
     return Task(
         title=title,
         status=status,
-
-        section=section_obj,
-
+        section=create_section(title=section),
         score=score,
         due=due,
         scheduled=scheduled,
-
         tags=[],
         metadata={},
-
         raw_line=title,
     )
 
