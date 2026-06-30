@@ -49,6 +49,7 @@ class Section:
     title: str
     raw_title: str
     type: SectionType
+    emoji: list[str] = field(default_factory=empty_emoji)
 
     wip_limit: int | None = None
     priority_weight: int | None = None

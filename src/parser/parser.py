@@ -31,7 +31,7 @@ from src.parser.sections import (
     resolve_section_type,
 )
 
-from src.parser.section_parser import build_section
+from src.parser.section_parser import build_section, clean_section_title
 
 from datetime import timedelta
 
@@ -39,6 +39,7 @@ import re
 
 
 DEFAULT_SECTION = build_section(
+    "Inbox",
     "Inbox",
     resolve_section_type("Inbox"),
 )
@@ -255,9 +256,12 @@ def parse_markdown_lines(
 
             raw_section_title = extract_section_name(line)
 
+            clean_title = clean_section_title(raw_section_title)
+
             current_section = build_section(
-                raw_section_title,
-                resolve_section_type(raw_section_title),
+                raw_title=raw_section_title,
+                clean_title=clean_title,
+                section_type=resolve_section_type(clean_title),
             )
 
             continue

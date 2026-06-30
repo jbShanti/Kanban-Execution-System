@@ -25,6 +25,15 @@ Description: |-
 * support dashboards, reports and automation
 * ensure consistency across implementations
 
+---
+
+# 1.1 Architectural Philosophy
+
+The Analytics Model is organized as a canonical artifact transformation pipeline.
+Each stage transforms execution knowledge into a higher-level domain artifact.
+Every artifact has a single producer, a well-defined contract, and a single canonical consumer.
+Components implement these transformations but are intentionally decoupled from downstream consumers through stable artifact contracts.
+
 
 ---
 
@@ -294,57 +303,162 @@ Each layer has a single responsibility and must not assume responsibilities belo
 
 ---
 
-# 5. Analytics Processing Pipeline
+# 5. Execution Artifact Pipeline
 
-The analytics pipeline transforms a Kanban board into a structured daily review through a series of deterministic processing stages.
+## Purpose
 
-Each stage has a single responsibility and produces an explicit output consumed by the next stage.
+The Execution Artifact Pipeline defines the canonical sequence of artifact transformations performed by the analytics system.
+
+Each stage consumes a single well-defined domain artifact and produces another domain artifact with a higher level of abstraction.
+
+The pipeline is deterministic, contract-driven, and strictly sequential.
+
+Its primary purpose is to transform raw execution data into a canonical execution model that can be consumed by multiple user-facing views.
+
+---
+
+## Canonical Pipeline
 
 ```text
 Board
-    │
-    ▼
-Board Understanding
-    │
-    ▼
-Analytics Objects
-    │
-    ▼
-Findings
-    │
-    ▼
-Executive Summary
-    │
-    ▼
-Recommendation Engine
-    │
-    ▼
-Report Composer
-    │
-    ▼
-Daily Review
+        ↓
+Measurements
+        ↓
+DistributionProfile
+        ↓
+CorridorEvaluation
+        ↓
+FindingCollection
+        ↓
+ExecutiveSummary
+        ↓
+RecommendationCollection
+        ↓
+ExecutionReport
+          ├── MorningBrief
+          ├── DailyReview
+          ├── WeeklyReview
+          └── DashboardSnapshot
 ```
 
-## Processing Stages
+The pipeline consists of two logical parts:
 
-| Stage | Responsibility | Output |
-|--------|----------------|--------|
-| **Board Understanding** | Parse the Markdown board and build the domain model. Validate metadata and task integrity. | Structured Board Model |
-| **Analytics Objects** | Execute deterministic analytical algorithms over the board state. Each object analyzes a specific aspect of the execution system. | Analytics Results |
-| **Findings** | Convert analytical results into atomic, user-meaningful observations. Findings represent the primary analytical output of the system. | Findings |
-| **Executive Summary** | Aggregate Findings into a concise representation of the current execution state.| Executive Summary |
-| **Recommendation Engine** | Generate actionable recommendations based on the Executive Summary and deterministic execution rules. | Recommendations |
-| **Report Composer** | Assemble all report sections into a coherent Daily Review. In the MVP, section order is fixed. Future versions may dynamically prioritize content based on user value. | Daily Review |
+1. **Canonical Processing Pipeline** — transforms execution data into a canonical `ExecutionReport`.
+2. **Presentation Artifacts** — derive user-oriented views from the `ExecutionReport` without modifying its contents.
+
+---
+
+## Artifact Transformations
+
+| Artifact                 | Produced From                               | Purpose                        |
+| ------------------------ | ------------------------------------------- | ------------------------------ |
+| Measurements             | Board                                       | Quantitative execution metrics |
+| DistributionProfile      | Measurements                                | Statistical characteristics    |
+| CorridorEvaluation       | DistributionProfile                         | Corridor assessment            |
+| FindingCollection        | CorridorEvaluation                          | Analytical conclusions         |
+| ExecutiveSummary         | FindingCollection                           | Situation assessment           |
+| RecommendationCollection | ExecutiveSummary                            | Action proposals               |
+| ExecutionReport          | ExecutiveSummary + RecommendationCollection | Canonical execution model      |
+| MorningBrief             | ExecutionReport                             | Morning execution briefing     |
+| DailyReview              | ExecutionReport                             | End-of-day review              |
+| WeeklyReview             | ExecutionReport                             | Weekly execution review        |
+| DashboardSnapshot        | ExecutionReport                             | Dashboard representation       |
+
+
+---
+
+## Canonical Artifact
+
+The `ExecutionReport` is the canonical artifact of the analytics pipeline.
+
+It combines the analytical assessment and the generated recommendations into a single immutable representation of the current execution state.
+
+All downstream artifacts must be derived exclusively from the `ExecutionReport`.
+
+No presentation artifact may perform additional analytical processing or generate new recommendations.
+
+---
 
 ## Design Principles
 
-- Each stage has a single responsibility.
-- Every output is deterministic and reproducible.
-- Findings are the primary analytical artifacts of the system.
-- Executive Summary synthesizes Findings rather than performing analytics.
-- Recommendations are derived from Executive Summary rather than directly from raw analytics.
-- Report Composer is responsible for presentation, not analysis.
-- Future versions may introduce adaptive report composition without changing the underlying analytical pipeline.
+### Principle 1 — Artifact-Oriented Architecture
+
+The pipeline transforms artifacts rather than invoking components.
+
+Each processing stage is defined by its input and output contracts rather than by its implementation.
+
+---
+
+### Principle 2 — Single Source of Truth
+
+Every artifact is the single source of truth for the next processing stage.
+
+Downstream stages must consume canonical artifacts instead of accessing upstream data directly.
+
+---
+
+### Principle 3 — Strict Layering
+
+Each stage depends only on the artifact produced by the immediately preceding stage.
+
+Skipping stages or bypassing canonical artifacts is not permitted.
+
+---
+
+### Principle 4 — Immutable Transformations
+
+Artifacts are never modified after creation.
+
+Each stage produces a new artifact while preserving the integrity of previous artifacts.
+
+---
+
+### Principle 5 — Separation of Processing and Presentation
+
+The canonical pipeline ends with the `ExecutionReport`.
+
+Presentation artifacts such as `MorningBrief`, `DailyReview`, `WeeklyReview`, and `DashboardSnapshot` are specialized representations of the `ExecutionReport`.
+
+They adapt information for specific usage scenarios without introducing new analytical logic.
+
+---
+
+### Principle 6 — Extensibility
+
+New presentation artifacts may be introduced without changing the canonical processing pipeline.
+
+As long as the `ExecutionReport` contract remains stable, any number of additional views may be derived from it.
+
+---
+
+## Architectural Responsibility
+
+The Execution Artifact Pipeline defines **how execution knowledge evolves** through successive levels of abstraction.
+
+Each artifact answers a distinct architectural question:
+
+| Artifact                                                      | Question Answered                                                     |
+| ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Board                                                         | What is the current execution data?                                   |
+| Measurements                                                  | What can be measured?                                                 |
+| DistributionProfile                                           | How are the measurements distributed?                                 |
+| CorridorEvaluation                                            | Which values are within or outside acceptable operating ranges?       |
+| FindingCollection                                             | What do these evaluations mean?                                       |
+| ExecutiveSummary                                              | What matters most?                                                    |
+| RecommendationCollection                                      | What should be done?                                                  |
+| ExecutionReport                                               | What is the complete execution picture?                               |
+| MorningBrief / DailyReview / WeeklyReview / DashboardSnapshot | How should the execution picture be presented for a specific context? |
+
+---
+
+## Design Principle
+
+The Execution Artifact Pipeline defines the canonical transformation of execution knowledge.
+
+Every artifact has a single responsibility, a well-defined contract, and a single consumer within the canonical pipeline.
+
+The `ExecutionReport` serves as the stable integration point between execution analytics and all user-facing presentation artifacts.
+
 
 ---
 
@@ -353,6 +467,12 @@ Daily Review
 ---
 
 ## 6.1 Analytics Object Pattern
+
+Analytics Objects implement the transformations defined by the Execution Artifact Pipeline.
+
+Their responsibility is to produce canonical analytical artifacts while conforming to the contracts defined in Section 5.
+
+This section describes the implementation model behind those transformations.
 
 Analytics Objects are the fundamental analytical building blocks of the Analytics Engine.
 
@@ -364,6 +484,8 @@ Analytics Objects must be:
 - Traceable to Task Model data
 - Independently interpretable
 - Reusable across reports and recommendations
+
+Measurements represent the canonical collection of all metric values produced by Analytics Objects.
 
 ### Canonical Structure
 
@@ -2509,389 +2631,394 @@ The Recommendation Engine determines **what should be done**.
 
 ---
 
-# 11. Recommendations
-
+# 11. Recommendation Engine
 
 ## Purpose
 
-RecommendationCollection contains structured actions derived from analytics results.
+Recommendation Engine is the decision-support layer of the analytics pipeline.
 
-Its purpose is to:
+Its responsibility is to transform the Executive Summary into a structured collection of actionable recommendations.
 
-* improve board health
-* maintain score corridor balance
-* reduce execution overload
-* reduce task debt
-* improve execution quality
-* support deterministic decision-making
+Recommendation Engine is **not** an analytical component.
 
-Recommendations are generated from Executive Summary outputs and system configuration.
+It does **not**:
 
-Recommendations are not analytics themselves.
+* evaluate measurements;
+* perform analytical calculations;
+* derive new Findings;
+* reinterpret the Executive Summary.
 
----
-
-## Recommendation Engine Position
-
-```text
-Task Board
-↓
-Parser
-↓
-Task Objects
-↓
-Analytics Engine
-↓
-AnalyticsReport
-↓
-Recommendation Engine
-↓
-RecommendationCollection
-```
-
-RecommendationCollection must be generated only from:
-
-* AnalyticsReport
-* system configuration
-
-The Recommendation Engine must not directly inspect raw task data.
-
----
-
-## RecommendationCollection
-
-Canonical structure:
-
-```yaml
-RecommendationCollection:
-  - Recommendation
-```
-
-A RecommendationCollection may contain zero or more recommendations.
-
----
-
-## Recommendation
-
-Canonical structure:
-
-```yaml
-Recommendation:
-
-  category:
-    string
-
-  action:
-    string
-
-  priority:
-    high | medium | low
-
-  reason:
-    string
-```
-
-### Fields
-
-#### category
-
-Domain affected by the recommendation.
-
-Examples:
-
-```text
-workload
-portfolio
-focus
-overdue
-strategic
-```
-
-
-#### action
-
-Recommended operation.
-
-Examples:
-
-```text
-rebalance
-archive
-cleanup
-protect
-review
-investigate
-```
-
-#### priority
-
-Importance of recommendation.
-
-Supported values:
-
-```text
-high
-medium
-low
-```
-
-#### reason
-
-Machine-readable explanation for recommendation generation.
-
-Examples:
-
-```text
-underloaded
-overloaded
-overdue_tasks
-active_overload
-```
-
----
-
-## Rebalance Recommendation
-
-### Purpose
-
-Restore corridor targets defined in scoring.yaml.
-
-### Structure
-
-```yaml
-category: workload
-
-action: rebalance
-
-priority: high
-
-corridor: "21-25"
-
-amount: 2
-
-reason: underloaded
-```
-
-### Additional Fields
-
-#### corridor
-
-Affected score corridor.
-
-Examples:
-
-```text
-21-25
-16-20
-11-15
-6-10
-1-5
-```
-
-#### action
-
-Recommended operation.
-
-Examples:
-
-```text
-increase
-decrease
-review
-cleanup
-protect
-```
-
-#### amount
-
-Recommended quantity.
-
-Represents the number of tasks affected.
-
-Examples:
-
-```text
-2
-5
-10
-```
-
----
-
-### Underloaded Corridor
-
-Condition:
-
-```text
-active < target.min
-```
-
-Generated recommendation:
-
-```yaml
-category: workload
-
-action: rebalance
-
-priority: high
-
-corridor: "21-25"
-
-amount: 2
-
-reason: underloaded
-```
-
-Meaning:
-
-```text
-Promote or create 2 tasks
-to reach the target corridor.
-```
-
----
-
-### Overloaded Corridor
-
-Condition:
-
-```text
-active > target.max
-```
-
-Generated recommendation:
-
-```yaml
-type: rebalance
-
-priority: high
-
-corridor: "16-20"
-
-action: decrease
-
-amount: 4
-
-reason: overloaded
-```
-
-Meaning:
-
-```text
-Move, split, defer or complete
-4 tasks to return to target range.
-```
-
----
-
-## Model Boundary
-
-The Recommendation Model defines recommendation structures only.
-
-The following concerns are outside its scope:
-
-* analytics calculations
-* recommendation generation algorithms
-* report formatting
-* report rendering
-* user interface behaviour
-
-These responsibilities belong to other system components.
-
----
-
-# 11. AnalyticsReport
-
-## Purpose
-
-AnalyticsReport is the canonical output of the analytics system.
-
-It combines executive-level assessment and generated recommendations into a single structured report.
-
-AnalyticsReport serves as the primary interface between analytical components and report rendering components.
-
----
-
-## Responsibilities
-
-AnalyticsReport is responsible for:
-
-- aggregating analytical outputs
-- providing a unified report structure
-- exposing ExecutiveSummary
-- exposing RecommendationCollection
-
-AnalyticsReport does not perform analysis.
-
-AnalyticsReport does not generate recommendations.
-
-AnalyticsReport does not define rendering, formatting, presentation, or user interface behavior.
-
-These responsibilities belong to other system components.
-
----
-
-## Structure
-
-Canonical structure:
-
-```yaml
-AnalyticsReport:
-
-  generated_at:
-    datetime
-
-  summary:
-    ExecutiveSummary
-
-  recommendations:
-    RecommendationCollection
-```
-
----
-
-## Components
-
-### ExecutiveSummary
-
-Contains the executive-level interpretation of analytical results.
-
-The canonical ExecutiveSummary model is defined in Section 9.
-
----
-
-### RecommendationCollection
-
-Contains structured recommendations generated from analytical assessments.
-
-The canonical RecommendationCollection model is defined in Section 10.
+Recommendation Engine translates the summarized system state into deterministic actions while preserving the priorities established by the Executive Summary.
 
 ---
 
 ## Position in the Analytics Pipeline
 
 ```text
+Board
+        ↓
 Analytics Objects
         ↓
 Distribution Analysis
         ↓
 Corridor Evaluation
         ↓
+Findings
+        ↓
 Executive Summary
         ↓
 Recommendation Engine
         ↓
 RecommendationCollection
-        ↓
-AnalyticsReport
 ```
 
-AnalyticsReport represents the final structured output of the analytics system.
+Recommendation Engine represents the architectural boundary between system assessment and action generation.
+
+---
+
+## Responsibilities
+
+Recommendation Engine is responsible for:
+
+* generating actionable recommendations;
+* prioritizing recommendations;
+* resolving conflicts between competing actions;
+* applying configurable recommendation rules;
+* producing a deterministic RecommendationCollection.
+
+Recommendation Engine is **not** responsible for:
+
+* performing analytical calculations;
+* generating Findings;
+* modifying the Executive Summary;
+* evaluating system state.
+
+---
+
+## Inputs
+
+Recommendation Engine consumes:
+
+```yaml
+ExecutiveSummary
+RecommendationConfiguration
+```
+
+The Executive Summary provides the current system state.
+
+Recommendation Configuration defines organizational policies, priorities, thresholds, and rule sets used during recommendation generation.
+
+Recommendation Engine is intentionally decoupled from all analytical components.
+
+It never accesses measurements, distributions, corridor evaluations, or Findings directly.
+
+---
+
+## Outputs
+
+Recommendation Engine produces a structured RecommendationCollection.
+
+Example:
+
+```yaml
+RecommendationCollection:
+
+  priority: High
+
+  recommendations:
+
+    - Archive inactive projects.
+
+    - Reduce active workload.
+
+    - Schedule weekly strategic review.
+
+    - Continue current parser implementation.
+```
+
+Recommendations describe suggested actions rather than analytical observations.
+
+---
+
+## Recommendation Principles
+
+### Principle 1 — Executive Summary Is the Single Source of Truth
+
+Recommendation Engine consumes Executive Summary exclusively.
+
+It never derives recommendations directly from analytical components.
+
+---
+
+### Principle 2 — Decisions over Analysis
+
+Recommendation Engine converts system assessment into actions.
+
+It never performs additional analytical reasoning.
+
+---
+
+### Principle 3 — Preserve Priorities
+
+Recommendations must respect the priorities established by the Executive Summary.
+
+The engine may expand actions but must not change the relative importance of underlying conditions.
+
+---
+
+### Principle 4 — Actionability
+
+Every recommendation should represent a concrete action that can be executed, scheduled, delegated, or intentionally ignored.
+
+Recommendations should avoid analytical descriptions or diagnostic statements.
+
+---
+
+### Principle 5 — Configurable Policies
+
+Recommendation generation must be driven by configurable rules rather than hard-coded logic.
+
+Organizational policies may influence recommendations without changing analytical conclusions.
+
+---
+
+### Principle 6 — Deterministic Generation
+
+Identical Executive Summaries and identical configurations must always produce identical RecommendationCollections.
+
+Recommendation generation must be deterministic and reproducible.
+
+---
+
+## Canonical Structure
+
+```yaml
+RecommendationCollection:
+
+  priority:
+
+  recommendations:
+```
+
+---
+
+## Design Principle
+
+Recommendation Engine is a decision-support layer, not an analytical layer.
+
+Its sole responsibility is to transform the Executive Summary into a prioritized collection of actionable recommendations.
+
+The Analytics Engine determines **what is true**.
+
+Executive Summary determines **what is most important**.
+
+Recommendation Engine determines **what should be done**.
 
 
 ---
 
-# 11.1 BoardHealth
+# 12. ExecutionReport
+
+## Purpose
+
+ExecutionReport is the final output of the execution analytics pipeline.
+
+Its purpose is to present the current system state together with the corresponding actionable recommendations in a single structured document.
+
+ExecutionReport is **not** an analytical or decision-making component. Its sole responsibility is to assemble the ExecutiveSummary and RecommendationCollection into a single canonical report.
+
+It does **not**:
+
+* perform analysis;
+* generate Findings;
+* aggregate information;
+* generate recommendations.
+
+ExecutionReport is a presentation layer that combines the outputs of previous pipeline stages into a canonical report.
+
+---
+
+## Position in the Analytics Pipeline
+
+```text
+Board
+        ↓
+Analytics Objects
+        ↓
+Distribution Analysis
+        ↓
+Corridor Evaluation
+        ↓
+Findings
+        ↓
+Executive Summary
+        ↓
+Recommendation Engine
+        ↓
+ExecutionReport
+```
+
+ExecutionReport represents the final deliverable of the analytics pipeline.
+
+---
+
+## Responsibilities
+
+ExecutionReport is responsible for:
+
+* combining Executive Summary and RecommendationCollection;
+* presenting results in a consistent structure;
+* preserving the outputs of previous pipeline stages without modification;
+* serving as the canonical report consumed by users or external systems.
+
+ExecutionReport is **not** responsible for:
+
+* analytical calculations;
+* generating Findings;
+* aggregating information;
+* generating recommendations;
+* modifying the outputs of previous pipeline stages.
+
+---
+
+## Inputs
+
+ExecutionReport consumes:
+
+```yaml
+ExecutiveSummary
+
+RecommendationCollection
+```
+
+ExecutionReport is intentionally decoupled from all analytical components.
+
+It never accesses measurements, distributions, corridor evaluations, or Findings directly.
+
+---
+
+## Outputs
+
+ExecutionReport produces a single structured report.
+
+Example:
+
+```yaml
+ExecutionReport:
+
+  generated_at: 2026-06-29T08:30:00Z
+
+  summary:
+
+    system_state: stable
+
+    strengths:
+
+      - Inbox remains empty.
+
+    risks:
+
+      - Active workload exceeds the healthy operating range.
+
+    opportunities:
+
+      - Archive inactive projects.
+
+    context:
+
+      - Parser implementation continues as planned.
+
+  recommendations:
+
+    priority: High
+
+    actions:
+
+      - Reduce active workload.
+
+      - Archive inactive projects.
+
+      - Schedule weekly strategic review.
+```
+
+ExecutionReport contains the outputs produced by previous pipeline stages without introducing additional interpretation.
+
+---
+
+## Report Principles
+
+### Principle 1 — Composition over Computation
+
+ExecutionReport combines existing outputs.
+
+It never performs analytical or decision-making logic.
+
+---
+
+### Principle 2 — Preserve Fidelity
+
+The report must accurately preserve the contents of the Executive Summary and RecommendationCollection.
+
+No information may be altered during report generation.
+
+---
+
+### Principle 3 — Canonical Structure
+
+Every execution review must be represented using the same report structure.
+
+This ensures consistency across reports and simplifies downstream processing.
+
+---
+
+### Principle 4 — Readability
+
+ExecutionReport should present information in a concise, structured, and management-friendly format.
+
+The report should emphasize clarity over implementation details.
+
+---
+
+### Principle 5 — Deterministic Generation
+
+Identical inputs must always produce identical ExecutionReports.
+
+Report generation must be deterministic and reproducible.
+
+---
+
+## Canonical Structure
+
+```yaml
+ExecutionReport:
+
+  generated_at:
+
+  summary:
+
+  recommendations:
+```
+
+---
+
+## Design Principle
+
+ExecutionReport is a presentation layer, not an analytical or decision-making layer.
+
+Its sole responsibility is to assemble the outputs of the Executive Summary and Recommendation Engine into a single canonical report.
+
+The Analytics Engine determines **what is true**.
+
+Executive Summary determines **what is most important**.
+
+Recommendation Engine determines **what should be done**.
+
+ExecutionReport determines **how the results are delivered**.
+
+
+---
+
+# XX BoardHealth
 
 ## Purpose
 
@@ -3249,7 +3376,7 @@ The board demonstrates partial analytical readiness. Only 71% of tasks participa
 
 ---
 
-# 11.2 AnalyticsConfidence
+# XX AnalyticsConfidence
 
 ## Purpose
 

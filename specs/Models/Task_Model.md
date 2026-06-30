@@ -579,7 +579,7 @@ Examples:
 Optional syntax:
 
 ```md
-## Health [P::5]
+## ❤️ Health [P::5]
 ```
 
 Range:
@@ -587,6 +587,20 @@ Range:
 
 Meaning:
 - contextual importance modifier
+
+## Processing Invariants
+
+1. All non-title metadata MUST be extracted from the raw section heading before section type detection.
+
+2. Section type detection MUST be performed on the cleaned section title.
+
+3. The cleaned section title MUST preserve the original textual content except for:
+   - extracted metadata;
+   - removed emojis;
+   - whitespace normalization.
+
+4. Extracted metadata MUST be preserved as part of the Section model.
+
 
 ---
 
