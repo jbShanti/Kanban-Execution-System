@@ -8,8 +8,9 @@ from src.parser.models import (
     SectionType,
     Task,
     TaskStatus,
-    Board
-)
+    )
+
+from tests.helper import create_board
 
 
 def test_calculates_basic_board_metrics():
@@ -72,7 +73,7 @@ def test_calculates_basic_board_metrics():
     ]
 
     metrics = calculate_board_metrics(
-        board=Board(tasks=tasks),
+        board=create_board(tasks=tasks),
         today=date(2026, 5, 30),
     )
 

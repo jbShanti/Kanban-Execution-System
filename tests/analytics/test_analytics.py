@@ -14,44 +14,24 @@ from src.parser.analytics import (
 )
 
 from src.parser.models import (
-    Task,
     TaskStatus,
 )
 
-from tests.helper import create_section
+from tests.helper import create_task
 
-def build_task(
-    title: str,
-    status: TaskStatus,
-    section: str,
-    score: int | None = None,
-    due: date | None = None,
-    scheduled: date | None = None,
-) -> Task:
-    return Task(
-        title=title,
-        status=status,
-        section=create_section(title=section),
-        score=score,
-        due=due,
-        scheduled=scheduled,
-        tags=[],
-        metadata={},
-        raw_line=title,
-    )
 
 
 def test_count_completed_tasks():
     tasks = [
-        build_task(
-            "Task 1",
-            TaskStatus.COMPLETED,
-            "Inbox",
+        create_task(
+            title="Task 1",
+            status=TaskStatus.COMPLETED,
+            section_title="Inbox",
         ),
-        build_task(
-            "Task 2",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 2",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
         ),
     ]
 
@@ -62,20 +42,20 @@ def test_count_completed_tasks():
 
 def test_count_open_tasks():
     tasks = [
-        build_task(
-            "Task 1",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 1",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
         ),
-        build_task(
-            "Task 2",
-            TaskStatus.IN_PROGRESS,
-            "Inbox",
+        create_task(
+            title="Task 2",
+            status=TaskStatus.IN_PROGRESS,
+            section_title="Inbox",
         ),
-        build_task(
-            "Task 3",
-            TaskStatus.COMPLETED,
-            "Inbox",
+        create_task(
+            title="Task 3",
+            status=TaskStatus.COMPLETED,
+            section_title="Inbox",
         ),
     ]
 
@@ -86,23 +66,23 @@ def test_count_open_tasks():
 
 def test_group_tasks_by_section():
     tasks = [
-        build_task(
-            "Task 1",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 1",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
         ),
-        build_task(
-            "Task 2",
-            TaskStatus.OPEN,
-            "Today",
+        create_task(
+            title="Task 2",
+            status=TaskStatus.OPEN,
+            section_title="Today",
         ),
-        build_task(
-            "Task 3",
-            TaskStatus.COMPLETED,
-            "Inbox",
+        create_task(
+            title="Task 3",
+            status=TaskStatus.COMPLETED,
+            section_title="Inbox",
         ),
     ]
-    
+
     result = group_tasks_by_section(tasks)
 
     assert len(result["Inbox"]) == 2
@@ -112,22 +92,22 @@ def test_group_tasks_by_section():
 
 def test_find_overdue_tasks():
     tasks = [
-        build_task(
-            "Old task",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Old task",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             due=date(2025, 1, 1),
         ),
-        build_task(
-            "Future task",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Future task",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             due=date(2099, 1, 1),
         ),
-        build_task(
-            "Completed task",
-            TaskStatus.COMPLETED,
-            "Inbox",
+        create_task(
+            title="Completed task",
+            status=TaskStatus.COMPLETED,
+            section_title="Inbox",
             due=date(2025, 1, 1),
         ),
     ]
@@ -140,22 +120,22 @@ def test_find_overdue_tasks():
 
 def test_calculate_total_score():
     tasks = [
-        build_task(
-            "Task 1",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 1",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             score=10,
         ),
-        build_task(
-            "Task 2",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 2",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             score=25,
         ),
-        build_task(
-            "Task 3",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 3",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
         ),
     ]
 
@@ -166,22 +146,22 @@ def test_calculate_total_score():
 
 def test_calculate_section_scores():
     tasks = [
-        build_task(
-            "Task 1",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 1",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             score=10,
         ),
-        build_task(
-            "Task 2",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 2",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             score=20,
         ),
-        build_task(
-            "Task 3",
-            TaskStatus.OPEN,
-            "Today",
+        create_task(
+            title="Task 3",
+            status=TaskStatus.OPEN,
+            section_title="Today",
             score=50,
         ),
     ]
@@ -194,24 +174,21 @@ def test_calculate_section_scores():
 
 def test_find_high_score_tasks():
     tasks = [
-        build_task(
-            "Low",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Low",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             score=10,
         ),
-        build_task(
-            "High",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="High",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             score=80,
         ),
     ]
 
-    result = find_high_score_tasks(
-        tasks,
-        threshold=50,
-    )
+    result = find_high_score_tasks(tasks, threshold=50)
 
     assert len(result) == 1
     assert result[0].title == "High"
@@ -219,21 +196,21 @@ def test_find_high_score_tasks():
 
 def test_find_tasks_without_dates():
     tasks = [
-        build_task(
-            "Undated",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Undated",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
         ),
-        build_task(
-            "Scheduled",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Scheduled",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
             scheduled=date(2026, 1, 1),
         ),
-        build_task(
-            "Completed",
-            TaskStatus.COMPLETED,
-            "Inbox",
+        create_task(
+            title="Completed",
+            status=TaskStatus.COMPLETED,
+            section_title="Inbox",
         ),
     ]
 
@@ -245,15 +222,15 @@ def test_find_tasks_without_dates():
 
 def test_calculate_completion_rate():
     tasks = [
-        build_task(
-            "Task 1",
-            TaskStatus.COMPLETED,
-            "Inbox",
+        create_task(
+            title="Task 1",
+            status=TaskStatus.COMPLETED,
+            section_title="Inbox",
         ),
-        build_task(
-            "Task 2",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 2",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
         ),
     ]
 
@@ -264,10 +241,10 @@ def test_calculate_completion_rate():
 
 def test_find_empty_sections():
     tasks = [
-        build_task(
-            "Task 1",
-            TaskStatus.OPEN,
-            "Inbox",
+        create_task(
+            title="Task 1",
+            status=TaskStatus.OPEN,
+            section_title="Inbox",
         ),
     ]
 

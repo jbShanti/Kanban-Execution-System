@@ -1,7 +1,6 @@
 from src.analytics.board_summary import build_board_summary
 from src.analytics.section_metrics import build_section_metrics_map, build_section_metrics
 from src.parser.models import (
-    Board,
     Section,
     SectionType,
     Task,
@@ -12,7 +11,7 @@ from src.analytics.models import (
     SectionSummary,
 )
 
-
+from tests.helper import create_board
 
 def test_calculates_section_metrics():
     inbox = Section(
@@ -55,10 +54,10 @@ def test_calculates_section_metrics():
         ),
     ]
 
-    summary = build_board_summary(Board(tasks=tasks))
+    summary = build_board_summary(create_board(tasks=tasks))
 
     metrics = build_section_metrics_map(
-        Board(tasks=tasks),
+        create_board(tasks=tasks),
         summary.sections,
     )
 
@@ -142,7 +141,7 @@ def test_section_metrics_match_section_summary():
         type=SectionType.INBOX,
     )
 
-    board = Board(
+    board = create_board(
         tasks=[
             Task(
                 title="Open",

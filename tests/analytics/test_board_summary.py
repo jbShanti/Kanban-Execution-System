@@ -7,12 +7,11 @@ from src.analytics.board_metrics import (
 from src.analytics.board_summary import build_board_summary, build_section_metrics
 
 from src.parser.models import (
-    Board,
-    Section,
     SectionType,
-    Task,
     TaskStatus,
 )
+
+from tests.helper import create_task, create_section, create_board
 
 from src.analytics.models import SectionSummary, SectionMetrics
 
@@ -20,18 +19,8 @@ from src.analytics.section_metrics import (
     build_section_metrics_map,
 )
 
-def make_section(
-    title: str = "Todo",
-) -> Section:
-    return Section(
-        title=title,
-        raw_title=title,
-        type=SectionType.QUEUED,
-    )
-
-
 def test_empty_board():
-    board = Board(tasks=[])
+    board = create_board(tasks=[])
 
     summary = build_board_summary(board)
 
@@ -43,26 +32,29 @@ def test_empty_board():
 
 
 def test_counts_statuses():
-    section = make_section()
+    section = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="Open",
                 status=TaskStatus.OPEN,
                 section=section,
             ),
-            Task(
+            create_task(
                 title="Progress",
                 status=TaskStatus.IN_PROGRESS,
                 section=section,
             ),
-            Task(
+            create_task(
                 title="Done",
                 status=TaskStatus.COMPLETED,
                 section=section,
             ),
-            Task(
+            create_task(
                 title="Cancelled",
                 status=TaskStatus.CANCELLED,
                 section=section,
@@ -81,23 +73,26 @@ def test_counts_statuses():
 
 
 def test_overdue_detection():
-    section = make_section()
+    section = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="Overdue",
                 status=TaskStatus.OPEN,
                 section=section,
                 due=date(2026, 5, 1),
             ),
-            Task(
+            create_task(
                 title="Future",
                 status=TaskStatus.OPEN,
                 section=section,
                 due=date(2026, 7, 1),
             ),
-            Task(
+            create_task(
                 title="Completed",
                 status=TaskStatus.COMPLETED,
                 section=section,
@@ -115,22 +110,22 @@ def test_overdue_detection():
 
 
 def test_section_distribution():
-    todo = make_section("Todo")
-    health = make_section("Health")
+    todo = create_section(title="Todo", section_type=SectionType.QUEUED)
+    health = create_section(title="Health", section_type=SectionType.QUEUED)
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="A",
                 status=TaskStatus.OPEN,
                 section=todo,
             ),
-            Task(
+            create_task(
                 title="B",
                 status=TaskStatus.OPEN,
                 section=todo,
             ),
-            Task(
+            create_task(
                 title="C",
                 status=TaskStatus.OPEN,
                 section=health,
@@ -150,17 +145,20 @@ def test_section_distribution():
     assert summary.sections["Todo"].active_tasks == 2
 
 def test_average_score():
-    section = make_section()
+    section = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="A",
                 status=TaskStatus.OPEN,
                 section=section,
                 score=10,
             ),
-            Task(
+            create_task(
                 title="B",
                 status=TaskStatus.OPEN,
                 section=section,
@@ -175,58 +173,54 @@ def test_average_score():
     assert summary.average_score == 15.0
     
 def test_board_summary_matches_board_metrics():
-    section = Section(
-        title="Inbox",
-        raw_title="Inbox",
-        type=SectionType.INBOX,
-    )
+    section = create_section()
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="Open",
                 status=TaskStatus.OPEN,
                 section=section,
                 score=15,
                 due=date(2026, 5, 29),
             ),
-            Task(
+            create_task(
                 title="In Progress",
                 status=TaskStatus.IN_PROGRESS,
                 section=section,
                 score=22,
             ),
-            Task(
+            create_task(
                 title="Completed",
                 status=TaskStatus.COMPLETED,
                 section=section,
                 score=8,
             ),
-            Task(
+            create_task(
                 title="Cancelled",
                 status=TaskStatus.CANCELLED,
                 section=section,
                 score=None,
             ),
-            Task(
+            create_task(
                 title="Paused",
                 status=TaskStatus.PAUSED,
                 section=section,
                 score=3,
             ),
-            Task(
+            create_task(
                 title="Scheduled",
                 status=TaskStatus.SCHEDULED,
                 section=section,
                 score=12,
             ),
-            Task(
+            create_task(
                 title="Delegated",
                 status=TaskStatus.DELEGATED,
                 section=section,
                 score=5,
             ),
-            Task(
+            create_task(
                 title="Info",
                 status=TaskStatus.INFO,
                 section=section,
@@ -261,29 +255,32 @@ def test_board_summary_matches_board_metrics():
 
     
 def test_section_summary_metrics():
-    todo = make_section("Todo")
+    todo = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="Open",
                 status=TaskStatus.OPEN,
                 section=todo,
                 score=10,
             ),
-            Task(
+            create_task(
                 title="In Progress",
                 status=TaskStatus.IN_PROGRESS,
                 section=todo,
                 score=20,
             ),
-            Task(
+            create_task(
                 title="Completed",
                 status=TaskStatus.COMPLETED,
                 section=todo,
                 score=5,
             ),
-            Task(
+            create_task(
                 title="Cancelled",
                 status=TaskStatus.CANCELLED,
                 section=todo,
@@ -305,23 +302,26 @@ def test_section_summary_metrics():
     
     
 def test_section_average_score():
-    todo = make_section("Todo")
+    todo = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="A",
                 status=TaskStatus.OPEN,
                 section=todo,
                 score=10,
             ),
-            Task(
+            create_task(
                 title="B",
                 status=TaskStatus.OPEN,
                 section=todo,
                 score=20,
             ),
-            Task(
+            create_task(
                 title="C",
                 status=TaskStatus.OPEN,
                 section=todo,
@@ -339,16 +339,19 @@ def test_section_average_score():
     assert section.average_score == 15.0
     
 def test_section_average_score_without_scores():
-    todo = make_section("Todo")
+    todo = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="A",
                 status=TaskStatus.OPEN,
                 section=todo,
             ),
-            Task(
+            create_task(
                 title="B",
                 status=TaskStatus.OPEN,
                 section=todo,
@@ -366,33 +369,29 @@ def test_section_average_score_without_scores():
     
     
 def test_section_summary_matches_section_metrics():
-    inbox = Section(
-        title="Inbox",
-        raw_title="Inbox",
-        type=SectionType.INBOX,
-    )
+    inbox = create_section()
 
-    board = Board(
+    board = create_board(
         tasks=[
-            Task(
+            create_task(
                 title="Task A",
                 status=TaskStatus.OPEN,
                 section=inbox,
                 score=10,
             ),
-            Task(
+            create_task(
                 title="Task B",
                 status=TaskStatus.IN_PROGRESS,
                 section=inbox,
                 score=20,
             ),
-            Task(
+            create_task(
                 title="Task C",
                 status=TaskStatus.COMPLETED,
                 section=inbox,
                 score=15,
             ),
-            Task(
+            create_task(
                 title="Task D",
                 status=TaskStatus.CANCELLED,
                 section=inbox,
@@ -454,7 +453,7 @@ def test_section_metrics_uses_summary():
     )
 
     metrics = SectionMetrics(
-        section=make_section(),
+        section=create_section(),
         summary=summary,
         wip_limit=3,
     )
@@ -464,7 +463,10 @@ def test_section_metrics_uses_summary():
     assert metrics.summary.average_score == 15.0
     
 def test_build_section_metrics_from_summary():
-    section = make_section()
+    section = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
 
     summary = SectionSummary(
         total_tasks=5,

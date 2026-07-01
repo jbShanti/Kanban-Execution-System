@@ -2,19 +2,20 @@ from src.analytics.models import TaskMetrics
 from src.analytics.service import calculate_task_metrics
 
 from src.parser.models import (
-    Section,
+    
     SectionType,
     Task,
     TaskStatus,
 )
+
+from tests.helper import create_section
     
 from datetime import date, timedelta
 
 def test_calculate_basic_task_metrics() -> None:
-    section = Section(
+    section = create_section(
         title="Inbox",
-        raw_title="Inbox",
-        type=SectionType.INBOX,
+        section_type=SectionType.INBOX,
     )
 
     tasks = [
@@ -78,10 +79,9 @@ def test_calculate_basic_task_metrics() -> None:
     )
     
 def test_calculate_metrics_with_archived_tasks() -> None:
-    section = Section(
+    section = create_section(
         title="Inbox",
-        raw_title="Inbox",
-        type=SectionType.INBOX,
+        section_type=SectionType.INBOX,
     )
 
     tasks = [
@@ -129,10 +129,9 @@ def test_calculate_metrics_with_archived_tasks() -> None:
     )
     
 def test_archived_tasks_are_counted_separately() -> None:
-    section = Section(
+    section = create_section(
         title="Archive",
-        raw_title="Archive",
-        type=SectionType.ARCHIVE,
+        section_type=SectionType.ARCHIVE,
     )
 
     tasks = [
@@ -158,10 +157,9 @@ def test_archived_tasks_are_counted_separately() -> None:
 def test_calculate_time_metrics() -> None:
     today = date.today()
 
-    section = Section(
+    section = create_section(
         title="Inbox",
-        raw_title="Inbox",
-        type=SectionType.INBOX,
+        section_type=SectionType.INBOX,
     )
 
     tasks = [
@@ -198,10 +196,9 @@ def test_calculate_time_metrics() -> None:
     assert metrics.due_next_3_days_tasks == 2
     
 def test_calculate_score_metrics() -> None:
-    section = Section(
+    section = create_section(
         title="Inbox",
-        raw_title="Inbox",
-        type=SectionType.INBOX,
+        section_type=SectionType.INBOX,
     )
 
     tasks = [

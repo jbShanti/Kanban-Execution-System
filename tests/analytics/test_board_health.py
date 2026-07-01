@@ -10,32 +10,33 @@ from src.analytics.models import (
     WipStatus,
 )
 from src.parser.models import (
-    Section,
     SectionType,
-    Task,
     TaskStatus,
+)
+
+from tests.helper import (
+    create_section,
+    create_task,
 )
 
 
 def test_build_board_health_report():
     now = datetime(2026, 5, 31)
 
-    execution_section = Section(
+    execution_section = create_section(
         title="Doing",
-        raw_title="Doing",
-        type=SectionType.EXECUTION,
+        section_type=SectionType.EXECUTION,
         wip_limit=3,
     )
 
-    pipeline_section = Section(
+    pipeline_section = create_section(
         title="Focus",
-        raw_title="Focus",
-        type=SectionType.FOCUS,
+        section_type=SectionType.FOCUS,
     )
 
     important_updated = now - timedelta(days=40)
 
-    important_task = Task(
+    important_task = create_task(
         title="Important task",
         status=TaskStatus.OPEN,
         section=execution_section,
@@ -44,7 +45,7 @@ def test_build_board_health_report():
 
     pipeline_updated = now - timedelta(days=45)
 
-    pipeline_task = Task(
+    pipeline_task = create_task(
         title="Pipeline task",
         status=TaskStatus.OPEN,
         section=pipeline_section,
@@ -121,10 +122,9 @@ def test_build_board_health_report():
 def test_health_score_never_goes_below_zero():
     now = datetime(2026, 5, 31)
 
-    section = Section(
+    section = create_section(
         title="Doing",
-        raw_title="Doing",
-        type=SectionType.EXECUTION,
+        section_type=SectionType.EXECUTION,
         wip_limit=1,
     )
 
@@ -133,7 +133,7 @@ def test_health_score_never_goes_below_zero():
     for i in range(50):
         updated = now - timedelta(days=100)
 
-        task = Task(
+        task = create_task(
             title=f"Task {i}",
             status=TaskStatus.OPEN,
             section=section,

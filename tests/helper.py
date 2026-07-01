@@ -1,8 +1,10 @@
 from pathlib import Path
 
-from src.parser.models import Board, Section, SectionType
+from src.parser.models import Board, Section, SectionType, Task, TaskStatus
 from src.parser.parser import parse_markdown_file
 from src.parser.section_parser import build_section, clean_section_title
+
+from datetime import date, datetime, UTC, timedelta
 
 
 def load_test_board(
@@ -49,4 +51,62 @@ def create_section(
         priority_weight=priority_weight,
         wip_limit=wip_limit,
         section_type=section_type,
+    )
+    
+def create_task(
+    *,
+    title: str = "Task",
+    status: TaskStatus = TaskStatus.OPEN,
+    section: Section | None = None,
+    section_title: str = "Inbox",
+    section_type: SectionType = SectionType.INBOX,
+    score: int | None = None,
+    due: date | None = None,
+    scheduled: date | None = None,
+    time_estimate: timedelta | None = None,
+    updated_at: datetime | None = None,
+    archived: bool = False,
+    tags: list[str] | None = None,
+    metadata: dict[str, str] | None = None,
+    raw_line: str | None = None,
+) -> Task:
+    if section is None:
+        section = create_section(
+            title=section_title,
+            section_type=section_type,
+        )
+
+    if tags is None:
+        tags = []
+
+    if metadata is None:
+        metadata = {}
+
+    if updated_at is None:
+        updated_at = datetime.now(UTC)
+
+    if raw_line is None:
+        raw_line = f"- [ ] {title}"
+
+    return Task(
+        title=title,
+        status=status,
+        section=section,
+        raw_line=raw_line,
+        archived=archived,
+        metadata=metadata,
+        tags=tags,
+        score=score,
+        due=due,
+        scheduled=scheduled,
+        time_estimate=time_estimate,
+        updated_at=updated_at,
+    )
+    
+
+def create_board(
+    tasks: list[Task] | None = None,
+) -> Board:
+    return Board(
+        tasks=[] if tasks is None else tasks,
     )

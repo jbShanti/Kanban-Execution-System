@@ -1,41 +1,37 @@
 from src.analytics.service import build_analytics_snapshot
 from src.parser.models import (
-    Section,
     SectionType,
-    Task,
     TaskStatus,
-    Board,
-)
+    )
+from tests.helper import create_section, create_task, create_board
 
 
 def test_builds_analytics_snapshot():
-    inbox = Section(
+    inbox = create_section(
         title="Inbox",
-        raw_title="Inbox",
-        type=SectionType.INBOX,
+        section_type=SectionType.INBOX,
     )
 
-    focus = Section(
+    focus = create_section(
         title="Focus",
-        raw_title="Focus",
-        type=SectionType.FOCUS,
+        section_type=SectionType.FOCUS,
         wip_limit=2,
     )
 
     tasks = [
-        Task(
+        create_task(
             title="Open task",
             status=TaskStatus.OPEN,
             section=inbox,
             score=10,
         ),
-        Task(
+        create_task(
             title="Completed task",
             status=TaskStatus.COMPLETED,
             section=inbox,
             score=20,
         ),
-        Task(
+        create_task(
             title="Focused task",
             status=TaskStatus.IN_PROGRESS,
             section=focus,
@@ -44,7 +40,7 @@ def test_builds_analytics_snapshot():
     ]
 
 
-    board = Board(tasks=tasks)
+    board = create_board(tasks=tasks)
     
     snapshot = build_analytics_snapshot(board)
 

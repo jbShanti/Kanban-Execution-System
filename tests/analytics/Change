@@ -1,0 +1,9 @@
+""" build_task():
+
++ tests/analytics/test_service.py
++ tests/analytics/test_analytics.py
++ tests/analytics/test_board_health.py
++ tests/analytics/test_task_metrics.py
+tests/analytics/test_board_summary.py
+
+Именно их я бы проверил следующими. """
