@@ -2817,7 +2817,81 @@ Recommendation Engine determines **what should be done**.
 
 ---
 
-# 12. ExecutionReport
+# 12. RecommendationCollection
+
+`RecommendationCollection` contains all actionable recommendations produced by the Analytics Engine.
+
+Recommendations are organized into four hierarchical levels, progressing from strategic guidance to concrete execution.
+
+## Operating Mode
+
+Defines the recommended execution mode for the current day.
+
+The Operating Mode establishes the behavioral context for all subsequent recommendations.
+
+It answers the question:
+
+> **"How should I work today?"**
+
+Examples:
+
+* Completion Mode
+* Recovery Mode
+* Deep Focus Mode
+* Inbox Processing Mode
+* Rebalancing Mode
+* Maintenance Mode
+
+Exactly one Operating Mode should be selected for each `ExecutionReport`.
+
+---
+
+## Strategic Recommendations
+
+High-level recommendations that define the overall direction of execution.
+
+They answer the question:
+
+> **"What should I optimize today?"**
+
+Examples:
+
+* Complete active initiatives before starting new work.
+* Reduce context switching.
+* Restore workload balance.
+
+---
+
+## Tactical Recommendations
+
+Recommendations describing changes that should be made to the current execution system.
+
+They answer the question:
+
+> **"What should be changed today?"**
+
+Examples:
+
+* Process the Inbox.
+* Rebalance overloaded corridors.
+* Review stalled projects.
+
+---
+
+## Task Recommendations
+
+Concrete recommendations identifying the highest-value tasks for execution.
+
+They answer the question:
+
+> **"What should I work on next?"**
+
+These recommendations are used to generate the **Today's Priorities** section of the MorningBrief.
+
+
+
+---
+# 13. ExecutionReport
 
 ## Purpose
 
@@ -2835,6 +2909,20 @@ It does **not**:
 * generate recommendations.
 
 ExecutionReport is a presentation layer that combines the outputs of previous pipeline stages into a canonical report.
+
+
+---
+
+## Architectural Role
+
+`ExecutionReport` is the canonical interface between the Analytics Engine and all presentation artifacts.
+
+It represents the final output of the analytical pipeline and the single source of truth for user-facing views such as `MorningBrief`, `DailyReview`, `WeeklyReview`, and `DashboardSnapshot`.
+
+Presentation artifacts must derive their content exclusively from the `ExecutionReport`. They must not access intermediate analytical artifacts such as Measurements, Distribution Analysis, Corridor Evaluation, Findings, Executive Summary, or Recommendation Collection directly.
+
+This separation ensures that analytical processing remains completely independent from presentation, allowing new user-facing views to be introduced without changing the analytics pipeline.
+
 
 ---
 
@@ -3018,17 +3106,17 @@ ExecutionReport determines **how the results are delivered**.
 
 ---
 
-# XX BoardHealth
+# XX. BoardHealth
 
 ## Purpose
 
-`BoardHealth` evaluates the quality and analytical readiness of a Kanban board.
+`BoardHealth` evaluates the overall operational health of a Kanban board.
 
-It answers the question:
+It provides a high-level assessment of how suitable the board is for reliable planning, execution, and analytical processing.
 
-> How reliable and complete is the board data for analytical processing?
+The current implementation focuses on analytical readiness by measuring metadata completeness.
 
-All analytical modules MUST interpret their results in the context of `BoardHealth`.
+Future versions may additionally incorporate execution quality indicators, workload balance, workflow hygiene, and other operational health metrics.
 
 ---
 
@@ -3238,10 +3326,9 @@ sample_orphans:
 ```
 
 ---
+## Health Classification
 
-## Status Evaluation
-
-Status is determined by `analytics_coverage`.
+In the current implementation, the `BoardHealth` status is derived solely from `analytics_coverage`.
 
 | Analytics Coverage | Status |
 |-------------------|----------|
