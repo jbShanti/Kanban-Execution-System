@@ -218,6 +218,10 @@ class BoardHealth:
     status: BoardHealthStatus
 
 
+@dataclass(frozen=True)
+class ExecutiveSummary:
+    summary: str
+
 
 @dataclass(slots=True, frozen=True)
 class BoardHealthReport:
@@ -231,6 +235,7 @@ class BoardHealthReport:
 
     warnings: list[HealthWarning] 
     overload_signals: list[OverloadSignal] = field(default_factory=lambda: list[OverloadSignal]())
+    
     
 @dataclass(slots=True, frozen=True)
 class TaskMetrics:
@@ -435,3 +440,17 @@ class FocusAttentionAnalytics:
        ...
     ]
     
+@dataclass(frozen=True)
+class ExecutionReport:
+    """
+    Canonical snapshot of the analytical state of the execution system.
+
+    ExecutionReport is the final output of the analytics pipeline and serves
+    as the canonical contract between the Analytics Layer and all presentation
+    artifacts.
+    """
+
+    board_health: BoardHealth
+    executive_summary: ExecutiveSummary
+
+    # recommendation_collection: RecommendationCollection

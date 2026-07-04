@@ -2895,20 +2895,26 @@ These recommendations are used to generate the **Today's Priorities** section of
 
 ## Purpose
 
-ExecutionReport is the final output of the execution analytics pipeline.
+ExecutionReport is the canonical snapshot of the analytical state of the execution system.
 
-Its purpose is to present the current system state together with the corresponding actionable recommendations in a single structured document.
+It is an immutable representation of all analytical results produced during a single analysis cycle.
 
-ExecutionReport is **not** an analytical or decision-making component. Its sole responsibility is to assemble the ExecutiveSummary and RecommendationCollection into a single canonical report.
+ExecutionReport is the final output of the execution analytics pipeline and serves as the canonical contract between the Analytics Layer and all presentation artifacts.
+
+Its purpose is to represent the current execution state together with the corresponding recommendations in a single, structured, and canonical data contract.
+
+The ExecutionReport serves as the sole input for all presentation artifacts, including Morning Brief, Dashboard, API, Weekly Review, and other consumers.
+
+ExecutionReport is not an analytical or decision-making component.
 
 It does **not**:
 
-* perform analysis;
-* generate Findings;
-* aggregate information;
-* generate recommendations.
+- perform analysis;
+- generate findings;
+- aggregate information;
+- generate recommendations.
 
-ExecutionReport is a presentation layer that combines the outputs of previous pipeline stages into a canonical report.
+Its sole responsibility is to expose the results produced by previous pipeline stages through a stable and canonical data contract.
 
 
 ---
