@@ -1,0 +1,78 @@
+Date : 2026-07-08 00:16:04
+Directory : d:\Developing\Repos\Kanban-Execution-System\src
+Total : 43 files,  2477 codes, 161 comments, 958 blanks, all 3596 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         43 |      2,477 |        161 |        958 |      3,596 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                          | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                             |         43 |      2,477 |        161 |        958 |      3,596 |
+| . (Files)                                                                                     |          2 |          0 |          0 |          2 |          2 |
+| analytics                                                                                     |         21 |      1,360 |         86 |        486 |      1,932 |
+| analytics (Files)                                                                             |         15 |      1,210 |         50 |        443 |      1,703 |
+| analytics\calculators                                                                         |          6 |        150 |         36 |         43 |        229 |
+| application                                                                                   |          2 |         69 |          0 |         21 |         90 |
+| cli                                                                                           |          2 |         16 |          0 |          7 |         23 |
+| config                                                                                        |          1 |          9 |          0 |          5 |         14 |
+| parser                                                                                        |          7 |        749 |         68 |        338 |      1,155 |
+| reporting                                                                                     |          8 |        274 |          7 |         99 |        380 |
+| reporting (Files)                                                                             |          5 |        186 |          7 |         62 |        255 |
+| reporting\sections                                                                            |          3 |         88 |          0 |         37 |        125 |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                      | language | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| d:\Developing\Repos\Kanban-Execution-System\src\__init__.py                                   | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\__init__.py                         | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\analytics_readiness.py              | Python   |        128 |         10 |         46 |        184 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\attention_scoring.py                | Python   |         63 |          0 |         24 |         87 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\board_health.py                     | Python   |         68 |          0 |         18 |         86 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\board_metrics.py                    | Python   |         61 |          0 |         23 |         84 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\board_summary.py                    | Python   |         84 |          0 |         39 |        123 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\calculators\__init__.py             | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\calculators\overload_detector.py    | Python   |         26 |         16 |          5 |         47 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\calculators\score_metrics.py        | Python   |         27 |          0 |          8 |         35 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\calculators\status_metrics.py       | Python   |         35 |          0 |          9 |         44 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\calculators\time_metrics.py         | Python   |         29 |          0 |         10 |         39 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\calculators\wip_metrics.py          | Python   |         33 |         20 |         10 |         63 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\focus_analytics.py                  | Python   |         59 |          3 |         16 |         78 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\models.py                           | Python   |        308 |         10 |        138 |        456 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\priority_scoring.py                 | Python   |         25 |          8 |          8 |         41 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\report_builder.py                   | Python   |         75 |          0 |         18 |         93 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\section_metrics.py                  | Python   |         31 |          0 |         10 |         41 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\service.py                          | Python   |         79 |          1 |         22 |        102 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\stale_analytics.py                  | Python   |         71 |         15 |         24 |        110 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\task_snapshot.py                    | Python   |         47 |          3 |          9 |         59 |
+| d:\Developing\Repos\Kanban-Execution-System\src\analytics\wip.py                              | Python   |        111 |          0 |         47 |        158 |
+| d:\Developing\Repos\Kanban-Execution-System\src\application\__init__.py                       | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\application\review_service.py                 | Python   |         69 |          0 |         20 |         89 |
+| d:\Developing\Repos\Kanban-Execution-System\src\cli\__init__.py                               | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\cli\review_command.py                         | Python   |         16 |          0 |          6 |         22 |
+| d:\Developing\Repos\Kanban-Execution-System\src\config\scoring_loader.py                      | Python   |          9 |          0 |          5 |         14 |
+| d:\Developing\Repos\Kanban-Execution-System\src\main.py                                       | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\parser\__init__.py                            | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\parser\analytics.py                           | Python   |        106 |          0 |         40 |        146 |
+| d:\Developing\Repos\Kanban-Execution-System\src\parser\metadata.py                            | Python   |        216 |         26 |        114 |        356 |
+| d:\Developing\Repos\Kanban-Execution-System\src\parser\models.py                              | Python   |        142 |          0 |         59 |        201 |
+| d:\Developing\Repos\Kanban-Execution-System\src\parser\parser.py                              | Python   |        189 |         41 |         82 |        312 |
+| d:\Developing\Repos\Kanban-Execution-System\src\parser\section_parser.py                      | Python   |         50 |          0 |         18 |         68 |
+| d:\Developing\Repos\Kanban-Execution-System\src\parser\sections.py                            | Python   |         46 |          1 |         24 |         71 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\__init__.py                         | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\analytics_report_renderer.py        | Python   |         26 |          0 |          6 |         32 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\markdown.py                         | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\markdown_report.py                  | Python   |        127 |          6 |         41 |        174 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\report_adapter.py                   | Python   |         33 |          1 |         13 |         47 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\sections\__init__.py                | Python   |          0 |          0 |          1 |          1 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\sections\board_health_section.py    | Python   |         57 |          0 |         22 |         79 |
+| d:\Developing\Repos\Kanban-Execution-System\src\reporting\sections\score_corridors_section.py | Python   |         31 |          0 |         14 |         45 |
+| Total                                                                                         |          |      2,477 |        161 |        958 |      3,596 |
++-----------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
