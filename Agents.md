@@ -92,15 +92,39 @@ Implementation should follow documentation, not the opposite.
 
 **Python Version:** 3.14+
 
-**Always use these commands:**
-- Run tests: `py -3.14 -m pytest`
-- Install packages: `py -3.14 -m pip install <package>`
-- Install all dependencies: `py -3.14 -m pip install -r requirements.txt`
+**Virtual Environment:**
+This project uses a virtual environment in the `venv` folder.
+
+**Setup (first time only):**
+
+Step 1: Create virtual environment
+py -3.14 -m venv venv
+
+Step 2: Activate virtual environment
+.\venv\Scripts\Activate.ps1
+
+Step 3: Install dependencies
+pip install -r requirements.txt
+
+**Activation (every new terminal session):**
+
+.\venv\Scripts\Activate.ps1
+
+**After activation, use these commands:**
+
+Run tests:
+pytest
+
+Install packages:
+pip install <package>
+
+Install all dependencies:
+pip install -r requirements.txt
 
 **Never use:**
-- Bare `pytest` (may use wrong Python version)
-- Bare `pip` (packages will be installed into wrong environment)
 
+- `py -3.14 -m pytest` (use `pytest` after venv activation)
+- Bare `pip` without activating venv first
 
 ---
 # Development Environment
