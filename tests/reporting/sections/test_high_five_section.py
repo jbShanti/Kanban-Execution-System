@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from src.reporting.sections.high_five_section import (
     render_high_five_section,

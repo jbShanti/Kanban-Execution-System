@@ -1,4 +1,3 @@
-import pytest
 from datetime import date
 from src.parser.models import Task, TaskStatus, Section, SectionType
 from src.analytics.calculators.high_five import calculate_high_five
