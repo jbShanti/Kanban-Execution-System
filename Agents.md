@@ -88,6 +88,20 @@ Implementation should follow documentation, not the opposite.
 
 ---
 
+## Environment and Execution
+
+**Python Version:** 3.11+
+
+**Always use these commands:**
+- Run tests: `py -3.11 -m pytest`
+- Install packages: `py -3.11 -m pip install <package>`
+
+**Never use:**
+- Bare `pytest` (it defaults to Python 3.8, which will cause test failures)
+- Bare `pip` (packages will be installed into the wrong Python environment)
+
+
+---
 # Development Environment
 
 ## Current configured workflow
