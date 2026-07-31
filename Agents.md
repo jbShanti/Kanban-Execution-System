@@ -90,15 +90,16 @@ Implementation should follow documentation, not the opposite.
 
 ## Environment and Execution
 
-**Python Version:** 3.11+
+**Python Version:** 3.14+
 
 **Always use these commands:**
-- Run tests: `py -3.11 -m pytest`
-- Install packages: `py -3.11 -m pip install <package>`
+- Run tests: `py -3.14 -m pytest`
+- Install packages: `py -3.14 -m pip install <package>`
+- Install all dependencies: `py -3.14 -m pip install -r requirements.txt`
 
 **Never use:**
-- Bare `pytest` (it defaults to Python 3.8, which will cause test failures)
-- Bare `pip` (packages will be installed into the wrong Python environment)
+- Bare `pytest` (may use wrong Python version)
+- Bare `pip` (packages will be installed into wrong environment)
 
 
 ---
