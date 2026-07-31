@@ -11,6 +11,7 @@ from src.analytics.calculators.status_metrics import (
 from src.analytics.calculators.time_metrics import (
     calculate_time_metrics,
 )
+from src.analytics.calculators.high_five import calculate_high_five
 from src.analytics.models import (
     AnalyticsReport,
     AnalyticsSnapshot,
@@ -67,13 +68,17 @@ def build_analytics_snapshot(
     
     # Новый WIP-калькулятор
     wip_statuses = calculate_wip_metrics(board)
+    
+    # High Five - топ-5 задач на день
+    high_five_tasks = calculate_high_five(board.tasks)
 
     return AnalyticsSnapshot(
         summary=summary,
         board=board_metrics,
         sections=section_metrics,
         board_health=board_health,
-        wip_statuses=wip_statuses,  # <-- НОВОЕ
+        wip_statuses=wip_statuses,
+        high_five_tasks=high_five_tasks,
     )
 
 

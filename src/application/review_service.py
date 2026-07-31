@@ -4,6 +4,7 @@ from datetime import datetime
 
 from src.analytics.calculators.wip_metrics import calculate_wip_metrics
 from src.analytics.calculators.overload_detector import detect_overload
+from src.analytics.calculators.high_five import calculate_high_five
 
 
 from src.analytics.attention_scoring import (
@@ -29,6 +30,9 @@ from src.analytics.stale_analytics import (
 from src.reporting.markdown_report import (
     render_markdown_report,
 )
+from src.reporting.sections.high_five_section import (
+    render_high_five_section,
+)
 from src.parser.models import Task, Board
 
 
@@ -52,7 +56,7 @@ def run_review(
         summary.sections,
     )
 
-    wip_statuses = calculate_wip_metrics(board) 
+    wip_statuses = calculate_wip_metrics(board)
     overload_signals = detect_overload(wip_statuses)
 
     stale_tasks = calculate_stale_tasks(
@@ -76,14 +80,19 @@ def run_review(
         wip_statuses=wip_statuses,
         overload_signals=overload_signals,
     )
-
     
-    return render_markdown_report(
+    # High Five - топ-5 задач на день
+    high_five_tasks = calculate_high_five(tasks)
+    high_five_section = render_high_five_section(high_five_tasks)
+    
+    base_report = render_markdown_report(
         board_metrics=board_metrics,
         section_metrics=list(
             section_metrics.values()
         ),
         board_health=board_health,
     )
+    
+    return base_report + "\n" + high_five_section
     
     

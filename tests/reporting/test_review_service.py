@@ -76,6 +76,9 @@ def test_run_review_generates_report():
     assert "Top Priority" in report
 
     assert "Top Attention" in report
+    
+    # High Five section
+    assert "High Five" in report
 
 
 def test_run_review_empty_board():

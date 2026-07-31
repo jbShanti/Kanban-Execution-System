@@ -360,6 +360,8 @@ class AnalyticsSnapshot:
     
     wip_statuses: list[WipStatus] = field(default_factory=lambda: list[WipStatus]())
     
+    high_five_tasks: list[Task] = field(default_factory=lambda: list[Task]())
+    
     
 @dataclass(slots=True)
 class AnalyticsContext:
