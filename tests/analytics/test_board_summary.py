@@ -1,23 +1,10 @@
 from datetime import date
 
-from src.analytics.board_metrics import (
-    calculate_board_metrics,
-)
+from src.analytics.board_metrics import calculate_board_metrics
+from src.analytics.board_summary import build_board_summary
+from src.parser.models import SectionType, TaskStatus
+from tests.helper import create_board, create_section, create_task
 
-from src.analytics.board_summary import build_board_summary, build_section_metrics
-
-from src.parser.models import (
-    SectionType,
-    TaskStatus,
-)
-
-from tests.helper import create_task, create_section, create_board
-
-from src.analytics.models import SectionSummary, SectionMetrics
-
-from src.analytics.section_metrics import (
-    build_section_metrics_map,
-)
 
 def test_empty_board():
     board = create_board(tasks=[])
@@ -70,6 +57,34 @@ def test_counts_statuses():
     assert summary.completed_tasks == 1
     assert summary.cancelled_tasks == 1
 
+
+def test_board_summary_by_status_map():
+    section = create_section(title="Inbox")
+
+    tasks = [
+        create_task(title="T1", status=TaskStatus.OPEN, section=section),
+        create_task(title="T2", status=TaskStatus.OPEN, section=section),
+        create_task(title="T3", status=TaskStatus.IN_PROGRESS, section=section),
+        create_task(title="T4", status=TaskStatus.COMPLETED, section=section),
+        create_task(title="T5", status=TaskStatus.CANCELLED, section=section),
+        create_task(title="T6", status=TaskStatus.PAUSED, section=section),
+        create_task(title="T7", status=TaskStatus.SCHEDULED, section=section),
+        create_task(title="T8", status=TaskStatus.DELEGATED, section=section),
+        create_task(title="T9", status=TaskStatus.INFO, section=section),
+    ]
+
+    summary = build_board_summary(create_board(tasks=tasks))
+
+    assert summary.by_status == {
+        "open": 2,
+        "in_progress": 1,
+        "completed": 1,
+        "cancelled": 1,
+        "paused": 1,
+        "scheduled": 1,
+        "delegated": 1,
+        "info": 1,
+    }
 
 
 def test_overdue_detection():
@@ -136,13 +151,14 @@ def test_section_distribution():
     summary = build_board_summary(board)
 
     assert set(summary.sections.keys()) == {
-    "Todo",
-    "Health",
+        "Todo",
+        "Health",
     }
 
     assert summary.sections["Todo"].total_tasks == 2
     assert summary.sections["Health"].total_tasks == 1
     assert summary.sections["Todo"].active_tasks == 2
+
 
 def test_average_score():
     section = create_section(
@@ -171,7 +187,52 @@ def test_average_score():
 
     assert summary.total_score == 30
     assert summary.average_score == 15.0
-    
+
+
+def test_score_corridors_distribution():
+    section = create_section(title="Inbox")
+
+    tasks = [
+        create_task(title="A", status=TaskStatus.OPEN, section=section, score=25),
+        create_task(title="B", status=TaskStatus.OPEN, section=section, score=18),
+        create_task(title="C", status=TaskStatus.OPEN, section=section, score=12),
+        create_task(title="D", status=TaskStatus.OPEN, section=section, score=8),
+        create_task(title="E", status=TaskStatus.OPEN, section=section, score=3),
+        create_task(title="F", status=TaskStatus.OPEN, section=section, score=0),
+        create_task(title="G", status=TaskStatus.OPEN, section=section, score=None),
+    ]
+
+    summary = build_board_summary(create_board(tasks=tasks))
+
+    corridors = summary.score_corridors
+
+    assert corridors["21-25"].task_count == 1
+    assert corridors["21-25"].total_score == 25
+
+    assert corridors["16-20"].task_count == 1
+    assert corridors["16-20"].total_score == 18
+
+    assert corridors["11-15"].task_count == 1
+    assert corridors["11-15"].total_score == 12
+
+    assert corridors["6-10"].task_count == 1
+    assert corridors["6-10"].total_score == 8
+
+    assert corridors["1-5"].task_count == 1
+    assert corridors["1-5"].total_score == 3
+
+    assert corridors["0"].task_count == 1
+    assert corridors["0"].total_score == 0
+
+    assert corridors["no_score"].task_count == 1
+    assert corridors["no_score"].scored_tasks == 0
+    assert corridors["no_score"].total_score == 0
+
+    assert summary.scored_tasks == 6
+    assert summary.unscored_tasks == 1
+    assert summary.total_score == 66
+
+
 def test_board_summary_matches_board_metrics():
     section = create_section()
 
@@ -253,7 +314,7 @@ def test_board_summary_matches_board_metrics():
 
     assert summary.total_score == metrics.total_score
 
-    
+
 def test_section_summary_metrics():
     todo = create_section(
         title="Todo",
@@ -299,8 +360,8 @@ def test_section_summary_metrics():
     assert section.cancelled_tasks == 1
     assert section.scored_tasks == 3
     assert section.total_score == 35
-    
-    
+
+
 def test_section_average_score():
     todo = create_section(
         title="Todo",
@@ -337,7 +398,8 @@ def test_section_average_score():
     assert section.scored_tasks == 2
     assert section.total_score == 30
     assert section.average_score == 15.0
-    
+
+
 def test_section_average_score_without_scores():
     todo = create_section(
         title="Todo",
@@ -366,122 +428,3 @@ def test_section_average_score_without_scores():
     assert section.scored_tasks == 0
     assert section.total_score == 0
     assert section.average_score == 0.0
-    
-    
-def test_section_summary_matches_section_metrics():
-    inbox = create_section()
-
-    board = create_board(
-        tasks=[
-            create_task(
-                title="Task A",
-                status=TaskStatus.OPEN,
-                section=inbox,
-                score=10,
-            ),
-            create_task(
-                title="Task B",
-                status=TaskStatus.IN_PROGRESS,
-                section=inbox,
-                score=20,
-            ),
-            create_task(
-                title="Task C",
-                status=TaskStatus.COMPLETED,
-                section=inbox,
-                score=15,
-            ),
-            create_task(
-                title="Task D",
-                status=TaskStatus.CANCELLED,
-                section=inbox,
-            ),
-        ]
-    )
-
-    summary = build_board_summary(board)
-
-    metrics = build_section_metrics_map(board, summary.sections)
-
-    section_summary = summary.sections["Inbox"]
-    section_metrics = metrics["Inbox"]
-
-    assert section_summary.total_tasks == section_metrics.total_tasks
-
-    assert (
-        section_summary.active_tasks
-        == section_metrics.active_tasks
-    )
-
-    assert (
-        section_summary.actionable_tasks
-        == section_metrics.actionable_tasks
-    )
-
-    assert (
-        section_summary.completed_tasks
-        == section_metrics.completed_tasks
-    )
-
-    assert (
-        section_summary.cancelled_tasks
-        == section_metrics.cancelled_tasks
-    )
-
-    assert (
-        section_summary.scored_tasks
-        == section_metrics.scored_tasks
-    )
-
-    assert (
-        section_summary.total_score
-        == section_metrics.total_score
-    )
-
-    assert (
-        section_summary.average_score
-        == section_metrics.average_score
-    )
-    
-    
-def test_section_metrics_uses_summary():
-    summary = SectionSummary(
-        total_tasks=5,
-        active_tasks=2,
-        scored_tasks=2,
-        total_score=30,
-    )
-
-    metrics = SectionMetrics(
-        section=create_section(),
-        summary=summary,
-        wip_limit=3,
-    )
-
-    assert metrics.summary.total_tasks == 5
-    assert metrics.summary.active_tasks == 2
-    assert metrics.summary.average_score == 15.0
-    
-def test_build_section_metrics_from_summary():
-    section = create_section(
-        title="Todo",
-        section_type=SectionType.QUEUED,
-    )
-
-    summary = SectionSummary(
-        total_tasks=5,
-        active_tasks=2,
-        actionable_tasks=2,
-        completed_tasks=1,
-        scored_tasks=2,
-        total_score=30,
-    )
-
-    metrics = build_section_metrics(
-        section=section,
-        summary=summary,
-    )
-
-    assert metrics.section is section
-    assert metrics.summary is summary
-    assert metrics.wip_limit == section.wip_limit

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from src.analytics.models import PriorityScore
-from src.parser.models import Task
+from src.parser.models import Task, SectionType
 
 
 def calculate_priority_scores(
@@ -14,12 +14,17 @@ def calculate_priority_scores(
     - only actionable tasks participate
     - task.score is the primary signal
     - section.priority_weight acts as a modifier
+    - tasks in ARCHIVE sections are excluded
     """
 
     results: list[PriorityScore] = []
 
     for task in tasks:
         if not task.is_actionable:
+            continue
+
+        # Exclude tasks in ARCHIVE sections
+        if task.section.type == SectionType.ARCHIVE:
             continue
 
         base_score = task.score or 0

@@ -4,10 +4,9 @@ from datetime import date
 
 from src.analytics.models import (
     BoardSummary,
-    SectionMetrics,
     SectionSummary,
 )
-from src.parser.models import Board, Section
+from src.parser.models import Board
 
 
 def build_board_summary(
@@ -111,13 +110,3 @@ def build_board_summary(
         corridor.total_score += score
 
     return summary
-
-
-def build_section_metrics(
-    section: Section,
-    summary: SectionSummary,
-) -> SectionMetrics:
-    return SectionMetrics(
-        section=section,
-        summary=summary,
-    )

@@ -125,10 +125,12 @@ def render_markdown_report(
             board_health.top_priority_tasks,
             start=1,
         ):
+            # Display actual task score, not calculated final_score
+            actual_score = item.task.score or 0
             lines.append(
                 f"{idx}. "
                 f"{item.task.title} "
-                f"({item.final_score})"
+                f"({actual_score})"
             )
     else:
         lines.append("No priority items")
