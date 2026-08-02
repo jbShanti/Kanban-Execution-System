@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 from src.parser.models import Section
-#from src.application.review_service import run_review
 
 from src.analytics.service import (
     build_analytics_snapshot,
@@ -77,44 +76,3 @@ def test_real_board_sections():
         )
 
     assert len(sections) > 0
-    
-    
-""" def test_real_board_snapshot_builds_2():
-    # 1. Загружаем реальную доску
-    board = load_real_board()
-    
-    # 2. Генерируем отчёт (предполагаем, что функция называется run_review)
-    # Если у тебя она называется иначе, замени run_review на нужное имя
-    report_markdown = run_review(tasks=board.tasks)
-    
-    # 3. Базовая проверка: отчёт не пустой
-    assert report_markdown
-    assert len(report_markdown) > 100
-    
-       # ==========================================
-    # 4. ПРОВЕРКИ: Целевая проверка Board Health
-    # ==========================================
-    
-    # Проверяем, что заголовок секции здоровья присутствует
-    assert "Board Health" in report_markdown
-    
-    # Проверяем, что секция перегрузки отрендерилась
-    assert "⚠️ Overload Warnings" in report_markdown
-    
-    # Проверяем конкретные детали из нашей РЕАЛЬНОЙ доски.
-    # Как показал вывод ошибки, перегружена секция '🗓️ TODAY' (4/3)
-    assert "🗓️ TODAY" in report_markdown
-    assert "OVER WIP limit (4/3 tasks)" in report_markdown
-    
-    # Проверяем наличие эмодзи-индикатора критической перегрузки
-    assert "🔴" in report_markdown
-    
-    # ==========================================
-    # 5. ВЫГРУЗКА ФАЙЛА для визуальной проверки (Debug)
-    # ==========================================
-    debug_output_path = Path("report_2.md")
-    with open(debug_output_path, "w", encoding="utf-8") as f:
-        f.write(report_markdown)
-        
-    print(f"\n✅ Отчёт успешно сгенерирован и сохранён в: {debug_output_path.absolute()}")
-    print("💡 Открой этот файл в VS Code и нажми 'Open Preview' (Ctrl+Shift+V), чтобы увидеть результат!") """
