@@ -12,10 +12,12 @@ from src.analytics.calculators.time_metrics import (
     calculate_time_metrics,
 )
 from src.analytics.calculators.high_five import calculate_high_five
+from src.analytics.focus_analytics import build_focus_attention_analytics
 from src.analytics.models import (
     AnalyticsReport,
     AnalyticsSnapshot,
     TaskMetrics,
+    FocusAttentionAnalytics,
 )
 from src.analytics.report_builder import (
     build_analytics_report,
@@ -66,6 +68,9 @@ def build_analytics_snapshot(
         task_snapshots
         )
     
+    # Focus Attention Analytics
+    focus_attention_analytics = build_focus_attention_analytics(task_snapshots)
+    
     # Новый WIP-калькулятор
     wip_statuses = calculate_wip_metrics(board)
     
@@ -79,6 +84,7 @@ def build_analytics_snapshot(
         board_health=board_health,
         wip_statuses=wip_statuses,
         high_five_tasks=high_five_tasks,
+        focus_attention_analytics=focus_attention_analytics,
     )
 
 

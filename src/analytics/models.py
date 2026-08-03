@@ -362,6 +362,8 @@ class AnalyticsSnapshot:
     
     high_five_tasks: list[Task] = field(default_factory=lambda: list[Task]())
     
+    focus_attention_analytics: FocusAttentionAnalytics | None = None
+    
     
 @dataclass(slots=True)
 class AnalyticsContext:

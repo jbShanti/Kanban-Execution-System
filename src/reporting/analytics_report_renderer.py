@@ -12,6 +12,10 @@ from src.reporting.sections.score_corridors_section import (
 from src.reporting.sections.high_five_section import (
     render_high_five_section,
 )
+from src.reporting.sections.focus_analysis_section import (
+    render_focus_analysis_section,
+)
+from src.analytics.models import FocusAttentionAnalytics
 
 
 def render_analytics_report(
@@ -39,6 +43,7 @@ def render_analytics_report(
 def render_analytics_report_with_snapshot(
     report: AnalyticsReport,
     high_five_tasks: list[Task],
+    focus_analytics: FocusAttentionAnalytics | None = None,
 ) -> str:
     """Render analytics report with High Five section from snapshot."""
     
@@ -53,6 +58,9 @@ def render_analytics_report_with_snapshot(
         ),
         render_high_five_section(high_five_tasks),
     ]
+    
+    if focus_analytics:
+        sections.append(render_focus_analysis_section(focus_analytics))
 
     return "\n".join(
         section
