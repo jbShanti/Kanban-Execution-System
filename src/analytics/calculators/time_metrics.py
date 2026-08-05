@@ -5,8 +5,8 @@ from src.parser.models import Task
 
 def calculate_time_metrics(
     tasks: list[Task],
+    today: date,
 ) -> dict[str, int]:
-    today = date.today()
 
     overdue_tasks = 0
     due_today_tasks = 0

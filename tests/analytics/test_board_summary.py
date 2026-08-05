@@ -9,7 +9,7 @@ from tests.helper import create_board, create_section, create_task
 def test_empty_board():
     board = create_board(tasks=[])
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     assert summary.total_tasks == 0
     assert summary.active_tasks == 0
@@ -49,7 +49,7 @@ def test_counts_statuses():
         ]
     )
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     assert summary.total_tasks == 4
     assert summary.active_tasks == 2
@@ -73,7 +73,7 @@ def test_board_summary_by_status_map():
         create_task(title="T9", status=TaskStatus.INFO, section=section),
     ]
 
-    summary = build_board_summary(create_board(tasks=tasks))
+    summary = build_board_summary(create_board(tasks=tasks), today=date(2026, 1, 15))
 
     assert summary.by_status == {
         "open": 2,
@@ -148,7 +148,7 @@ def test_section_distribution():
         ]
     )
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     assert set(summary.sections.keys()) == {
         "Todo",
@@ -183,7 +183,7 @@ def test_average_score():
         ]
     )
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     assert summary.total_score == 30
     assert summary.average_score == 15.0
@@ -202,7 +202,7 @@ def test_score_corridors_distribution():
         create_task(title="G", status=TaskStatus.OPEN, section=section, score=None),
     ]
 
-    summary = build_board_summary(create_board(tasks=tasks))
+    summary = build_board_summary(create_board(tasks=tasks), today=date(2026, 1, 15))
 
     corridors = summary.score_corridors
 
@@ -349,7 +349,7 @@ def test_section_summary_metrics():
         ]
     )
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     section = summary.sections["Todo"]
 
@@ -390,7 +390,7 @@ def test_section_average_score():
         ]
     )
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     section = summary.sections["Todo"]
 
@@ -421,7 +421,7 @@ def test_section_average_score_without_scores():
         ]
     )
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     section = summary.sections["Todo"]
 

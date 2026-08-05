@@ -52,7 +52,7 @@ def _classify_staleness(
 
 def calculate_stale_tasks(
     tasks: list[Task],
-    now: datetime | None = None,
+    now: datetime,
 ) -> list[StaleTask]:
     """
     Identify stale actionable tasks.
@@ -65,8 +65,6 @@ def calculate_stale_tasks(
         stale     >= 30 days
         critical  >= 90 days
     """
-
-    now = now or datetime.now()
 
     results: list[StaleTask] = []
 

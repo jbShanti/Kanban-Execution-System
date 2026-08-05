@@ -82,12 +82,14 @@ def test_total_score_calculation():
     assert result > 1000
 
 
+from datetime import date
+
 def test_overdue_detection():
 
 
     tasks = load_test_board("complex_board.md").tasks
 
-    overdue = find_overdue_tasks(tasks)
+    overdue = find_overdue_tasks(tasks, today=date(2026, 1, 15))
 
     assert isinstance(overdue, list)
 

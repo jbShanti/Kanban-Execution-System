@@ -16,8 +16,7 @@ from src.analytics.focus_analytics import build_focus_attention_analytics
 from src.analytics.models import (
     AnalyticsReport,
     AnalyticsSnapshot,
-    TaskMetrics,
-    FocusAttentionAnalytics,
+    TaskMetrics
 )
 from src.analytics.report_builder import (
     build_analytics_report,
@@ -27,7 +26,7 @@ from src.analytics.section_metrics import (
 )
 from src.parser.models import Board, Task
 
-from datetime import date
+from datetime import date, datetime
 
 from src.analytics.analytics_readiness import (
     build_board_health,
@@ -39,27 +38,28 @@ from src.analytics.task_snapshot import (
 
 def generate_analytics_report(
     board: Board,
+    analysis_date: date,
+    generated_at: datetime,
 ) -> AnalyticsReport:
-    snapshot = build_analytics_snapshot(board)
+    snapshot = build_analytics_snapshot(board, analysis_date)
 
-    return build_analytics_report(snapshot)
+    return build_analytics_report(snapshot, generated_at)
 
 
 from src.analytics.calculators.wip_metrics import calculate_wip_metrics
 
 def build_analytics_snapshot(
     board: Board,
+    analysis_date: date,
 ) -> AnalyticsSnapshot:
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, analysis_date)
     board_metrics = build_board_metrics(summary)
     section_metrics = build_section_metrics_map(board, summary.sections)
     
-    today = date.today()
-
     task_snapshots = [
         build_task_snapshot(
             task,
-            today,
+            analysis_date,
         )
         for task in board.tasks
     ]
@@ -90,6 +90,7 @@ def build_analytics_snapshot(
 
 def calculate_task_metrics(
     tasks: list[Task],
+    today: date,
 ) -> TaskMetrics:
     status_metrics = calculate_status_metrics(
         tasks,
@@ -97,6 +98,7 @@ def calculate_task_metrics(
 
     time_metrics = calculate_time_metrics(
         tasks,
+        today,
     )
 
     score_metrics = calculate_score_metrics(

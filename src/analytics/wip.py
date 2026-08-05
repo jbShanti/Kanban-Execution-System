@@ -3,7 +3,7 @@ from typing import DefaultDict
 
 from src.parser.models import SectionType, Task, TaskStatus
 
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 
 
 WIP_LIMITS: dict[SectionType, int] = {
@@ -103,11 +103,8 @@ STALE_THRESHOLDS_DAYS: dict[SectionType, int] = {
 
 def detect_stale_tasks(
     tasks: list[Task],
-    now: datetime | None = None,
+    now: datetime,
 ) -> list[Task]:
-    
-    if now is None:
-        now = datetime.now(UTC)
 
     stale_tasks: list[Task] = []
 
@@ -136,7 +133,7 @@ def detect_stale_tasks(
 
 def calculate_stale_ratio(
     tasks: list[Task],
-    now: datetime | None = None,
+    now: datetime,
 ) -> float:
     active_tasks = [
         task

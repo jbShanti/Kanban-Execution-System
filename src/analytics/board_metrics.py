@@ -24,9 +24,8 @@ def build_board_metrics(
 
 def calculate_board_metrics(
     board: Board,
-    today: date | None = None,
+    today: date,
 ) -> BoardMetrics:
-    today = today or date.today()
 
     metrics = BoardMetrics(
         total_tasks=len(board.tasks),

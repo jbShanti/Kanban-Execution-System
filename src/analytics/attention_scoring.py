@@ -47,9 +47,8 @@ def _calculate_due_score(
 
 def calculate_attention_scores(
     tasks: list[Task],
-    now: datetime | None = None,
+    now: datetime,
 ) -> list[AttentionScore]:
-    now = now or datetime.now()
 
     results: list[AttentionScore] = []
 

@@ -9,6 +9,7 @@ from src.analytics.models import (
 
 def build_analytics_report(
     snapshot: AnalyticsSnapshot,
+    generated_at: datetime,
 ) -> AnalyticsReport:
 
     summary = snapshot.summary
@@ -68,7 +69,7 @@ def build_analytics_report(
         if corridor.name == "21-25"
     ),
     0,
-)
+    )
 
     focus_percentage = 0.0
 
@@ -89,5 +90,5 @@ def build_analytics_report(
         focus_tasks=focus_tasks,
         focus_percentage=focus_percentage,
         board_health=snapshot.board_health,
-        generated_at=datetime.now(),
+        generated_at=generated_at,
     )

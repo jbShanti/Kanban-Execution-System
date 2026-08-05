@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from src.analytics.models import (
     AnalyticsReport,
     AnalyticsSnapshot,
@@ -32,9 +34,11 @@ def test_build_analytics_report_returns_analytics_report() -> None:
         ),
     )
 
-    report = build_analytics_report(snapshot)
+    generated_at = datetime(2026, 1, 15, 10, 0, tzinfo=timezone.utc)
+    report = build_analytics_report(snapshot, generated_at)
 
     assert isinstance(report, AnalyticsReport)
+    assert report.generated_at == generated_at
     
     
 
@@ -97,11 +101,13 @@ def test_build_analytics_report_populates_fields() -> None:
         board_health=EMPTY_BOARD_HEALTH,
     )
 
-    report = build_analytics_report(snapshot)
+    generated_at = datetime(2026, 1, 15, 10, 0, tzinfo=timezone.utc)
+    report = build_analytics_report(snapshot, generated_at)
 
     assert report.total_tasks == 10
     assert report.scored_tasks == 8
     assert report.global_score == 132
+    assert report.generated_at == generated_at
     
     corridor = next(
     c
@@ -145,7 +151,7 @@ def test_build_analytics_report_populates_fields() -> None:
 )
 
     assert abs(total_share - 100.0) < 0.01
-
+    
     
     
 def test_build_analytics_report_preserves_board_health() -> None:
@@ -169,6 +175,8 @@ def test_build_analytics_report_preserves_board_health() -> None:
         board_health=board_health,
     )
 
-    report = build_analytics_report(snapshot)
+    generated_at = datetime(2026, 1, 15, 10, 0, tzinfo=timezone.utc)
+    report = build_analytics_report(snapshot, generated_at)
 
     assert report.board_health is board_health
+    assert report.generated_at == generated_at

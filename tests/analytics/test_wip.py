@@ -191,4 +191,5 @@ def test_calculate_stale_ratio():
 
 
 def test_calculate_stale_ratio_empty():
-    assert calculate_stale_ratio([]) == 0.0
+    now = datetime(2026, 1, 15, 10, 0, tzinfo=UTC)
+    assert calculate_stale_ratio([], now=now) == 0.0

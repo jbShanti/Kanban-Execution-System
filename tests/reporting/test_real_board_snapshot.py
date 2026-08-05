@@ -38,10 +38,12 @@ def load_real_board():
 )
 
 
+from datetime import date
+
 def test_real_board_snapshot_builds():
     board = load_real_board()
 
-    snapshot = build_analytics_snapshot(board)
+    snapshot = build_analytics_snapshot(board, analysis_date=date(2026, 1, 15))
 
     report = render_snapshot(snapshot)
 

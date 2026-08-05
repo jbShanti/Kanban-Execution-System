@@ -11,9 +11,8 @@ from src.parser.models import Board
 
 def build_board_summary(
     board: Board,
-    today: date | None = None,
+    today: date,
 ) -> BoardSummary:
-    today = today or date.today()
 
     summary = BoardSummary(
         total_tasks=len(board.tasks),

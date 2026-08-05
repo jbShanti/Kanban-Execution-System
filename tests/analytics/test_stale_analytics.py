@@ -133,8 +133,10 @@ def test_ignores_tasks_without_updated_at():
         updated_at=None,
     )
 
+    now = datetime(2026, 5, 31, 12, 0, 0)
     results = calculate_stale_tasks(
         [task],
+        now=now,
     )
 
     assert len(results) == 0

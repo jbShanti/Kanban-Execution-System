@@ -112,7 +112,7 @@ def test_find_overdue_tasks():
         ),
     ]
 
-    result = find_overdue_tasks(tasks)
+    result = find_overdue_tasks(tasks, today=date(2026, 1, 15))
 
     assert len(result) == 1
     assert result[0].title == "Old task"

@@ -63,7 +63,7 @@ def test_calculate_basic_task_metrics() -> None:
         ),
     ]
 
-    metrics = calculate_task_metrics(tasks)
+    metrics = calculate_task_metrics(tasks, today=date(2026, 1, 15))
 
     assert metrics == TaskMetrics(
         active_tasks=3,
@@ -113,7 +113,7 @@ def test_calculate_metrics_with_archived_tasks() -> None:
         ),
     ]
 
-    metrics = calculate_task_metrics(tasks)
+    metrics = calculate_task_metrics(tasks, today=date(2026, 1, 15))
 
     assert metrics == TaskMetrics(
         active_tasks=1,
@@ -149,13 +149,13 @@ def test_archived_tasks_are_counted_separately() -> None:
         ),
     ]
 
-    metrics = calculate_task_metrics(tasks)
+    metrics = calculate_task_metrics(tasks, today=date(2026, 1, 15))
 
     assert metrics.archived_tasks == 2
     
 
 def test_calculate_time_metrics() -> None:
-    today = date.today()
+    today = date(2026, 1, 15)
 
     section = create_section(
         title="Inbox",
@@ -189,7 +189,7 @@ def test_calculate_time_metrics() -> None:
         ),
     ]
 
-    metrics = calculate_task_metrics(tasks)
+    metrics = calculate_task_metrics(tasks, today=today)
 
     assert metrics.overdue_tasks == 1
     assert metrics.due_today_tasks == 1
@@ -227,7 +227,7 @@ def test_calculate_score_metrics() -> None:
         ),
     ]
 
-    metrics = calculate_task_metrics(tasks)
+    metrics = calculate_task_metrics(tasks, today=date(2026, 1, 15))
 
     assert metrics.tasks_without_score == 1
     assert metrics.total_score == 60

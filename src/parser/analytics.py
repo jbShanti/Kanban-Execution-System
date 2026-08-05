@@ -50,9 +50,8 @@ def group_tasks_by_section(
 
 def find_overdue_tasks(
     tasks: list[Task],
+    today: date,
 ) -> list[Task]:
-    today = date.today()
-
     overdue_tasks: list[Task] = []
 
     for task in tasks:

@@ -1,3 +1,5 @@
+from datetime import date
+
 from src.analytics.service import build_analytics_snapshot
 from src.parser.models import (
     SectionType,
@@ -42,7 +44,7 @@ def test_builds_analytics_snapshot():
 
     board = create_board(tasks=tasks)
     
-    snapshot = build_analytics_snapshot(board)
+    snapshot = build_analytics_snapshot(board, date(2026, 1, 15))
 
     assert snapshot.board.total_tasks == 3
     assert snapshot.board.active_tasks == 2

@@ -1,3 +1,5 @@
+from datetime import date
+
 from src.analytics.board_summary import build_board_summary
 from src.analytics.section_metrics import build_section_metrics_map, build_section_metrics
 from src.parser.models import (
@@ -54,7 +56,7 @@ def test_calculates_section_metrics():
         ),
     ]
 
-    summary = build_board_summary(create_board(tasks=tasks))
+    summary = build_board_summary(create_board(tasks=tasks), today=date(2026, 1, 15))
 
     metrics = build_section_metrics_map(
         create_board(tasks=tasks),
@@ -158,7 +160,7 @@ def test_section_metrics_match_section_summary():
         ]
     )
 
-    summary = build_board_summary(board)
+    summary = build_board_summary(board, today=date(2026, 1, 15))
 
     metrics_map = build_section_metrics_map(
         board,
