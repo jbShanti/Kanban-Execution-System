@@ -43,6 +43,11 @@ def build_board_health(
     ]  
     
     total_tasks = len(eligible_snapshots)
+    
+    active_tasks = sum(
+        1 for snapshot in eligible_snapshots
+        if snapshot.is_active
+    )
  
     missing_score = sum(
         1
@@ -130,6 +135,7 @@ def build_board_health(
     
     return BoardHealth(
         total_tasks=total_tasks,
+        active_tasks=active_tasks,
 
         score_coverage=score_coverage,
         tag_coverage=tag_coverage,

@@ -206,6 +206,7 @@ class BoardHealthStatus(StrEnum):
 @dataclass(frozen=True)
 class BoardHealth:
     total_tasks: int
+    active_tasks: int
 
     score_coverage: float
     tag_coverage: float

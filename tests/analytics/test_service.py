@@ -79,12 +79,15 @@ def test_board_health_reflects_board_content():
 
     # Total tasks: 3 tasks in the board
     assert bh.total_tasks == 3
+    
+    # Active tasks: 2 (Open + In Progress), 1 Completed is NOT active
+    assert bh.active_tasks == 2  # ← ДОБАВИТЬ
 
     # Score coverage: all 3 tasks have scores (10, 20, 15)
-    assert bh.score_coverage == 1.0  # 100%
+    assert bh.score_coverage == 1.0
 
     # Tag coverage: all 3 tasks now have tags
-    assert bh.tag_coverage == 1.0  # 100%
+    assert bh.tag_coverage == 1.0
 
     # Orphan count: tasks have BOTH score AND tags → no orphans
     assert bh.orphan_tasks == 0
@@ -301,3 +304,50 @@ def test_board_health_detects_orphans_without_tags():
     assert report.board_health.missing_score == 1  # 1 задача без score
     assert math.isclose(report.board_health.tag_coverage, 1 / 3, rel_tol=1e-9)
     assert math.isclose(report.board_health.score_coverage, 2 / 3, rel_tol=1e-9)
+    
+    def test_board_health_counts_active_tasks_correctly():
+    """active_tasks must exclude completed and archived tasks."""
+    inbox = create_section(
+        title="Inbox",
+        section_type=SectionType.INBOX,
+    )
+
+    tasks = [
+        # Активные задачи
+        create_task(
+            title="Open task",
+            status=TaskStatus.OPEN,
+            section=inbox,
+            score=10,
+            tags=["work"],
+        ),
+        create_task(
+            title="In progress task",
+            status=TaskStatus.IN_PROGRESS,
+            section=inbox,
+            score=15,
+            tags=["work"],
+        ),
+        # НЕ активные задачи
+        create_task(
+            title="Completed task",
+            status=TaskStatus.COMPLETED,
+            section=inbox,
+            score=20,
+            tags=["done"],
+        ),
+        create_task(
+            title="Cancelled task",
+            status=TaskStatus.CANCELLED,
+            section=inbox,
+            score=5,
+            tags=["dropped"],
+        ),
+    ]
+
+    board = create_board(tasks=tasks)
+    report = generate_execution_report(board, date(2026, 1, 15))
+
+    # Всего 4 задачи, но только 2 активные
+    assert report.board_health.total_tasks == 4
+    assert report.board_health.active_tasks == 2

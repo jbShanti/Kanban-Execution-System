@@ -87,6 +87,7 @@ def test_board_health_deep_determinism():
     bh2 = report2.board_health
 
     assert bh1.total_tasks == bh2.total_tasks
+    assert bh1.active_tasks == bh2.active_tasks
     assert bh1.score_coverage == bh2.score_coverage
     assert bh1.tag_coverage == bh2.tag_coverage
     assert bh1.analytics_coverage == bh2.analytics_coverage
