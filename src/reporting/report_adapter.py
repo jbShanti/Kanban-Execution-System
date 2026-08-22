@@ -1,3 +1,4 @@
+# DEPRECATED: Use render_daily_review instead
 # src/reporting/report_adapter.py
 
 from src.analytics.models import AnalyticsSnapshot

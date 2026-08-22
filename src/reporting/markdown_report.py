@@ -1,3 +1,4 @@
+# DEPRECATED: Use render_daily_review instead
 from __future__ import annotations
 
 from src.analytics.models import (

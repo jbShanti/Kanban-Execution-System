@@ -223,6 +223,7 @@ class ExecutiveSummary:
     summary: str
 
 
+# DEPRECATED: Use BoardHealth instead
 @dataclass(slots=True, frozen=True)
 class BoardHealthReport:
     board_health_score: float
@@ -233,7 +234,7 @@ class BoardHealthReport:
     top_priority_tasks: list[PriorityScore]
     top_attention_tasks: list[AttentionScore]
 
-    warnings: list[HealthWarning] 
+    warnings: list[HealthWarning]
     overload_signals: list[OverloadSignal] = field(default_factory=lambda: list[OverloadSignal]())
     
     
@@ -350,6 +351,7 @@ class BoardSummary:
 
         return self.total_score / self.scored_tasks
     
+# DEPRECATED: Use ExecutionReport instead
 @dataclass(slots=True)
 class AnalyticsSnapshot:
     summary: BoardSummary
@@ -382,6 +384,7 @@ class ScoreCorridor:
     percentage: float
     score_share_percentage: float
     
+# DEPRECATED: Use ExecutionReport instead
 @dataclass(slots=True, frozen=True)
 class AnalyticsReport:
     global_score: int

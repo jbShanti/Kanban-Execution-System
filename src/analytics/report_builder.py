@@ -1,3 +1,4 @@
+# DEPRECATED: Use ExecutionReport pipeline instead
 from datetime import datetime
 
 from src.analytics.models import (

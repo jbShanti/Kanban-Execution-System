@@ -1,3 +1,4 @@
+# DEPRECATED: Use render_daily_review instead
 from __future__ import annotations
 
 from src.analytics.models import AnalyticsReport
@@ -40,6 +41,7 @@ def render_analytics_report(
     )
 
 
+# DEPRECATED: Use render_daily_review instead
 def render_analytics_report_with_snapshot(
     report: AnalyticsReport,
     high_five_tasks: list[Task],
