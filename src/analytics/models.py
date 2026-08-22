@@ -1,8 +1,11 @@
+from __future__ import annotations  # ✅ Решает forward references
+
 from enum import StrEnum
 from dataclasses import dataclass, field
 from src.parser.models import Board, Section, Task, TaskStatus
-from typing import Mapping
 from datetime import datetime, date
+
+from typing import Mapping
 
 
 SCORE_CORRIDOR_ORDER = (
@@ -223,20 +226,7 @@ class ExecutiveSummary:
     summary: str
 
 
-# DEPRECATED: Use BoardHealth instead
-@dataclass(slots=True, frozen=True)
-class BoardHealthReport:
-    board_health_score: float
-
-    wip_violations: int
-    stale_task_count: int
-
-    top_priority_tasks: list[PriorityScore]
-    top_attention_tasks: list[AttentionScore]
-
-    warnings: list[HealthWarning]
-    overload_signals: list[OverloadSignal] = field(default_factory=lambda: list[OverloadSignal]())
-    
+   
     
 @dataclass(slots=True, frozen=True)
 class TaskMetrics:
@@ -351,21 +341,7 @@ class BoardSummary:
 
         return self.total_score / self.scored_tasks
     
-# DEPRECATED: Use ExecutionReport instead
-@dataclass(slots=True)
-class AnalyticsSnapshot:
-    summary: BoardSummary
-    board: BoardMetrics
-    sections: Mapping[str, SectionMetrics]
-    
-    board_health: BoardHealth
-    
-    wip_statuses: list[WipStatus] = field(default_factory=lambda: list[WipStatus]())
-    
-    high_five_tasks: list[Task] = field(default_factory=lambda: list[Task]())
-    
-    focus_attention_analytics: FocusAttentionAnalytics | None = None
-    
+
     
 @dataclass(slots=True)
 class AnalyticsContext:
@@ -384,26 +360,7 @@ class ScoreCorridor:
     percentage: float
     score_share_percentage: float
     
-# DEPRECATED: Use ExecutionReport instead
-@dataclass(slots=True, frozen=True)
-class AnalyticsReport:
-    global_score: int
-
-    corridors: list[ScoreCorridor]
-
-    total_tasks: int
-    scored_tasks: int
-    
-    focus_tasks: int
-    focus_percentage: float
-
-    high_value_tasks: int
-    high_value_percentage: float
-    
-    board_health: BoardHealth
-
-    generated_at: datetime
-    
+   
     
 @dataclass(frozen=True)
 class AnalyticsTaskSnapshot:
@@ -447,17 +404,37 @@ class FocusAttentionAnalytics:
        ...
     ]
     
+from datetime import date, datetime
+from dataclasses import dataclass
+
+# ... другие импорты ...
+
 @dataclass(frozen=True)
 class ExecutionReport:
     """
-    Canonical snapshot of the analytical state of the execution system.
-
-    ExecutionReport is the final output of the analytics pipeline and serves
-    as the canonical contract between the Analytics Layer and all presentation
-    artifacts.
+    Canonical immutable snapshot of the execution system state.
+    
+    ExecutionReport is the final output of the analytics pipeline and
+    the sole contract consumed by all presentation artifacts.
     """
-
-    board_health: BoardHealth
-    executive_summary: ExecutiveSummary
-
-    # recommendation_collection: RecommendationCollection
+    # ============================================================
+    # 1. METADATA AND PROVENANCE
+    # ============================================================
+    schema_version: str = "1.0"
+    report_id: str = ""
+    analysis_date: date = date(1970, 1, 1)       # ← ДОБАВЛЕНО
+    generated_at: datetime = datetime(1970, 1, 1) # ← ДОБАВЛЕНО
+    board_path: str = ""
+    
+    # ============================================================
+    # 2. CORE ANALYTICS
+    # ============================================================
+    board_health: BoardHealth = None  # type: ignore
+    executive_summary: ExecutiveSummary = None  # type: ignore
+        
+@dataclass(slots=True)
+class AnalyticsSnapshot:
+    summary: BoardSummary
+    board: BoardMetrics
+    sections: Mapping[str, SectionMetrics]
+    # ...
