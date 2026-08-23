@@ -58,6 +58,21 @@ class SectionSummary:
 
     scored_tasks: int = 0
     total_score: int = 0
+    
+    def __hash__(self) -> int:
+        """Make SectionSummary hashable for use in frozenset/dict.
+        
+        All fields are primitive ints, so hash is stable and fast.
+        """
+        return hash((
+            self.total_tasks,
+            self.active_tasks,
+            self.actionable_tasks,
+            self.completed_tasks,
+            self.cancelled_tasks,
+            self.scored_tasks,
+            self.total_score,
+        ))
 
     @property
     def average_score(self) -> float:
@@ -275,6 +290,16 @@ class ScoreCorridorSummary:
 
     total_score: int = 0
     
+    def __hash__(self) -> int:
+        """Make ScoreCorridorSummary hashable for use in frozenset/dict."""
+        return hash((
+            self.task_count,
+            self.scored_tasks,
+            self.total_score,
+            # Добавь другие примитивные поля, если они есть в классе
+        ))
+    
+    
     @property
     def average_score(self) -> float:
         if self.scored_tasks == 0:
@@ -335,6 +360,18 @@ class BoardSummary:
         default_factory=empty_sections
     )
 
+    def __hash__(self) -> int:
+        """Custom hash to make BoardSummary hashable despite dict fields.
+    
+        Converts dict fields to frozenset of tuples for hashability.
+        """
+        return hash((
+            self.total_tasks,
+            frozenset(self.by_status.items()),
+            frozenset(self.sections.items()),
+            frozenset(self.score_corridors.items()),
+        ))
+        
     @property
     def average_score(self) -> float:
         if self.scored_tasks == 0:
@@ -423,14 +460,15 @@ class ExecutionReport:
     # ============================================================
     schema_version: str = "1.0"
     report_id: str = ""
-    analysis_date: date = date(1970, 1, 1)       # ← ДОБАВЛЕНО
-    generated_at: datetime = datetime(1970, 1, 1) # ← ДОБАВЛЕНО
+    analysis_date: date = date(1970, 1, 1)
+    generated_at: datetime = datetime(1970, 1, 1)
     board_path: str = ""
     
     # ============================================================
     # 2. CORE ANALYTICS
     # ============================================================
     board_health: BoardHealth = None  # type: ignore
+    board_summary: BoardSummary = None  # type: ignore  # ← ДОБАВИТЬ
     executive_summary: ExecutiveSummary = None  # type: ignore
         
 @dataclass(slots=True)

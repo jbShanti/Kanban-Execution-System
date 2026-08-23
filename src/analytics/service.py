@@ -28,54 +28,42 @@ from src.analytics.task_snapshot import (
     build_task_snapshot,
 )
 
+from src.analytics.board_summary import build_board_summary
+
 def generate_execution_report(
     board: Board,
     analysis_date: date | None = None,
 ) -> ExecutionReport:
-    """
-    Generate a deterministic ExecutionReport.
-    
-    This is the canonical pipeline that produces the universal
-    execution state. Presentation artifacts consume this report
-    and derive their specific views.
-    
-    Args:
-        board: Parsed Kanban board.
-        analysis_date: Date for analysis. If None, uses today's date.
-                      All internal calculations use this injected date.
-    
-    Returns:
-        ExecutionReport with complete metadata and analytical content.
-    """
-    # Time resolution at the boundary only
+    """Generate a deterministic ExecutionReport."""
     if analysis_date is None:
         analysis_date = date.today()
     
-    # ── Stage 1: Measurements ──────────────────────────────
+    # ── Stage 1: Task Snapshots ──────────────────────────────
     task_snapshots = [
         build_task_snapshot(task, analysis_date)
         for task in board.tasks
     ]
     
-    # ── Stage 3: Board Health ──────────────────────────────
+    # ── Stage 2: Board Health ────────────────────────────────
     board_health = build_board_health(task_snapshots)
     
-    # ── Stage 5: Executive Summary (заглушка для MVP) ──────
+    # ── Stage 3: Board Summary ───────────────────────────────
+    board_summary = build_board_summary(board, analysis_date)  # ← ДОБАВИТЬ
+    
+    # ── Stage 4: Executive Summary ───────────────────────────
     executive_summary = ExecutiveSummary(
         summary="TODO: Implement executive summary generation from findings"
     )
     
-    # ── Compose ExecutionReport with FULL metadata ─────────
+    # ── Compose ExecutionReport ──────────────────────────────
     return ExecutionReport(
-        # Metadata and Provenance
         schema_version="1.0",
         report_id=str(uuid.uuid4()),
         analysis_date=analysis_date,
-        generated_at=datetime.now(),  # Metadata, не аналитика — допустимо
+        generated_at=datetime.now(),
         board_path=getattr(board, "path", "") or "unknown",
-        
-        # Analytical content
         board_health=board_health,
+        board_summary=board_summary,  # ← ДОБАВИТЬ
         executive_summary=executive_summary,
     )
 
