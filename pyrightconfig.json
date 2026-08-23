@@ -1,0 +1,36 @@
+{
+    "include": ["src", "tests"],
+    "exclude": [
+        "**/__pycache__",
+        "**/.*",
+        "**/node_modules",
+        "**/.venv",
+        "**/venv",
+        "build",
+        "dist",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".coverage",
+        "htmlcov"
+    ],
+    
+    "typeCheckingMode": "basic",
+    "pythonVersion": "3.11",
+    
+    "executionEnvironments": [
+        {
+            "root": "src",
+            "extraPaths": ["."],
+            "reportUnusedFunction": "warning",
+            "reportUnusedVariable": "warning",
+            "reportUnusedImport": "warning"
+        },
+        {
+            "root": "tests",
+            "extraPaths": ["."],
+            "reportUnusedFunction": "none",
+            "reportUnusedVariable": "none",
+            "reportUnusedImport": "warning"
+        }
+    ]
+}

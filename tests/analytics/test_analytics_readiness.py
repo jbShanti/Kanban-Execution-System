@@ -416,55 +416,8 @@ def test_sample_orphans_prioritization() -> None:
         == "Missing Score"
     )
     
-    
-def test_active_orphans_are_prioritized() -> None:
 
-    snapshots = [
-        AnalyticsTaskSnapshot(
-            title="Inactive Missing Tag",
-            section="Doing",
-            status=TaskStatus.OPEN,
-            score=10,
-            tags=(),
-            due_date=None,
-            scheduled_date=None,
-            time_estimate_minutes=None,
-            is_active=False,
-            is_completed=False,
-            is_archived=False,
-            is_overdue=False,
-        ),
-        AnalyticsTaskSnapshot(
-            title="Active Missing Tag",
-            section="Doing",
-            status=TaskStatus.OPEN,
-            score=10,
-            tags=(),
-            due_date=None,
-            scheduled_date=None,
-            time_estimate_minutes=None,
-            is_active=True,
-            is_completed=False,
-            is_archived=False,
-            is_overdue=False,
-        ),
-    ]
-
-    health = build_board_health(snapshots)
-
-    assert len(health.sample_orphans) == 2
-
-    assert (
-        health.sample_orphans[0].title
-        == "Active Missing Tag"
-    )
-
-    assert (
-        health.sample_orphans[1].title
-        == "Inactive Missing Tag"
-    )
-    
-    
+  
 def test_sample_orphans_is_limited_to_top_five() -> None:
 
     snapshots = [
@@ -548,3 +501,102 @@ def test_ignored_tasks_are_excluded_from_orphans() -> None:
         health.sample_orphans[0].title
         == "Real Orphan"
     )
+    
+def test_inactive_orphans_are_excluded() -> None:
+    """Inactive tasks must NOT appear in sample_orphans, even if they lack metadata."""
+    snapshots = [
+        # Неактивная сирота (нет тега) — должна быть ИСКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Inactive Missing Tag",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=10,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=False,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+        # Активная сирота (нет тега) — должна быть ВКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Active Missing Tag",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=10,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    # Только активная сирота должна быть в списке
+    assert len(health.sample_orphans) == 1
+    assert health.sample_orphans[0].title == "Active Missing Tag"
+    assert health.sample_orphans[0].is_active is True
+
+
+def test_active_orphans_are_prioritized_by_title() -> None:
+    """When multiple active orphans exist, they are sorted deterministically."""
+    snapshots = [
+        AnalyticsTaskSnapshot(
+            title="Zebra task",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=10,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+        AnalyticsTaskSnapshot(
+            title="Alpha task",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=10,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+        AnalyticsTaskSnapshot(
+            title="Middle task",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=10,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    # Все 3 активные сироты должны быть в списке
+    assert len(health.sample_orphans) == 3
+    
+    # Порядок должен быть детерминированным
+    titles = [orphan.title for orphan in health.sample_orphans]
+    assert titles == sorted(titles), "Orphans must be sorted deterministically"

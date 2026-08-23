@@ -1,3 +1,12 @@
+# pyright: ignore[reportUnusedFunction]
+"""Tests for generate_execution_report service.
+
+These tests verify the behavior of the canonical execution report pipeline.
+...
+"""
+
+from __future__ import annotations
+
 """Tests for generate_execution_report service.
 
 These tests verify the behavior of the canonical execution report pipeline.
@@ -306,7 +315,7 @@ def test_board_health_detects_orphans_without_tags():
     assert math.isclose(report.board_health.score_coverage, 2 / 3, rel_tol=1e-9)
     
     def test_board_health_counts_active_tasks_correctly():
-    """active_tasks must exclude completed and archived tasks."""
+        """active_tasks must exclude completed and archived tasks."""
     inbox = create_section(
         title="Inbox",
         section_type=SectionType.INBOX,
