@@ -3,15 +3,17 @@ from src.analytics.models import (
     BoardHealthStatus,
     BoardSummary,
     ExecutionReport,
+    MissingMetadata,
+    OrphanTask,
     ScoreCorridorSummary,
     SectionSummary,
 )
-from src.reporting.sections.high_five_section import render_high_five_section
+from src.reporting.sections.inbox_section import render_inbox_section
 from datetime import date
 
 
-def test_render_high_five_section():
-    """Test rendering high five section with data."""
+def test_render_inbox_section_empty():
+    """Test rendering inbox section with no inbox tasks."""
     board_health = BoardHealth(
         total_tasks=10,
         active_tasks=5,
@@ -40,7 +42,9 @@ def test_render_high_five_section():
             "16-20": ScoreCorridorSummary(task_count=3, scored_tasks=3, total_score=55),
             "no_score": ScoreCorridorSummary(task_count=1, scored_tasks=0, total_score=0),
         },
-        sections={},
+        sections={
+            "Doing": SectionSummary(total_tasks=5, active_tasks=5, actionable_tasks=5, scored_tasks=5, total_score=100),
+        },
     )
     
     report = ExecutionReport(
@@ -51,89 +55,46 @@ def test_render_high_five_section():
         board_summary=board_summary,
     )
     
-    markdown = render_high_five_section(report)
+    markdown = render_inbox_section(report)
     
-    assert "## High Five" in markdown
-    assert "Critical Priority Tasks" in markdown
-    assert "High Priority Tasks" in markdown
+    assert "## Inbox" in markdown
+    assert "Inbox is clear" in markdown
 
 
-def test_render_high_five_section_empty():
-    """Test rendering high five section with no actionable tasks."""
+def test_render_inbox_section_with_tasks():
+    """Test rendering inbox section with inbox tasks."""
     board_health = BoardHealth(
-        total_tasks=5,
-        active_tasks=0,
+        total_tasks=15,
+        active_tasks=8,
         score_coverage=0.8,
         tag_coverage=0.7,
         analytics_coverage=0.75,
-        missing_score=1,
-        missing_tag=1,
-        orphan_tasks=0,
+        missing_score=3,
+        missing_tag=4,
+        orphan_tasks=2,
         sample_orphans=(),
-        status=BoardHealthStatus.GOOD,
+        status=BoardHealthStatus.WARNING,
     )
     
     board_summary = BoardSummary(
-        total_tasks=5,
-        active_tasks=0,
-        actionable_tasks=0,
-        completed_tasks=4,
-        cancelled_tasks=1,
-        overdue_tasks=0,
-        scored_tasks=4,
-        unscored_tasks=1,
-        total_score=50,
-        score_corridors={
-            "no_score": ScoreCorridorSummary(task_count=1, scored_tasks=0, total_score=0),
-        },
-        sections={},
-    )
-    
-    report = ExecutionReport(
-        schema_version="1.0",
-        report_id="test-123",
-        analysis_date=date(2026, 1, 15),
-        board_health=board_health,
-        board_summary=board_summary,
-    )
-    
-    markdown = render_high_five_section(report)
-    
-    assert "## High Five" in markdown
-    assert "0 tasks available for High Five" in markdown
-
-
-def test_render_high_five_section_few_tasks():
-    """Test rendering high five section with fewer than 5 actionable tasks."""
-    board_health = BoardHealth(
-        total_tasks=8,
-        active_tasks=3,
-        score_coverage=0.9,
-        tag_coverage=0.8,
-        analytics_coverage=0.85,
-        missing_score=1,
-        missing_tag=1,
-        orphan_tasks=0,
-        sample_orphans=(),
-        status=BoardHealthStatus.GOOD,
-    )
-    
-    board_summary = BoardSummary(
-        total_tasks=8,
-        active_tasks=3,
-        actionable_tasks=3,
-        completed_tasks=3,
+        total_tasks=15,
+        active_tasks=8,
+        actionable_tasks=8,
+        completed_tasks=5,
         cancelled_tasks=2,
-        overdue_tasks=0,
-        scored_tasks=7,
-        unscored_tasks=1,
-        total_score=80,
+        overdue_tasks=1,
+        scored_tasks=12,
+        unscored_tasks=3,
+        total_score=150,
         score_corridors={
-            "21-25": ScoreCorridorSummary(task_count=1, scored_tasks=1, total_score=22),
-            "16-20": ScoreCorridorSummary(task_count=2, scored_tasks=2, total_score=38),
-            "no_score": ScoreCorridorSummary(task_count=1, scored_tasks=0, total_score=0),
+            "21-25": ScoreCorridorSummary(task_count=2, scored_tasks=2, total_score=45),
+            "16-20": ScoreCorridorSummary(task_count=3, scored_tasks=3, total_score=55),
+            "no_score": ScoreCorridorSummary(task_count=3, scored_tasks=0, total_score=0),
         },
-        sections={},
+        sections={
+            "Inbox": SectionSummary(total_tasks=3, active_tasks=3, actionable_tasks=3, scored_tasks=1, total_score=10),
+            "Doing": SectionSummary(total_tasks=5, active_tasks=5, actionable_tasks=5, scored_tasks=5, total_score=100),
+        },
     )
     
     report = ExecutionReport(
@@ -144,14 +105,16 @@ def test_render_high_five_section_few_tasks():
         board_summary=board_summary,
     )
     
-    markdown = render_high_five_section(report)
+    markdown = render_inbox_section(report)
     
-    assert "## High Five" in markdown
-    assert "3 tasks available for High Five" in markdown
+    assert "## Inbox" in markdown
+    assert "3 unprocessed task(s)" in markdown
+    assert "Active: 3" in markdown
+    assert "Actionable: 3" in markdown
 
 
-def test_render_high_five_section_no_board_summary():
-    """Test rendering high five section when board summary is None."""
+def test_render_inbox_section_no_board_summary():
+    """Test rendering inbox section when board summary is None."""
     board_health = BoardHealth(
         total_tasks=10,
         active_tasks=5,
@@ -173,14 +136,14 @@ def test_render_high_five_section_no_board_summary():
         board_summary=None,
     )
     
-    markdown = render_high_five_section(report)
+    markdown = render_inbox_section(report)
     
-    assert "## High Five" in markdown
+    assert "## Inbox" in markdown
     assert "not available" in markdown
 
 
-def test_render_high_five_section_deterministic():
-    """Test that high five section rendering is deterministic."""
+def test_render_inbox_section_deterministic():
+    """Test that inbox section rendering is deterministic."""
     board_health = BoardHealth(
         total_tasks=10,
         active_tasks=5,
@@ -208,7 +171,9 @@ def test_render_high_five_section_deterministic():
             "21-25": ScoreCorridorSummary(task_count=2, scored_tasks=2, total_score=45),
             "no_score": ScoreCorridorSummary(task_count=1, scored_tasks=0, total_score=0),
         },
-        sections={},
+        sections={
+            "Inbox": SectionSummary(total_tasks=2, active_tasks=2, actionable_tasks=2, scored_tasks=1, total_score=10),
+        },
     )
     
     report = ExecutionReport(
@@ -219,7 +184,7 @@ def test_render_high_five_section_deterministic():
         board_summary=board_summary,
     )
     
-    markdown1 = render_high_five_section(report)
-    markdown2 = render_high_five_section(report)
+    markdown1 = render_inbox_section(report)
+    markdown2 = render_inbox_section(report)
     
     assert markdown1 == markdown2

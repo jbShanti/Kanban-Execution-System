@@ -3,14 +3,17 @@ from src.analytics.models import (
     BoardHealthStatus,
     BoardSummary,
     ExecutionReport,
+    MissingMetadata,
+    OrphanTask,
     ScoreCorridorSummary,
+    SectionSummary,
 )
-from src.reporting.sections.focus_analysis_section import render_focus_analysis_section
+from src.reporting.sections.corridor_analysis_section import render_corridor_analysis_section
 from datetime import date
 
 
-def test_render_focus_analysis_section():
-    """Test rendering focus analysis section with data."""
+def test_render_corridor_analysis_section_full():
+    """Test rendering corridor analysis with full data."""
     board_health = BoardHealth(
         total_tasks=20,
         active_tasks=10,
@@ -30,7 +33,7 @@ def test_render_focus_analysis_section():
         actionable_tasks=10,
         completed_tasks=5,
         cancelled_tasks=5,
-        overdue_tasks=2,
+        overdue_tasks=1,
         scored_tasks=18,
         unscored_tasks=2,
         total_score=250,
@@ -53,21 +56,24 @@ def test_render_focus_analysis_section():
         board_summary=board_summary,
     )
     
-    markdown = render_focus_analysis_section(report)
+    markdown = render_corridor_analysis_section(report)
     
-    assert "## Focus Analysis" in markdown
-    assert "Task Distribution Overview" in markdown
-    assert "**Total Tasks:** 20" in markdown
-    assert "**Active Tasks:** 10" in markdown
-    assert "**Overdue Tasks:** 2" in markdown
-    assert "Focus by Priority Corridor" in markdown
-    assert "Critical Focus (21-25)" in markdown
-    assert "High Priority (16-20)" in markdown
-    assert "Focus Recommendations" in markdown
+    assert "## Corridor Analysis" in markdown
+    assert "Critical (21-25)" in markdown
+    assert "High (16-20)" in markdown
+    assert "Medium (11-15)" in markdown
+    assert "Low (6-10)" in markdown
+    assert "Optional (1-5)" in markdown
+    assert "No Score" in markdown
+    assert "4 tasks" in markdown  # critical tasks
+    assert "5 tasks" in markdown  # high tasks
+    assert "Summary" in markdown
+    assert "**Critical Focus Tasks (21-25)**: 4 (20.0%)" in markdown
+    assert "**High Value Tasks (16-25)**: 9 (45.0%)" in markdown
 
 
-def test_render_focus_analysis_section_empty():
-    """Test rendering focus analysis section with no data."""
+def test_render_corridor_analysis_section_empty():
+    """Test rendering corridor analysis with no data."""
     board_health = BoardHealth(
         total_tasks=0,
         active_tasks=0,
@@ -103,62 +109,14 @@ def test_render_focus_analysis_section_empty():
         board_summary=board_summary,
     )
     
-    markdown = render_focus_analysis_section(report)
+    markdown = render_corridor_analysis_section(report)
     
-    assert "## Focus Analysis" in markdown
-    assert "No task distribution data available" in markdown
+    assert "## Corridor Analysis" in markdown
+    assert "No score corridor data available" in markdown
 
 
-def test_render_focus_analysis_section_focus_dilution():
-    """Test rendering focus analysis with too many critical tasks."""
-    board_health = BoardHealth(
-        total_tasks=20,
-        active_tasks=15,
-        score_coverage=0.8,
-        tag_coverage=0.7,
-        analytics_coverage=0.75,
-        missing_score=4,
-        missing_tag=6,
-        orphan_tasks=2,
-        sample_orphans=(),
-        status=BoardHealthStatus.WARNING,
-    )
-    
-    board_summary = BoardSummary(
-        total_tasks=20,
-        active_tasks=15,
-        actionable_tasks=15,
-        completed_tasks=3,
-        cancelled_tasks=2,
-        overdue_tasks=1,
-        scored_tasks=16,
-        unscored_tasks=4,
-        total_score=300,
-        score_corridors={
-            "21-25": ScoreCorridorSummary(task_count=6, scored_tasks=6, total_score=135),  # Too many critical
-            "16-20": ScoreCorridorSummary(task_count=4, scored_tasks=4, total_score=70),
-            "no_score": ScoreCorridorSummary(task_count=4, scored_tasks=0, total_score=0),
-        },
-        sections={},
-    )
-    
-    report = ExecutionReport(
-        schema_version="1.0",
-        report_id="test-123",
-        analysis_date=date(2026, 1, 15),
-        board_health=board_health,
-        board_summary=board_summary,
-    )
-    
-    markdown = render_focus_analysis_section(report)
-    
-    assert "## Focus Analysis" in markdown
-    assert "Focus Dilution" in markdown
-    assert "6 critical tasks" in markdown
-
-
-def test_render_focus_analysis_section_no_board_summary():
-    """Test rendering focus analysis when board summary is None."""
+def test_render_corridor_analysis_section_no_board_summary():
+    """Test rendering corridor analysis when board summary is None."""
     board_health = BoardHealth(
         total_tasks=10,
         active_tasks=5,
@@ -180,14 +138,14 @@ def test_render_focus_analysis_section_no_board_summary():
         board_summary=None,
     )
     
-    markdown = render_focus_analysis_section(report)
+    markdown = render_corridor_analysis_section(report)
     
-    assert "## Focus Analysis" in markdown
+    assert "## Corridor Analysis" in markdown
     assert "not available" in markdown
 
 
-def test_render_focus_analysis_section_deterministic():
-    """Test that focus analysis section rendering is deterministic."""
+def test_render_corridor_analysis_section_deterministic():
+    """Test that corridor analysis section rendering is deterministic."""
     board_health = BoardHealth(
         total_tasks=20,
         active_tasks=10,
@@ -207,12 +165,13 @@ def test_render_focus_analysis_section_deterministic():
         actionable_tasks=10,
         completed_tasks=5,
         cancelled_tasks=5,
-        overdue_tasks=2,
+        overdue_tasks=1,
         scored_tasks=18,
         unscored_tasks=2,
         total_score=250,
         score_corridors={
             "21-25": ScoreCorridorSummary(task_count=4, scored_tasks=4, total_score=90),
+            "16-20": ScoreCorridorSummary(task_count=5, scored_tasks=5, total_score=90),
             "no_score": ScoreCorridorSummary(task_count=2, scored_tasks=0, total_score=0),
         },
         sections={},
@@ -226,7 +185,7 @@ def test_render_focus_analysis_section_deterministic():
         board_summary=board_summary,
     )
     
-    markdown1 = render_focus_analysis_section(report)
-    markdown2 = render_focus_analysis_section(report)
+    markdown1 = render_corridor_analysis_section(report)
+    markdown2 = render_corridor_analysis_section(report)
     
     assert markdown1 == markdown2
