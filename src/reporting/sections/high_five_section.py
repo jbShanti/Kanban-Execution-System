@@ -32,7 +32,7 @@ def render_high_five_section(report: ExecutionReport) -> str:
     # We need to find the top 5 tasks by score
     # For now, use the sections data to estimate
     actionable_tasks = report.board_summary.actionable_tasks
-    total_tasks = report.board_summary.total_tasks
+    # total_tasks = report.board_summary.total_tasks
     
     if actionable_tasks == 0:
         lines.append("⚠️ Only 0 tasks available for High Five.")
@@ -51,9 +51,9 @@ def render_high_five_section(report: ExecutionReport) -> str:
     
     # Show corridor info as proxy for top tasks
     corridors = report.board_summary.score_corridors
-    critical_corridor = corridors.get("21-25")
-    high_corridor = corridors.get("16-20")
-    medium_corridor = corridors.get("11-15")
+    # critical_corridor = corridors.get("21-25")
+    # medium_corridor = corridors.get("21-25")
+    # high_corridor = corridors.get("16-20")
     
     count = 0
     for corridor_key, corridor_label in [
