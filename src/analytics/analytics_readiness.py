@@ -139,11 +139,13 @@ def build_board_health(
         else 1.0
     )
     
-    # ✅ Сироты = только АКТИВНЫЕ задачи с неполными метаданными
+    # ✅ Сироты = только АКТИВНЫЕ задачи с неполными метаданными (исключая Done/Archived)
     orphans: list[AnalyticsTaskSnapshot] = [
         snapshot
-        for snapshot in eligible_snapshots  # ← FIX: snapshots → eligible_snapshots
+        for snapshot in eligible_snapshots
         if snapshot.is_active
+        and not snapshot.is_completed
+        and not snapshot.is_archived
         and (snapshot.score is None or len(snapshot.tags) == 0)
     ]
     

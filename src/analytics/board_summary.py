@@ -108,4 +108,10 @@ def build_board_summary(
         corridor.scored_tasks += 1
         corridor.total_score += score
 
+    # Calculate average_score
+    if summary.scored_tasks > 0:
+        summary.average_score = summary.total_score / summary.scored_tasks
+    else:
+        summary.average_score = 0.0
+
     return summary

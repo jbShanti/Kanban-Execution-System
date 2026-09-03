@@ -347,6 +347,7 @@ class BoardSummary:
     unscored_tasks: int = 0
 
     total_score: int = 0
+    average_score: float = 0.0
 
 
     score_corridors: dict[str, ScoreCorridorSummary] = field(
@@ -372,15 +373,6 @@ class BoardSummary:
             frozenset(self.score_corridors.items()),
         ))
         
-    @property
-    def average_score(self) -> float:
-        if self.scored_tasks == 0:
-            return 0.0
-
-        return self.total_score / self.scored_tasks
-    
-
-    
 @dataclass(slots=True)
 class AnalyticsContext:
     board: Board
@@ -408,6 +400,7 @@ class AnalyticsTaskSnapshot:
     status: TaskStatus
 
     score: int | None
+    effective_score: int
     
     tags: tuple[str, ...]
     

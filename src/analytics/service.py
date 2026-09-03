@@ -38,17 +38,17 @@ def generate_execution_report(
     if analysis_date is None:
         analysis_date = date.today()
     
-    # ── Stage 1: Task Snapshots ──────────────────────────────
+    # ── Stage 1: Board Summary ───────────────────────────────
+    board_summary = build_board_summary(board, analysis_date)
+    
+    # ── Stage 2: Task Snapshots ──────────────────────────────
     task_snapshots = [
-        build_task_snapshot(task, analysis_date)
+        build_task_snapshot(task, analysis_date, board_summary.average_score)
         for task in board.tasks
     ]
     
-    # ── Stage 2: Board Health ────────────────────────────────
+    # ── Stage 3: Board Health ────────────────────────────────
     board_health = build_board_health(task_snapshots)
-    
-    # ── Stage 3: Board Summary ───────────────────────────────
-    board_summary = build_board_summary(board, analysis_date)  # ← ДОБАВИТЬ
     
     # ── Stage 4: Executive Summary ───────────────────────────
     executive_summary = ExecutiveSummary(
@@ -63,7 +63,7 @@ def generate_execution_report(
         generated_at=datetime.now(),
         board_path=getattr(board, "path", "") or "unknown",
         board_health=board_health,
-        board_summary=board_summary,  # ← ДОБАВИТЬ
+        board_summary=board_summary,
         executive_summary=executive_summary,
     )
 

@@ -216,3 +216,102 @@ def test_build_task_snapshot_with_currency() -> None:
     )
 
     assert snapshot.currency == "RUB"
+
+
+def test_effective_score_uses_task_score_when_present():
+    """Test that effective_score equals task.score when score is provided."""
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Scored task",
+        status=TaskStatus.OPEN,
+        section=section,
+        score=15,
+    )
+
+    snapshot = build_task_snapshot(
+        task=task,
+        today=date(2026, 6, 14),
+        average_score=10.0,
+    )
+
+    assert snapshot.score == 15
+    assert snapshot.effective_score == 15
+
+
+def test_effective_score_uses_average_when_score_is_none():
+    """Test that effective_score uses rounded average_score when task.score is None."""
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Unscored task",
+        status=TaskStatus.OPEN,
+        section=section,
+        score=None,
+    )
+
+    snapshot = build_task_snapshot(
+        task=task,
+        today=date(2026, 6, 14),
+        average_score=10.5,
+    )
+
+    assert snapshot.score is None
+    assert snapshot.effective_score == 10  # round(10.5) = 10 (banker's rounding)
+
+
+def test_effective_score_uses_average_when_score_is_none_rounds_up():
+    """Test that effective_score rounds up when average_score has .5 fraction."""
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Unscored task",
+        status=TaskStatus.OPEN,
+        section=section,
+        score=None,
+    )
+
+    snapshot = build_task_snapshot(
+        task=task,
+        today=date(2026, 6, 14),
+        average_score=10.6,
+    )
+
+    assert snapshot.score is None
+    assert snapshot.effective_score == 11  # round(10.6) = 11
+
+
+def test_effective_score_default_average_score_is_zero():
+    """Test that effective_score defaults to 0 when no average_score provided and task.score is None."""
+    section = Section(
+        title="Doing",
+        raw_title="## Doing",
+        type=SectionType.EXECUTION,
+    )
+
+    task = Task(
+        title="Unscored task",
+        status=TaskStatus.OPEN,
+        section=section,
+        score=None,
+    )
+
+    snapshot = build_task_snapshot(
+        task=task,
+        today=date(2026, 6, 14),
+    )
+
+    assert snapshot.score is None
+    assert snapshot.effective_score == 0

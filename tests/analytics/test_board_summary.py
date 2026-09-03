@@ -428,3 +428,63 @@ def test_section_average_score_without_scores():
     assert section.scored_tasks == 0
     assert section.total_score == 0
     assert section.average_score == 0.0
+
+
+def test_board_average_score_without_scores():
+    """Test that average_score is 0.0 when no tasks have scores."""
+    section = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
+
+    board = create_board(
+        tasks=[
+            create_task(
+                title="A",
+                status=TaskStatus.OPEN,
+                section=section,
+            ),
+            create_task(
+                title="B",
+                status=TaskStatus.OPEN,
+                section=section,
+            ),
+        ]
+    )
+
+    summary = build_board_summary(board, today=date(2026, 1, 15))
+
+    assert summary.scored_tasks == 0
+    assert summary.total_score == 0
+    assert summary.average_score == 0.0
+
+
+def test_board_average_score_fractional_result():
+    """Test that average_score correctly handles fractional results."""
+    section = create_section(
+        title="Todo",
+        section_type=SectionType.QUEUED,
+    )
+
+    board = create_board(
+        tasks=[
+            create_task(
+                title="A",
+                status=TaskStatus.OPEN,
+                section=section,
+                score=10,
+            ),
+            create_task(
+                title="B",
+                status=TaskStatus.OPEN,
+                section=section,
+                score=11,
+            ),
+        ]
+    )
+
+    summary = build_board_summary(board, today=date(2026, 1, 15))
+
+    assert summary.scored_tasks == 2
+    assert summary.total_score == 21
+    assert summary.average_score == 10.5

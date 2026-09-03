@@ -12,6 +12,7 @@ def test_missing_score_count() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -26,6 +27,7 @@ def test_missing_score_count() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -51,6 +53,7 @@ def test_missing_tag_count() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -65,6 +68,7 @@ def test_missing_tag_count() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -90,6 +94,7 @@ def test_orphan_tasks_count() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -104,6 +109,7 @@ def test_orphan_tasks_count() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -118,6 +124,7 @@ def test_orphan_tasks_count() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -143,6 +150,7 @@ def test_score_coverage() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -157,6 +165,7 @@ def test_score_coverage() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -181,6 +190,7 @@ def test_tag_coverage() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -195,6 +205,7 @@ def test_tag_coverage() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -220,6 +231,7 @@ def test_analytics_coverage() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -234,6 +246,7 @@ def test_analytics_coverage() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -248,6 +261,7 @@ def test_analytics_coverage() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -263,30 +277,31 @@ def test_analytics_coverage() -> None:
 
     assert health.analytics_coverage == (1 / 3)
     
+    def test_board_health_status_excellent() -> None:
     
-def test_board_health_status_excellent() -> None:
-
-    snapshots = [
-        AnalyticsTaskSnapshot(
-            title="Healthy Task",
-            section="Doing",
-            status=TaskStatus.OPEN,
-            score=10,
-            tags=("work",),
-            due_date=None,
-            scheduled_date=None,
-            time_estimate_minutes=None,
-            is_active=True,
-            is_completed=False,
-            is_archived=False,
-            is_overdue=False,
-        ),
-    ]
-
-    health = build_board_health(snapshots)
-
-    assert health.analytics_coverage == 1.0
-    assert health.status == BoardHealthStatus.EXCELLENT
+        snapshots = [
+            AnalyticsTaskSnapshot(
+                title="Healthy Task",
+                section="Doing",
+                status=TaskStatus.OPEN,
+                score=10,
+                effective_score=10,
+                tags=("work",),
+                due_date=None,
+                scheduled_date=None,
+                time_estimate_minutes=None,
+                is_active=True,
+                is_completed=False,
+                is_archived=False,
+                is_overdue=False,
+            ),
+        ]
+    
+        health = build_board_health(snapshots)
+    
+        assert health.analytics_coverage == 1.0
+        assert health.status == BoardHealthStatus.EXCELLENT
+        
     
     
     
@@ -358,6 +373,7 @@ def test_sample_orphans_prioritization() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=("work",),
             due_date=None,
             scheduled_date=None,
@@ -372,6 +388,7 @@ def test_sample_orphans_prioritization() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -386,6 +403,7 @@ def test_sample_orphans_prioritization() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -426,6 +444,7 @@ def test_sample_orphans_is_limited_to_top_five() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -462,6 +481,7 @@ def test_ignored_tasks_are_excluded_from_orphans() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -477,6 +497,7 @@ def test_ignored_tasks_are_excluded_from_orphans() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=None,
+            effective_score=0,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -511,6 +532,7 @@ def test_inactive_orphans_are_excluded() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -526,6 +548,7 @@ def test_inactive_orphans_are_excluded() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -553,6 +576,7 @@ def test_active_orphans_are_prioritized_by_title() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -567,6 +591,7 @@ def test_active_orphans_are_prioritized_by_title() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -581,6 +606,7 @@ def test_active_orphans_are_prioritized_by_title() -> None:
             section="Doing",
             status=TaskStatus.OPEN,
             score=10,
+            effective_score=10,
             tags=(),
             due_date=None,
             scheduled_date=None,
@@ -600,3 +626,93 @@ def test_active_orphans_are_prioritized_by_title() -> None:
     # Порядок должен быть детерминированным
     titles = [orphan.title for orphan in health.sample_orphans]
     assert titles == sorted(titles), "Orphans must be sorted deterministically"
+
+
+def test_completed_orphans_are_excluded() -> None:
+    """Completed tasks must NOT appear in orphans, even if they lack metadata."""
+    snapshots = [
+        # Завершённая сирота (нет тега) — должна быть ИСКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Completed Missing Tag",
+            section="Done",
+            status=TaskStatus.COMPLETED,
+            score=10,
+            effective_score=10,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=True,
+            is_archived=False,
+            is_overdue=False,
+        ),
+        # Активная сирота (нет тега) — должна быть ВКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Active Missing Tag",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=10,
+            effective_score=10,
+            tags=(),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    # Только активная сирота должна быть в списке
+    assert health.orphan_tasks == 1
+    assert len(health.sample_orphans) == 1
+    assert health.sample_orphans[0].title == "Active Missing Tag"
+
+
+def test_archived_orphans_are_excluded() -> None:
+    """Archived tasks must NOT appear in orphans, even if they lack metadata."""
+    snapshots = [
+        # Архивная сирота (нет score) — должна быть ИСКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Archived Missing Score",
+            section="Archive",
+            status=TaskStatus.OPEN,
+            score=None,
+            effective_score=0,
+            tags=("work",),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=True,
+            is_overdue=False,
+        ),
+        # Активная сирота (нет score) — должна быть ВКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Active Missing Score",
+            section="Doing",
+            status=TaskStatus.OPEN,
+            score=None,
+            effective_score=0,
+            tags=("work",),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    # Только активная сирота должна быть в списке
+    assert health.orphan_tasks == 1
+    assert len(health.sample_orphans) == 1
+    assert health.sample_orphans[0].title == "Active Missing Score"

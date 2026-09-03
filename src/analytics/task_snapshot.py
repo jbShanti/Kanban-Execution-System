@@ -9,6 +9,7 @@ from src.parser.models import Task, Board
 def build_task_snapshot(
     task: Task,
     today: date,
+    average_score: float = 0.0,
 ) -> AnalyticsTaskSnapshot:
     """
     Converts a domain Task into an analytics snapshot.
@@ -26,11 +27,14 @@ def build_task_snapshot(
         and task.due < today
     )
 
+    effective_score = task.score if task.score is not None else round(average_score)
+
     return AnalyticsTaskSnapshot(
         title=task.title,
         section=task.section.title,
         status=task.status,
         score=task.score,
+        effective_score=effective_score,
         due_date=task.due,
         scheduled_date=task.scheduled,
         time_estimate_minutes=time_estimate_minutes,
@@ -49,11 +53,13 @@ def build_task_snapshot(
 def build_task_snapshots(
     board: Board,
     today: date,
+    average_score: float = 0.0,
 ) -> list[AnalyticsTaskSnapshot]:
     return [
         build_task_snapshot(
             task=task,
             today=today,
+            average_score=average_score,
         )
         for task in board.tasks
     ]
