@@ -716,3 +716,128 @@ def test_archived_orphans_are_excluded() -> None:
     assert health.orphan_tasks == 1
     assert len(health.sample_orphans) == 1
     assert health.sample_orphans[0].title == "Active Missing Score"
+
+
+def test_archive_section_without_date_excluded_from_orphans() -> None:
+    """Tasks in Archive section without || date must NOT appear in orphans."""
+    snapshots = [
+        # Задача в секции Archive БЕЗ даты || (is_archived=False, но section_type="archive")
+        # должна быть ИСКЛЮЧЕНА из сирот
+        AnalyticsTaskSnapshot(
+            title="Archive Without Date",
+            section="Archive",
+            section_type="archive",
+            status=TaskStatus.OPEN,
+            score=None,
+            effective_score=0,
+            tags=("work",),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,  # нет даты ||, поэтому archived=False
+            is_overdue=False,
+        ),
+        # Активная сирота (нет score) — должна быть ВКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Active Missing Score",
+            section="Doing",
+            section_type="tactical",
+            status=TaskStatus.OPEN,
+            score=None,
+            effective_score=0,
+            tags=("work",),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    # Только активная сирота должна быть в списке
+    assert health.orphan_tasks == 1
+    assert len(health.sample_orphans) == 1
+    assert health.sample_orphans[0].title == "Active Missing Score"
+
+
+def test_archive_section_with_date_still_excluded() -> None:
+    """Tasks in Archive section WITH || date must still be excluded (regression test)."""
+    snapshots = [
+        # Задача в секции Archive С датой || (is_archived=True, section_type="archive")
+        # должна быть ИСКЛЮЧЕНА из сирот
+        AnalyticsTaskSnapshot(
+            title="Archive With Date",
+            section="Archive",
+            section_type="archive",
+            status=TaskStatus.OPEN,
+            score=None,
+            effective_score=0,
+            tags=("work",),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=True,  # есть дата ||, поэтому archived=True
+            is_overdue=False,
+        ),
+        # Активная сирота (нет score) — должна быть ВКЛЮЧЕНА
+        AnalyticsTaskSnapshot(
+            title="Active Missing Score",
+            section="Doing",
+            section_type="tactical",
+            status=TaskStatus.OPEN,
+            score=None,
+            effective_score=0,
+            tags=("work",),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    # Только активная сирота должна быть в списке
+    assert health.orphan_tasks == 1
+    assert len(health.sample_orphans) == 1
+    assert health.sample_orphans[0].title == "Active Missing Score"
+
+
+def test_non_archive_section_without_score_still_orphan() -> None:
+    """Tasks outside Archive with score=None must still appear in orphans (regression test)."""
+    snapshots = [
+        # Задача НЕ в Archive, без score — должна быть ВКЛЮЧЕНА в сирот
+        AnalyticsTaskSnapshot(
+            title="Non-Archive Missing Score",
+            section="Doing",
+            section_type="tactical",
+            status=TaskStatus.OPEN,
+            score=None,
+            effective_score=0,
+            tags=("work",),
+            due_date=None,
+            scheduled_date=None,
+            time_estimate_minutes=None,
+            is_active=True,
+            is_completed=False,
+            is_archived=False,
+            is_overdue=False,
+        ),
+    ]
+
+    health = build_board_health(snapshots)
+
+    assert health.orphan_tasks == 1
+    assert len(health.sample_orphans) == 1
+    assert health.sample_orphans[0].title == "Non-Archive Missing Score"

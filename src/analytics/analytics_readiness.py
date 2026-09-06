@@ -146,6 +146,7 @@ def build_board_health(
         if snapshot.is_active
         and not snapshot.is_completed
         and not snapshot.is_archived
+        and snapshot.section_type != "archive"
         and (snapshot.score is None or len(snapshot.tags) == 0)
     ]
     

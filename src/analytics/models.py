@@ -418,7 +418,8 @@ class AnalyticsTaskSnapshot:
     category: str | None = None
     cost: int | None = None
     currency: str | None = None
-    analytics_ignore: bool = False 
+    analytics_ignore: bool = False
+    section_type: str | None = None
     
     
 @dataclass(frozen=True)

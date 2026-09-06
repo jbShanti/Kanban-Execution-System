@@ -47,6 +47,7 @@ def build_task_snapshot(
         analytics_ignore=task.ignored,
         cost=task.cost,
         currency=task.currency,
+        section_type=task.section.type.value if task.section.type else None,
     )
     
     
