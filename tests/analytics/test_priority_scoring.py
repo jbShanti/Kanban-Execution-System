@@ -99,6 +99,58 @@ def test_uses_zero_when_score_missing():
     assert priority.base_score == 0
     assert priority.section_bonus == 3
     assert priority.final_score == 3
+
+
+def test_uses_average_score_when_score_missing():
+    section = Section(
+        title="Focus",
+        raw_title="Focus",
+        type=SectionType.FOCUS,
+        priority_weight=3,
+    )
+
+    task = Task(
+        title="Unscored",
+        status=TaskStatus.OPEN,
+        section=section,
+        score=None,
+    )
+
+    results = calculate_priority_scores([task], average_score=15.0)
+
+    assert len(results) == 1
+
+    priority = results[0]
+
+    assert priority.base_score == 15
+    assert priority.section_bonus == 3
+    assert priority.final_score == 18
+
+
+def test_explicit_score_ignores_average_score():
+    section = Section(
+        title="Focus",
+        raw_title="Focus",
+        type=SectionType.FOCUS,
+        priority_weight=3,
+    )
+
+    task = Task(
+        title="Scored",
+        status=TaskStatus.OPEN,
+        section=section,
+        score=10,
+    )
+
+    results = calculate_priority_scores([task], average_score=15.0)
+
+    assert len(results) == 1
+
+    priority = results[0]
+
+    assert priority.base_score == 10
+    assert priority.section_bonus == 3
+    assert priority.final_score == 13
     
 def test_ignores_non_actionable_tasks():
     section = Section(

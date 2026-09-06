@@ -6,6 +6,7 @@ from src.parser.models import Task, SectionType
 
 def calculate_priority_scores(
     tasks: list[Task],
+    average_score: float = 0.0,
 ) -> list[PriorityScore]:
     """
     Calculate execution priority scores.
@@ -15,6 +16,7 @@ def calculate_priority_scores(
     - task.score is the primary signal
     - section.priority_weight acts as a modifier
     - tasks in ARCHIVE sections are excluded
+    - tasks without explicit score use board average_score
     """
 
     results: list[PriorityScore] = []
@@ -27,7 +29,7 @@ def calculate_priority_scores(
         if task.section.type == SectionType.ARCHIVE:
             continue
 
-        base_score = task.score or 0
+        base_score = task.score if task.score is not None else round(average_score)
         section_bonus = task.section.priority_weight or 0
 
         results.append(
