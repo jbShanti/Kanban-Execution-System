@@ -7,7 +7,7 @@ from pathlib import Path
 from src.parser.parser import parse_markdown_file
 from src.analytics.service import generate_execution_report
 from src.analytics.models import ExecutionReport
-from src.reporting.daily_review_renderer import render_daily_review
+from src.reporting.execution_report_composer import compose_execution_report
 
 
 def find_real_board() -> Path:
@@ -60,10 +60,10 @@ def verify_determinism(board, analysis_date: date) -> bool:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate Morning Brief")
+    parser = argparse.ArgumentParser(description="Generate Daily Execution Report")
     parser.add_argument("--date", type=date.fromisoformat, default=None,
                         help="Analysis date (YYYY-MM-DD)")
-    parser.add_argument("--output", type=Path, default=Path("morning_brief.md"),
+    parser.add_argument("--output", type=Path, default=Path("daily_execution_report.md"),
                         help="Output file path")
     args = parser.parse_args()
 
@@ -88,13 +88,14 @@ def main() -> None:
     print(f"📊 Report ID: {report.report_id[:8]}...")
     print(f"📅 Analysis Date: {report.analysis_date}")
 
-    # ── Render Morning Brief ─────────────────────────────────
-    markdown = render_daily_review(report)
+    # ── Render Execution Report ──────────────────────────────
+    markdown = compose_execution_report(report)
     
     # ── Save to file ─────────────────────────────────────────
     args.output.write_text(markdown, encoding="utf-8")
     print(f"✅ Saved to: {args.output.absolute()}")
     print(f"   Size: {len(markdown)} chars")
+    print(f"   Generated at: {report.generated_at.strftime('%Y-%m-%d %H:%M:%S')}")
 
 
 if __name__ == "__main__":

@@ -229,6 +229,53 @@ def test_compose_execution_report_structure():
     assert "Generated at" in markdown
 
 
+def test_full_report_composition_without_placeholders():
+    """
+    Integration test: Proof of MVP.
+    
+    Verifies that the composed report:
+    - Does NOT contain placeholder text "_⚠️ Will be implemented_"
+    - Contains real section headers: ## High Five, ## Focus Analysis, ## Board Health
+    - Contains generation timestamp in format YYYY-MM-DD HH:MM:SS
+    """
+    import re
+    
+    fixture_path = "tests/fixtures/simple_board.md"
+    
+    with open(fixture_path, 'r', encoding='utf-8') as f:
+        board_content = f.read()
+    
+    board = Board(parse_markdown_lines(board_content.splitlines()))
+    analysis_date = date(2026, 1, 15)
+    report = generate_execution_report(board, analysis_date)
+    markdown = compose_execution_report(report)
+    
+    # 1. Assert NO placeholder text remains
+    assert "_⚠️ Will be implemented_" not in markdown, \
+        "Report still contains placeholder text '_⚠️ Will be implemented_'"
+    
+    # 2. Assert real section headers are present
+    assert "## High Five" in markdown, "Missing '## High Five' section"
+    assert "## Focus Analysis" in markdown, "Missing '## Focus Analysis' section"
+    assert "## Board Health" in markdown, "Missing '## Board Health' section"
+    assert "## Inbox" in markdown, "Missing '## Inbox' section"
+    assert "## Schedule Review" in markdown, "Missing '## Schedule Review' section"
+    assert "## Corridor Analysis" in markdown, "Missing '## Corridor Analysis' section"
+    assert "## Score Suggestions" in markdown, "Missing '## Score Suggestions' section"
+    assert "## Task Analysis" in markdown, "Missing '## Task Analysis' section"
+    assert "## Strategic Findings" in markdown, "Missing '## Strategic Findings' section"
+    
+    # 3. Assert generation timestamp format: YYYY-MM-DD HH:MM:SS
+    timestamp_pattern = r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
+    assert re.search(timestamp_pattern, markdown), \
+        f"Report missing timestamp in format YYYY-MM-DD HH:MM:SS. Found: {markdown[-200:]}"
+    
+    # Additional: verify the timestamp is in the footer area (after ---)
+    footer_section = markdown.split("---")[-1] if "---" in markdown else markdown
+    assert re.search(timestamp_pattern, footer_section), \
+        "Timestamp not found in footer section"
+
+
 if __name__ == "__main__":
     test_full_report_pipeline_with_simple_board()
     test_full_report_pipeline_with_complex_board()
@@ -236,4 +283,5 @@ if __name__ == "__main__":
     test_full_report_pipeline_empty_board()
     test_full_report_pipeline_with_nested_tasks()
     test_compose_execution_report_structure()
+    test_full_report_composition_without_placeholders()
     print("All integration tests passed!")

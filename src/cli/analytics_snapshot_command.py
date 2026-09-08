@@ -5,7 +5,7 @@ from datetime import date
 
 from src.analytics.service import generate_execution_report
 from src.parser.parser import parse_markdown_file
-from src.reporting.daily_review_renderer import render_daily_review
+from src.reporting.execution_report_composer import compose_execution_report
 
 
 def analytics_snapshot_command(
@@ -25,8 +25,6 @@ def analytics_snapshot_command(
     board_path = Path(board_path)
     board = parse_markdown_file(board_path)
     
-    # ✅ Используем новую функцию
     report = generate_execution_report(board, analysis_date)
     
-    # ✅ Используем новый рендерер
-    return render_daily_review(report)
+    return compose_execution_report(report)
