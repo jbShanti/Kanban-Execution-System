@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kanban-execution-system"
+version = "0.1.0"
+description = "Kanban Execution System - Transform your Kanban board into an active execution environment"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Alex Shanti"}
+]
+dependencies = [
+    "pydantic>=2.0.0",
+]
+
+[project.scripts]
+kes = "src.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

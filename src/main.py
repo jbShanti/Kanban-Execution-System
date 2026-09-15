@@ -60,15 +60,27 @@ def verify_determinism(board, analysis_date: date) -> bool:
 
 
 def main() -> None:
+    """Generate Daily Execution Report from a Kanban board markdown file."""
     parser = argparse.ArgumentParser(description="Generate Daily Execution Report")
     parser.add_argument("--date", type=date.fromisoformat, default=None,
                         help="Analysis date (YYYY-MM-DD)")
-    parser.add_argument("--output", type=Path, default=Path("daily_execution_report.md"),
-                        help="Output file path")
+    parser.add_argument("--output", type=Path, default=None,
+                        help="Output file path (default: report.md next to board file)")
+    parser.add_argument("--input", "--board", type=Path, default=None,
+                        help="Path to the Kanban board markdown file (required if default board not found)")
     args = parser.parse_args()
 
     # ── Find and parse the board ─────────────────────────────
-    board_path = find_real_board()
+    if args.input is not None:
+        board_path = args.input
+        if not board_path.exists():
+            parser.error(f"File not found: {board_path}")
+    else:
+        try:
+            board_path = find_real_board()
+        except FileNotFoundError:
+            parser.error("Board file not found. Use --input to specify path.")
+    
     board = parse_markdown_file(board_path)
     
     print(f"📂 Board: {board_path}")
@@ -91,9 +103,16 @@ def main() -> None:
     # ── Render Execution Report ──────────────────────────────
     markdown = compose_execution_report(report)
     
+    # ── Determine output path ────────────────────────────────
+    if args.output is None:
+        # Default: report.md next to the board file
+        output_path = board_path.parent / "report.md"
+    else:
+        output_path = args.output
+    
     # ── Save to file ─────────────────────────────────────────
-    args.output.write_text(markdown, encoding="utf-8")
-    print(f"✅ Saved to: {args.output.absolute()}")
+    output_path.write_text(markdown, encoding="utf-8")
+    print(f"✅ Saved to: {output_path.absolute()}")
     print(f"   Size: {len(markdown)} chars")
     print(f"   Generated at: {report.generated_at.strftime('%Y-%m-%d %H:%M:%S')}")
 

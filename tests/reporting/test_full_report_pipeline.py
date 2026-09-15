@@ -5,8 +5,6 @@ from src.parser.parser import parse_markdown_lines
 from src.parser.models import Board
 from src.reporting.execution_report_composer import compose_execution_report
 from datetime import date
-import tempfile
-import os
 
 
 def test_full_report_pipeline_with_simple_board():
