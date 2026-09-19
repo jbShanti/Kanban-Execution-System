@@ -1,3 +1,5 @@
+from datetime import date
+
 from src.parser.analytics import (
     calculate_completion_rate,
     calculate_total_score,
@@ -260,3 +262,59 @@ def test_empty_sections():
         "Another Empty Section"
         in grouped
     )
+
+
+def test_multiline_task_parsing_integration():
+    """Integration test for multiline task parsing with metadata on subsequent lines."""
+    from pathlib import Path
+    from src.parser.parser import parse_markdown_file
+    
+    tasks = parse_markdown_file(Path("tests/parser/fixtures/multiline_tasks.md")).tasks
+    
+    # Verify all tasks are parsed (not orphaned)
+    assert len(tasks) > 10
+    
+    # Check specific multiline tasks
+    task_with_score = next(t for t in tasks if "Task with score on next line" in t.title)
+    assert task_with_score.score == 10
+    assert task_with_score.due == date(2026, 9, 30)
+    
+    task_multiple_metadata = next(t for t in tasks if "Task with multiple metadata" in t.title)
+    assert task_multiple_metadata.score == 25
+    assert task_multiple_metadata.due == date(2026, 10, 15)
+    assert task_multiple_metadata.priority is not None
+    assert task_multiple_metadata.priority.value == "high"
+    
+    # Verify no tasks are orphaned (score=None when they should have score)
+    tasks_with_expected_scores = [
+        ("Task with score on next line", 10),
+        ("Task with multiple metadata", 25),
+        ("Completed task with metadata", 50),
+        ("Single line task with all metadata", 15),
+        ("Task with metadata then empty line", 30),
+        ("Another single line task", 5),
+        ("Delegated task with metadata", 100),
+        ("Task followed by another task immediately", 40),
+        ("Next task starts here", 60),
+        ("Task with three metadata lines", 200),
+        ("Task with metadata and then continuation text", 75),
+        ("Task with metadata then section header", 90),
+        ("Task in new section", 10),
+    ]
+    
+    for title_fragment, expected_score in tasks_with_expected_scores:
+        task = next(t for t in tasks if title_fragment in t.title)
+        assert task.score == expected_score, f"Task '{title_fragment}': expected score {expected_score}, got {task.score}"
+
+
+def test_multiline_tasks_not_marked_as_orphan():
+    """Ensure multiline tasks with metadata are not treated as orphan (score=None)."""
+    from pathlib import Path
+    from src.parser.parser import parse_markdown_file
+    
+    tasks = parse_markdown_file(Path("tests/parser/fixtures/multiline_tasks.md")).tasks
+    
+    # All tasks that have score metadata should have score != None
+    for task in tasks:
+        if "score" in task.metadata:
+            assert task.score is not None, f"Task '{task.title}' has score in metadata but score is None"

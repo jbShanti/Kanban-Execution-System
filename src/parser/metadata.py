@@ -17,6 +17,12 @@ DUE_PATTERN: Final = re.compile(
     r"@\{(\d{4}-\d{2}-\d{2})\}"
 )
 
+# Pattern for [due::YYYY-MM-DD] metadata format
+DUE_METADATA_PATTERN: Final = re.compile(
+    r"\[due::(\d{4}-\d{2}-\d{2})\]",
+    re.IGNORECASE,
+)
+
 WHITESPACE_PATTERN: Final = re.compile(r"\s+")
 
 STATUS_PATTERN: Final = re.compile(
@@ -60,15 +66,24 @@ def extract_tags(text: str) -> list[str]:
     return TAG_PATTERN.findall(text)
 
 def extract_due_date(text: str) -> date | None:
+    # First try the @{...} format
     match = DUE_PATTERN.search(text)
 
-    if not match:
-        return None
+    if match:
+        try:
+            return date.fromisoformat(match.group(1))
+        except ValueError:
+            pass
+    
+    # Then try the [due::...] metadata format
+    match = DUE_METADATA_PATTERN.search(text)
+    if match:
+        try:
+            return date.fromisoformat(match.group(1))
+        except ValueError:
+            pass
 
-    try:
-        return date.fromisoformat(match.group(1))
-    except ValueError:
-        return None
+    return None
 
 def extract_internal_links(text: str) -> list[tuple[str, str]]:
     return INTERNAL_LINK_PATTERN.findall(text)

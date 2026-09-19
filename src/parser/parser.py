@@ -48,8 +48,6 @@ DEFAULT_SECTION: Section = build_section(
 )
 
 
-
-
 def parse_duration(
     value: str | None,
 ) -> timedelta | None:
@@ -246,14 +244,18 @@ def parse_markdown_lines(
 ) -> list[Task]:
     """
     Parse markdown lines into Task objects.
+    
+    Supports multiline tasks where metadata (e.g., [score::10], [due::...]) 
+    can appear on lines following the task marker.
     """
 
     tasks: list[Task] = []
 
     current_section = DEFAULT_SECTION
     
-
-    for line in lines:
+    i = 0
+    while i < len(lines):
+        line = lines[i]
 
         if is_section_header(line):
 
@@ -275,15 +277,44 @@ def parse_markdown_lines(
                 section_type=section_type,
             )
 
+            i += 1
             continue
 
+        # Check if this line starts a task
         task = parse_task_line(
             line,
             section=current_section,
         )
 
         if task is not None:
-            tasks.append(task)
+            # Collect metadata from subsequent lines
+            full_task_text = line
+            j = i + 1
+            while j < len(lines):
+                next_line = lines[j].strip()
+                # Stop at empty line, new task, or section header
+                if not next_line:
+                    break
+                if next_line.startswith('- [') or is_section_header(next_line):
+                    break
+                # Check if line contains metadata pattern [key::value]
+                if re.search(r'\[[a-z0-9\-]+::[^\]]+\]', next_line, re.IGNORECASE):
+                    full_task_text += ' ' + next_line
+                j += 1
+            
+            # Re-parse with combined text if we found metadata
+            if full_task_text != line:
+                task = parse_task_line(
+                    full_task_text,
+                    section=current_section,
+                )
+            
+            if task is not None:
+                tasks.append(task)
+            
+            i = j
+        else:
+            i += 1
 
     return tasks
 
